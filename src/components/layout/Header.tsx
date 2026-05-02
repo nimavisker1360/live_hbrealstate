@@ -39,7 +39,7 @@ export function Header() {
           </nav>
           <Button
             className="w-full sm:w-auto"
-            href="/live/palm-residence-live"
+            href="/"
             size="sm"
           >
             <MonitorPlay aria-hidden className="size-4" />

@@ -28,6 +28,11 @@ import {
   type RealtimeCommentEvent,
   type RealtimeLikeEvent,
 } from "@/lib/pusher-channels";
+import {
+  LIVE_USER_UPDATED_EVENT,
+  readStoredLiveUser,
+  type SyncedLiveUser,
+} from "@/lib/live-auth-client";
 import { cn } from "@/lib/utils";
 import type { LiveTour, Property } from "@/types/platform";
 
@@ -83,21 +88,9 @@ type AuthMeResponse = {
   session: ClientAuthSession | null;
 };
 
-type SyncedLiveUser = {
-  id: string;
-  auth0Id: string;
-  email: string | null;
-  name: string;
-  picture: string | null;
-  lastSeenAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
 type LiveViewer = ClientAuthSession | SyncedLiveUser;
 
 const VISITOR_ID_KEY = "hb-live-visitor-id";
-const LIVE_USER_KEY = "hb-live-user";
 const LIKE_COOLDOWN_MS = 2_000;
 
 class ApiRequestError<T = unknown> extends Error {
@@ -159,28 +152,6 @@ async function postJson<T>(url: string, payload: unknown) {
   return body.data;
 }
 
-async function syncLiveUser(token: string) {
-  const response = await fetch("/api/auth/sync-user", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ token }),
-  });
-  const body = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    const errorBody = body as ApiResponse<unknown>;
-
-    throw new ApiRequestError(
-      errorBody.error?.message ?? "Could not sync user.",
-      response.status,
-    );
-  }
-
-  return body as SyncedLiveUser;
-}
-
 function createVisitorId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID();
@@ -204,37 +175,6 @@ function getLoginUrl() {
 
 function getSessionLabel(session: ClientAuthSession) {
   return session.name ?? session.email ?? session.phone ?? session.sub;
-}
-
-function isSyncedLiveUser(value: unknown): value is SyncedLiveUser {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "auth0Id" in value &&
-    typeof (value as SyncedLiveUser).auth0Id === "string" &&
-    "name" in value &&
-    typeof (value as SyncedLiveUser).name === "string"
-  );
-}
-
-function readStoredLiveUser() {
-  if (typeof window === "undefined") {
-    return undefined;
-  }
-
-  const storedUser = window.localStorage.getItem(LIVE_USER_KEY);
-
-  if (!storedUser) {
-    return null;
-  }
-
-  try {
-    const parsedUser: unknown = JSON.parse(storedUser);
-
-    return isSyncedLiveUser(parsedUser) ? parsedUser : null;
-  } catch {
-    return null;
-  }
 }
 
 function getViewerLabel(viewer: LiveViewer) {
@@ -316,7 +256,7 @@ export function LiveRoomScreen({
   );
   const [syncedUser, setSyncedUser] = useState<
     SyncedLiveUser | null | undefined
-  >(undefined);
+  >(() => readStoredLiveUser());
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [commentsError, setCommentsError] = useState("");
@@ -341,51 +281,16 @@ export function LiveRoomScreen({
   }, []);
 
   useEffect(() => {
-    let ignore = false;
-    const url = new URL(window.location.href);
-    const token = url.searchParams.get("token");
+    function updateSyncedUser(event: Event) {
+      const nextUser = (event as CustomEvent<SyncedLiveUser | null>).detail;
 
-    if (!token) {
-      window.setTimeout(() => {
-        if (!ignore) {
-          setSyncedUser(readStoredLiveUser());
-        }
-      }, 0);
-
-      return () => {
-        ignore = true;
-      };
+      setSyncedUser(nextUser);
     }
 
-    const tokenToSync = token;
-
-    url.searchParams.delete("token");
-    window.history.replaceState(
-      window.history.state,
-      "",
-      `${url.pathname}${url.search}${url.hash}`,
-    );
-
-    async function syncUserFromUrlToken() {
-      try {
-        const user = await syncLiveUser(tokenToSync);
-
-        if (!ignore) {
-          setSyncedUser(user);
-          window.localStorage.setItem(LIVE_USER_KEY, JSON.stringify(user));
-        }
-      } catch {
-        if (!ignore) {
-          setSyncedUser(null);
-          window.localStorage.removeItem(LIVE_USER_KEY);
-        }
-      }
-    }
-
-    syncUserFromUrlToken();
+    window.addEventListener(LIVE_USER_UPDATED_EVENT, updateSyncedUser);
 
     return () => {
-      ignore = true;
+      window.removeEventListener(LIVE_USER_UPDATED_EVENT, updateSyncedUser);
     };
   }, []);
 

@@ -1,5 +1,4 @@
 import { ArrowRight, BadgeCheck, Building2, SignalHigh } from "lucide-react";
-import { redirect } from "next/navigation";
 import { LiveCard } from "@/components/live/LiveCard";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { CTAButtons } from "@/components/sections/CTAButtons";
@@ -7,20 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { liveTours, platformMetrics, properties } from "@/data/mock";
 
-type HomeProps = {
-  searchParams?: Promise<{
-    token?: string | string[];
-  }>;
-};
-
-export default async function Home({ searchParams }: HomeProps) {
+export default function Home() {
   const featuredTour = liveTours.find((tour) => tour.featured) ?? liveTours[0];
-  const params = await searchParams;
-  const token = Array.isArray(params?.token) ? params?.token[0] : params?.token;
-
-  if (token) {
-    redirect(`/live/${featuredTour.roomId}?token=${encodeURIComponent(token)}`);
-  }
 
   return (
     <>
