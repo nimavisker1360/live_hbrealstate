@@ -1,0 +1,5 @@
+ALTER TABLE "User" ADD COLUMN "auth0Id" TEXT;
+ALTER TABLE "User" ADD COLUMN "picture" TEXT;
+ALTER TABLE "User" ADD COLUMN "lastSeenAt" TIMESTAMP(3);
+
+CREATE UNIQUE INDEX "User_auth0Id_key" ON "User"("auth0Id");

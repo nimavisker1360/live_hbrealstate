@@ -1,0 +1,21 @@
+
+> live_hb@0.1.0 dev
+> next dev
+
+[32m✔[0m [33mConsole Ninja[0m extension is connected to [33mNext.js[0m, see [36mhttps://tinyurl.com/2vt8jxzw[0m
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.124:3000
+- Environments: .env
+✓ Ready in 2.5s
+⚠ Console Ninja Turbopack support is a PRO feature, [33mcurrently available to community users while in preview[0m
+Creating turbopack project { dir: 'C:\\Users\\NIMA\\Desktop\\live_hb', testMode: true }
+
+ GET /live/palm-residence-live 200 in 4.4s (next.js: 2.5s, application-code: 1896ms)
+ GET /api/auth/me 200 in 436ms (next.js: 163ms, application-code: 273ms)
+ POST /api/pusher/auth 200 in 188ms (next.js: 57ms, application-code: 131ms)
+ GET /api/comments?liveSessionId=cmomw3asl0002l4vdykcgkjo3 200 in 893ms (next.js: 343ms, application-code: 550ms)
+ GET /api/likes?liveSessionId=cmomw3asl0002l4vdykcgkjo3 200 in 948ms (next.js: 416ms, application-code: 532ms)
+ GET /sw.js 404 in 102ms (next.js: 43ms, application-code: 59ms)
+ GET /?token=test-token 307 in 335ms (next.js: 106ms, application-code: 229ms)
+ POST /api/auth/sync-user 200 in 488ms (next.js: 51ms, application-code: 438ms)

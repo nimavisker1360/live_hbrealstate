@@ -1,0 +1,116 @@
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].agent.upsert()` invocation in
+C:\Users\NIMA\Desktop\live_hb\.next\dev\server\chunks\ssr\[root-of-the-server]__0d6p3vx._.js:621:158
+
+  618 const MOCK_PROPERTY_ID = "property-hb-live";
+  619 const MOCK_ROOM_ID = "hb-live-room";
+  620 async function ensureMockContext({ agentId = MOCK_AGENT_ID, agentName = "HB Live Agent", propertyId = MOCK_PROPERTY_ID, propertyTitle = "HB Live Property", propertyLocation = "Istanbul, Turkey", roomId, sessionTitle }) {
+→ 621     const agent = await {imported module ./src/lib/prisma.ts}["prisma"].agent.upsert(
+Can't reach database server at switchyard.proxy.rlwy.net
+    at <unknown> (src\lib\db-defaults.ts:26:36)
+    at async ensureMockContext (src\lib\db-defaults.ts:26:17)
+    at async LiveRoomPage (src\app\live\[roomId]\page.tsx:21:27)
+  24 |   sessionTitle,
+  25 | }: EnsureContextInput) {
+> 26 |   const agent = await prisma.agent.upsert({
+     |                                    ^
+  27 |     where: { id: agentId },
+  28 |     update: {
+  29 |       name: agentName, {
+  code: 'P1001',
+  meta: {
+    modelName: 'Agent',
+    driverAdapterError: Error [DriverAdapterError]: DatabaseNotReachable
+        at async ensureMockContext (src\lib\db-defaults.ts:26:17)
+        at async LiveRoomPage (src\app\live\[roomId]\page.tsx:21:27)
+      24 |   sessionTitle,
+      25 | }: EnsureContextInput) {
+    > 26 |   const agent = await prisma.agent.upsert({
+         |                 ^
+      27 |     where: { id: agentId },
+      28 |     update: {
+      29 |       name: agentName, {
+      [cause]: [Object]
+    }
+  },
+  clientVersion: '7.8.0',
+  digest: '4214697860'
+}
+[browser] Uncaught PrismaClientKnownRequestError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].agent.upsert()` invocation in
+C:\Users\NIMA\Desktop\live_hb\.next\dev\server\chunks\ssr\[root-of-the-server]__0d6p3vx._.js:621:158
+
+  618 const MOCK_PROPERTY_ID = "property-hb-live";
+  619 const MOCK_ROOM_ID = "hb-live-room";
+  620 async function ensureMockContext({ agentId = MOCK_AGENT_ID, agentName = "HB Live Agent", propertyId = MOCK_PROPERTY_ID, propertyTitle = "HB Live Property", propertyLocation = "Istanbul, Turkey", roomId, sessionTitle }) {
+→ 621     const agent = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].agent.upsert(
+Can't reach database server at switchyard.proxy.rlwy.net
+    at <unknown> (src\lib\db-defaults.ts:26:36)
+    at  ensureMockContext (src\lib\db-defaults.ts:26:17)
+    at  LiveRoomPage (src\app\live\[roomId]\page.tsx:21:27)
+  24 |   sessionTitle,
+  25 | }: EnsureContextInput) {
+> 26 |   const agent = await prisma.agent.upsert({
+     |                                    ^
+  27 |     where: { id: agentId },
+  28 |     update: {
+  29 |       name: agentName,
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+Live room is running without database context. Error [PrismaClientKnownRequestError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].agent.upsert()` invocation in
+C:\Users\NIMA\Desktop\live_hb\.next\dev\server\chunks\ssr\[root-of-the-server]__0zm9w~h._.js:395:158
+
+  392 const MOCK_PROPERTY_ID = "property-hb-live";
+  393 const MOCK_ROOM_ID = "hb-live-room";
+  394 async function ensureMockContext({ agentId = MOCK_AGENT_ID, agentName = "HB Live Agent", propertyId = MOCK_PROPERTY_ID, propertyTitle = "HB Live Property", propertyLocation = "Istanbul, Turkey", roomId, sessionTitle }) {
+→ 395     const agent = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].agent.upsert(
+Can't reach database server at switchyard.proxy.rlwy.net
+    at <unknown> (src\lib\db-defaults.ts:26:36)
+    at async ensureMockContext (src\lib\db-defaults.ts:26:17)
+    at async LiveRoomPage (src\app\live\[roomId]\page.tsx:24:29)
+  24 |   sessionTitle,
+  25 | }: EnsureContextInput) {
+> 26 |   const agent = await prisma.agent.upsert({
+     |                                    ^
+  27 |     where: { id: agentId },
+  28 |     update: {
+  29 |       name: agentName, {
+  code: 'P1001',
+  meta: {
+    modelName: 'Agent',
+    driverAdapterError: Error [DriverAdapterError]: DatabaseNotReachable
+        at PrismaPgAdapter.onError (C:\Users\NIMA\Desktop\live_hb\.next\dev\server\chunks\ssr\[root-of-the-server]__0yh9xu2._.js:8289:15)
+        at PrismaPgAdapter.performIO (C:\Users\NIMA\Desktop\live_hb\.next\dev\server\chunks\ssr\[root-of-the-server]__0yh9xu2._.js:8284:18)
+        at async PrismaPgAdapter.queryRaw (C:\Users\NIMA\Desktop\live_hb\.next\dev\server\chunks\ssr\[root-of-the-server]__0yh9xu2._.js:8220:34)
+        at async ensureMockContext (src\lib\db-defaults.ts:26:17)
+        at async LiveRoomPage (src\app\live\[roomId]\page.tsx:24:29)
+      24 |   sessionTitle,
+      25 | }: EnsureContextInput) {
+    > 26 |   const agent = await prisma.agent.upsert({
+         |                 ^
+      27 |     where: { id: agentId },
+      28 |     update: {
+      29 |       name: agentName, {
+      [cause]: [Object]
+    }
+  },
+  clientVersion: '7.8.0'
+}
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior

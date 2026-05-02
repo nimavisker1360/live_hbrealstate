@@ -1,0 +1,197 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  OWNER
+  AGENT
+  BUYER
+}
+
+enum AgentStatus {
+  ACTIVE
+  PENDING
+  PAUSED
+}
+
+enum SubscriptionPlan {
+  STARTER
+  PRO
+  ELITE
+}
+
+enum LiveSessionStatus {
+  SCHEDULED
+  LIVE
+  ENDED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  LOST
+}
+
+enum OfferStatus {
+  PENDING
+  UNDER_REVIEW
+  COUNTERED
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id         String      @id @default(cuid())
+  auth0Id    String?     @unique
+  name       String
+  email      String?     @unique
+  phone      String?
+  picture    String?
+  role       UserRole    @default(BUYER)
+  agent      Agent?
+  likeEvents LikeEvent[]
+  lastSeenAt DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Agent {
+  id               String           @id @default(cuid())
+  userId           String?          @unique
+  user             User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name             String
+  company          String
+  status           AgentStatus      @default(ACTIVE)
+  subscriptionPlan SubscriptionPlan @default(PRO)
+  properties       Property[]
+  liveSessions     LiveSession[]
+  leads            Lead[]
+  offers           Offer[]
+  comments         Comment[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model Property {
+  id           String        @id @default(cuid())
+  agentId      String
+  agent        Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  title        String
+  location     String
+  price        Decimal?      @db.Decimal(14, 2)
+  currency     String        @default("USD")
+  image        String?
+  liveSessions LiveSession[]
+  leads        Lead[]
+  offers       Offer[]
+  comments     Comment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([agentId])
+}
+
+model LiveSession {
+  id         String            @id @default(cuid())
+  roomId     String            @unique
+  propertyId String
+  property   Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  agentId    String
+  agent      Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  title      String
+  status     LiveSessionStatus @default(SCHEDULED)
+  viewers    Int               @default(0)
+  startsAt   DateTime?
+  endedAt    DateTime?
+  leads      Lead[]
+  offers     Offer[]
+  comments   Comment[]
+  likeEvents LikeEvent[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@index([agentId])
+  @@index([propertyId])
+}
+
+model Lead {
+  id            String       @id @default(cuid())
+  agentId       String
+  agent         Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  propertyId    String
+  property      Property     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  liveSessionId String?
+  liveSession   LiveSession? @relation(fields: [liveSessionId], references: [id], onDelete: SetNull)
+  fullName      String
+  phone         String
+  interest      String
+  budget        String
+  source        String
+  message       String?
+  status        LeadStatus   @default(NEW)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([agentId])
+  @@index([propertyId])
+  @@index([liveSessionId])
+}
+
+model Offer {
+  id            String       @id @default(cuid())
+  agentId       String
+  agent         Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  propertyId    String
+  property      Property     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  liveSessionId String?
+  liveSession   LiveSession? @relation(fields: [liveSessionId], references: [id], onDelete: SetNull)
+  buyerName     String
+  phone         String
+  amount        Decimal      @db.Decimal(14, 2)
+  currency      String       @default("USD")
+  status        OfferStatus  @default(PENDING)
+  message       String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([agentId])
+  @@index([propertyId])
+  @@index([liveSessionId])
+}
+
+model Comment {
+  id            String      @id @default(cuid())
+  liveSessionId String
+  liveSession   LiveSession @relation(fields: [liveSessionId], references: [id], onDelete: Cascade)
+  propertyId    String
+  property      Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  agentId       String?
+  agent         Agent?      @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  author        String
+  message       String
+  createdAt     DateTime    @default(now())
+
+  @@index([liveSessionId])
+  @@index([propertyId])
+  @@index([agentId])
+}
+
+model LikeEvent {
+  id            String      @id @default(cuid())
+  liveSessionId String
+  liveSession   LiveSession @relation(fields: [liveSessionId], references: [id], onDelete: Cascade)
+  userId        String?
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  visitorId     String?
+  createdAt     DateTime    @default(now())
+
+  @@index([liveSessionId])
+  @@index([liveSessionId, userId, createdAt])
+  @@index([userId])
+}
