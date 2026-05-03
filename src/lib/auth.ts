@@ -128,6 +128,13 @@ function getStringClaim(value: unknown) {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
+function readEmailList(value?: string) {
+  return String(value || "")
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export function normalizeRole(role?: string): AuthRole {
   if (role === "OWNER" || role === "ADMIN") {
     return "OWNER";
@@ -138,6 +145,26 @@ export function normalizeRole(role?: string): AuthRole {
   }
 
   return "BUYER";
+}
+
+function resolveMainSiteRole(role?: string, email?: string): AuthRole {
+  const normalizedEmail = email?.trim().toLowerCase();
+
+  if (
+    normalizedEmail &&
+    readEmailList(process.env.HB_LIVE_OWNER_EMAILS).includes(normalizedEmail)
+  ) {
+    return "OWNER";
+  }
+
+  if (
+    normalizedEmail &&
+    readEmailList(process.env.HB_LIVE_AGENT_EMAILS).includes(normalizedEmail)
+  ) {
+    return "AGENT";
+  }
+
+  return normalizeRole(role);
 }
 
 export async function createSessionToken(
@@ -190,7 +217,7 @@ export async function verifyMainSiteToken(token: string) {
     name: payload.name,
     email: payload.email,
     phone: payload.phone,
-    role: normalizeRole(payload.role),
+    role: resolveMainSiteRole(payload.role, payload.email),
   };
 }
 
