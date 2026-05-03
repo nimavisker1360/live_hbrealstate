@@ -40,6 +40,11 @@ export type LiveSessionMinAggregateOutputType = {
   propertyId: string | null
   agentId: string | null
   title: string | null
+  streamProvider: string | null
+  muxLiveStreamId: string | null
+  streamKey: string | null
+  playbackId: string | null
+  rtmpUrl: string | null
   status: $Enums.LiveSessionStatus | null
   viewers: number | null
   startsAt: Date | null
@@ -54,6 +59,11 @@ export type LiveSessionMaxAggregateOutputType = {
   propertyId: string | null
   agentId: string | null
   title: string | null
+  streamProvider: string | null
+  muxLiveStreamId: string | null
+  streamKey: string | null
+  playbackId: string | null
+  rtmpUrl: string | null
   status: $Enums.LiveSessionStatus | null
   viewers: number | null
   startsAt: Date | null
@@ -68,6 +78,11 @@ export type LiveSessionCountAggregateOutputType = {
   propertyId: number
   agentId: number
   title: number
+  streamProvider: number
+  muxLiveStreamId: number
+  streamKey: number
+  playbackId: number
+  rtmpUrl: number
   status: number
   viewers: number
   startsAt: number
@@ -92,6 +107,11 @@ export type LiveSessionMinAggregateInputType = {
   propertyId?: true
   agentId?: true
   title?: true
+  streamProvider?: true
+  muxLiveStreamId?: true
+  streamKey?: true
+  playbackId?: true
+  rtmpUrl?: true
   status?: true
   viewers?: true
   startsAt?: true
@@ -106,6 +126,11 @@ export type LiveSessionMaxAggregateInputType = {
   propertyId?: true
   agentId?: true
   title?: true
+  streamProvider?: true
+  muxLiveStreamId?: true
+  streamKey?: true
+  playbackId?: true
+  rtmpUrl?: true
   status?: true
   viewers?: true
   startsAt?: true
@@ -120,6 +145,11 @@ export type LiveSessionCountAggregateInputType = {
   propertyId?: true
   agentId?: true
   title?: true
+  streamProvider?: true
+  muxLiveStreamId?: true
+  streamKey?: true
+  playbackId?: true
+  rtmpUrl?: true
   status?: true
   viewers?: true
   startsAt?: true
@@ -221,6 +251,11 @@ export type LiveSessionGroupByOutputType = {
   propertyId: string
   agentId: string
   title: string
+  streamProvider: string | null
+  muxLiveStreamId: string | null
+  streamKey: string | null
+  playbackId: string | null
+  rtmpUrl: string | null
   status: $Enums.LiveSessionStatus
   viewers: number
   startsAt: Date | null
@@ -258,6 +293,11 @@ export type LiveSessionWhereInput = {
   propertyId?: Prisma.StringFilter<"LiveSession"> | string
   agentId?: Prisma.StringFilter<"LiveSession"> | string
   title?: Prisma.StringFilter<"LiveSession"> | string
+  streamProvider?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  muxLiveStreamId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  streamKey?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  playbackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
@@ -278,6 +318,11 @@ export type LiveSessionOrderByWithRelationInput = {
   propertyId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  streamProvider?: Prisma.SortOrderInput | Prisma.SortOrder
+  muxLiveStreamId?: Prisma.SortOrderInput | Prisma.SortOrder
+  streamKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  playbackId?: Prisma.SortOrderInput | Prisma.SortOrder
+  rtmpUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -301,6 +346,11 @@ export type LiveSessionWhereUniqueInput = Prisma.AtLeast<{
   propertyId?: Prisma.StringFilter<"LiveSession"> | string
   agentId?: Prisma.StringFilter<"LiveSession"> | string
   title?: Prisma.StringFilter<"LiveSession"> | string
+  streamProvider?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  muxLiveStreamId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  streamKey?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  playbackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
@@ -321,6 +371,11 @@ export type LiveSessionOrderByWithAggregationInput = {
   propertyId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  streamProvider?: Prisma.SortOrderInput | Prisma.SortOrder
+  muxLiveStreamId?: Prisma.SortOrderInput | Prisma.SortOrder
+  streamKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  playbackId?: Prisma.SortOrderInput | Prisma.SortOrder
+  rtmpUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -343,6 +398,11 @@ export type LiveSessionScalarWhereWithAggregatesInput = {
   propertyId?: Prisma.StringWithAggregatesFilter<"LiveSession"> | string
   agentId?: Prisma.StringWithAggregatesFilter<"LiveSession"> | string
   title?: Prisma.StringWithAggregatesFilter<"LiveSession"> | string
+  streamProvider?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  muxLiveStreamId?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  streamKey?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  playbackId?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  rtmpUrl?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusWithAggregatesFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntWithAggregatesFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
@@ -355,6 +415,11 @@ export type LiveSessionCreateInput = {
   id?: string
   roomId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -375,6 +440,11 @@ export type LiveSessionUncheckedCreateInput = {
   propertyId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -391,6 +461,11 @@ export type LiveSessionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -411,6 +486,11 @@ export type LiveSessionUncheckedUpdateInput = {
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -429,6 +509,11 @@ export type LiveSessionCreateManyInput = {
   propertyId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -441,6 +526,11 @@ export type LiveSessionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -455,6 +545,11 @@ export type LiveSessionUncheckedUpdateManyInput = {
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -479,6 +574,11 @@ export type LiveSessionCountOrderByAggregateInput = {
   propertyId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  streamProvider?: Prisma.SortOrder
+  muxLiveStreamId?: Prisma.SortOrder
+  streamKey?: Prisma.SortOrder
+  playbackId?: Prisma.SortOrder
+  rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
@@ -497,6 +597,11 @@ export type LiveSessionMaxOrderByAggregateInput = {
   propertyId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  streamProvider?: Prisma.SortOrder
+  muxLiveStreamId?: Prisma.SortOrder
+  streamKey?: Prisma.SortOrder
+  playbackId?: Prisma.SortOrder
+  rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
@@ -511,6 +616,11 @@ export type LiveSessionMinOrderByAggregateInput = {
   propertyId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  streamProvider?: Prisma.SortOrder
+  muxLiveStreamId?: Prisma.SortOrder
+  streamKey?: Prisma.SortOrder
+  playbackId?: Prisma.SortOrder
+  rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
@@ -693,6 +803,11 @@ export type LiveSessionCreateWithoutAgentInput = {
   id?: string
   roomId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -711,6 +826,11 @@ export type LiveSessionUncheckedCreateWithoutAgentInput = {
   roomId: string
   propertyId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -758,6 +878,11 @@ export type LiveSessionScalarWhereInput = {
   propertyId?: Prisma.StringFilter<"LiveSession"> | string
   agentId?: Prisma.StringFilter<"LiveSession"> | string
   title?: Prisma.StringFilter<"LiveSession"> | string
+  streamProvider?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  muxLiveStreamId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  streamKey?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  playbackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
@@ -770,6 +895,11 @@ export type LiveSessionCreateWithoutPropertyInput = {
   id?: string
   roomId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -788,6 +918,11 @@ export type LiveSessionUncheckedCreateWithoutPropertyInput = {
   roomId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -830,6 +965,11 @@ export type LiveSessionCreateWithoutLeadsInput = {
   id?: string
   roomId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -849,6 +989,11 @@ export type LiveSessionUncheckedCreateWithoutLeadsInput = {
   propertyId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -880,6 +1025,11 @@ export type LiveSessionUpdateWithoutLeadsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -899,6 +1049,11 @@ export type LiveSessionUncheckedUpdateWithoutLeadsInput = {
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -914,6 +1069,11 @@ export type LiveSessionCreateWithoutOffersInput = {
   id?: string
   roomId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -933,6 +1093,11 @@ export type LiveSessionUncheckedCreateWithoutOffersInput = {
   propertyId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -964,6 +1129,11 @@ export type LiveSessionUpdateWithoutOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -983,6 +1153,11 @@ export type LiveSessionUncheckedUpdateWithoutOffersInput = {
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -998,6 +1173,11 @@ export type LiveSessionCreateWithoutCommentsInput = {
   id?: string
   roomId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -1017,6 +1197,11 @@ export type LiveSessionUncheckedCreateWithoutCommentsInput = {
   propertyId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -1048,6 +1233,11 @@ export type LiveSessionUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1067,6 +1257,11 @@ export type LiveSessionUncheckedUpdateWithoutCommentsInput = {
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1082,6 +1277,11 @@ export type LiveSessionCreateWithoutLikeEventsInput = {
   id?: string
   roomId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -1101,6 +1301,11 @@ export type LiveSessionUncheckedCreateWithoutLikeEventsInput = {
   propertyId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -1132,6 +1337,11 @@ export type LiveSessionUpdateWithoutLikeEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1151,6 +1361,11 @@ export type LiveSessionUncheckedUpdateWithoutLikeEventsInput = {
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1167,6 +1382,11 @@ export type LiveSessionCreateManyAgentInput = {
   roomId: string
   propertyId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -1179,6 +1399,11 @@ export type LiveSessionUpdateWithoutAgentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1197,6 +1422,11 @@ export type LiveSessionUncheckedUpdateWithoutAgentInput = {
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1214,6 +1444,11 @@ export type LiveSessionUncheckedUpdateManyWithoutAgentInput = {
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1227,6 +1462,11 @@ export type LiveSessionCreateManyPropertyInput = {
   roomId: string
   agentId: string
   title: string
+  streamProvider?: string | null
+  muxLiveStreamId?: string | null
+  streamKey?: string | null
+  playbackId?: string | null
+  rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
   startsAt?: Date | string | null
@@ -1239,6 +1479,11 @@ export type LiveSessionUpdateWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1257,6 +1502,11 @@ export type LiveSessionUncheckedUpdateWithoutPropertyInput = {
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1274,6 +1524,11 @@ export type LiveSessionUncheckedUpdateManyWithoutPropertyInput = {
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   agentId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1346,6 +1601,11 @@ export type LiveSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   propertyId?: boolean
   agentId?: boolean
   title?: boolean
+  streamProvider?: boolean
+  muxLiveStreamId?: boolean
+  streamKey?: boolean
+  playbackId?: boolean
+  rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
   startsAt?: boolean
@@ -1367,6 +1627,11 @@ export type LiveSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   propertyId?: boolean
   agentId?: boolean
   title?: boolean
+  streamProvider?: boolean
+  muxLiveStreamId?: boolean
+  streamKey?: boolean
+  playbackId?: boolean
+  rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
   startsAt?: boolean
@@ -1383,6 +1648,11 @@ export type LiveSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   propertyId?: boolean
   agentId?: boolean
   title?: boolean
+  streamProvider?: boolean
+  muxLiveStreamId?: boolean
+  streamKey?: boolean
+  playbackId?: boolean
+  rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
   startsAt?: boolean
@@ -1399,6 +1669,11 @@ export type LiveSessionSelectScalar = {
   propertyId?: boolean
   agentId?: boolean
   title?: boolean
+  streamProvider?: boolean
+  muxLiveStreamId?: boolean
+  streamKey?: boolean
+  playbackId?: boolean
+  rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
   startsAt?: boolean
@@ -1407,7 +1682,7 @@ export type LiveSessionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "status" | "viewers" | "startsAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
+export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "streamProvider" | "muxLiveStreamId" | "streamKey" | "playbackId" | "rtmpUrl" | "status" | "viewers" | "startsAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
 export type LiveSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
@@ -1442,6 +1717,11 @@ export type $LiveSessionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     propertyId: string
     agentId: string
     title: string
+    streamProvider: string | null
+    muxLiveStreamId: string | null
+    streamKey: string | null
+    playbackId: string | null
+    rtmpUrl: string | null
     status: $Enums.LiveSessionStatus
     viewers: number
     startsAt: Date | null
@@ -1882,6 +2162,11 @@ export interface LiveSessionFieldRefs {
   readonly propertyId: Prisma.FieldRef<"LiveSession", 'String'>
   readonly agentId: Prisma.FieldRef<"LiveSession", 'String'>
   readonly title: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly streamProvider: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly muxLiveStreamId: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly streamKey: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly playbackId: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly rtmpUrl: Prisma.FieldRef<"LiveSession", 'String'>
   readonly status: Prisma.FieldRef<"LiveSession", 'LiveSessionStatus'>
   readonly viewers: Prisma.FieldRef<"LiveSession", 'Int'>
   readonly startsAt: Prisma.FieldRef<"LiveSession", 'DateTime'>

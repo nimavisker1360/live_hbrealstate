@@ -88,3 +88,20 @@ export const likePayloadSchema = z.object({
   roomId: nonEmptyString.optional(),
   visitorId: z.string().trim().max(120).optional(),
 });
+
+export const liveSessionPayloadSchema = z.object({
+  agentId: nonEmptyString.optional(),
+  agentName: nonEmptyString.optional(),
+  propertyId: nonEmptyString.optional(),
+  propertyTitle: z.string().trim().min(2).max(160),
+  propertyLocation: z.string().trim().min(2).max(160),
+  roomId: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]+$/i, "Room ID can only include letters, numbers, and dashes.")
+    .max(120)
+    .optional(),
+  title: z.string().trim().min(2).max(160).optional(),
+  startsAt: z.string().datetime().optional(),
+  streamProvider: z.literal("mux").default("mux"),
+});

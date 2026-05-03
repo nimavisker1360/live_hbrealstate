@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import {
   AUTH_COOKIE_NAME,
+  type AuthRole,
   createSessionToken,
+  normalizeRole,
   sessionCookieOptions,
 } from "@/lib/auth";
 
@@ -36,11 +38,31 @@ export async function GET(request: Request) {
     );
   }
 
+  const requestUrl = new URL(request.url);
+  const role = normalizeRole(requestUrl.searchParams.get("role") ?? "AGENT");
+  const userByRole: Record<AuthRole, { email: string; name: string; sub: string }> = {
+    AGENT: {
+      email: "dev-agent@local.test",
+      name: "Dev Agent",
+      sub: "dev-agent",
+    },
+    BUYER: {
+      email: "dev-buyer@local.test",
+      name: "Dev Buyer",
+      sub: "dev-buyer",
+    },
+    OWNER: {
+      email: "dev-owner@local.test",
+      name: "Dev Owner",
+      sub: "dev-owner",
+    },
+  };
+  const user = userByRole[role];
   const token = await createSessionToken({
-    sub: "dev-buyer",
-    name: "Dev Buyer",
-    email: "dev-buyer@local.test",
-    role: "BUYER",
+    sub: user.sub,
+    name: user.name,
+    email: user.email,
+    role,
   });
   const response = NextResponse.redirect(safeNextUrl(request));
 

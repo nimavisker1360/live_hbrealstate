@@ -1,0 +1,123 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { handleApiError, jsonError } from "@/lib/api";
+import { prisma } from "@/lib/prisma";
+
+export const runtime = "nodejs";
+
+type MuxWebhookEvent = {
+  type?: string;
+  data?: {
+    id?: string;
+    playback_ids?: Array<{ id?: string }>;
+    status?: string;
+    stream_key?: string;
+  };
+};
+
+function verifyMuxSignature(body: string, signatureHeader: string | null) {
+  const secret = process.env.MUX_WEBHOOK_SECRET?.trim();
+
+  if (!secret) {
+    return process.env.NODE_ENV !== "production";
+  }
+
+  if (!signatureHeader) {
+    return false;
+  }
+
+  const signatureParts = Object.fromEntries(
+    signatureHeader.split(",").map((part) => {
+      const [key, value] = part.split("=");
+
+      return [key, value];
+    }),
+  );
+  const timestamp = signatureParts.t;
+  const signature = signatureParts.v1;
+
+  if (!timestamp || !signature) {
+    return false;
+  }
+
+  const receivedAt = Number(timestamp) * 1000;
+
+  if (!Number.isFinite(receivedAt) || Math.abs(Date.now() - receivedAt) > 300_000) {
+    return false;
+  }
+
+  const expected = createHmac("sha256", secret)
+    .update(`${timestamp}.${body}`)
+    .digest("hex");
+  const expectedBuffer = Buffer.from(expected);
+  const signatureBuffer = Buffer.from(signature);
+
+  return (
+    expectedBuffer.length === signatureBuffer.length &&
+    timingSafeEqual(expectedBuffer, signatureBuffer)
+  );
+}
+
+function getSessionStatus(eventType?: string, muxStatus?: string) {
+  if (eventType === "video.live_stream.active" || muxStatus === "active") {
+    return "LIVE" as const;
+  }
+
+  if (
+    eventType === "video.live_stream.disabled" ||
+    eventType === "video.live_stream.deleted" ||
+    muxStatus === "disabled"
+  ) {
+    return "ENDED" as const;
+  }
+
+  if (
+    eventType === "video.live_stream.idle" ||
+    eventType === "video.live_stream.disconnected" ||
+    muxStatus === "idle"
+  ) {
+    return "SCHEDULED" as const;
+  }
+
+  return null;
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.text();
+
+    if (!verifyMuxSignature(body, request.headers.get("mux-signature"))) {
+      return jsonError("Invalid Mux signature.", 401);
+    }
+
+    const event = JSON.parse(body) as MuxWebhookEvent;
+    const status = getSessionStatus(event.type, event.data?.status);
+    const playbackIds =
+      event.data?.playback_ids
+        ?.map((playbackId) => playbackId.id)
+        .filter((playbackId): playbackId is string => Boolean(playbackId)) ?? [];
+    const muxLiveStreamId = event.data?.id;
+    const streamKey = event.data?.stream_key;
+
+    if (!status || (!muxLiveStreamId && !streamKey && playbackIds.length === 0)) {
+      return Response.json({ data: { ignored: true } });
+    }
+
+    await prisma.liveSession.updateMany({
+      where: {
+        OR: [
+          ...(muxLiveStreamId ? [{ muxLiveStreamId }] : []),
+          ...(streamKey ? [{ streamKey }] : []),
+          ...(playbackIds.length > 0 ? [{ playbackId: { in: playbackIds } }] : []),
+        ],
+      },
+      data: {
+        status,
+        endedAt: status === "ENDED" ? new Date() : null,
+      },
+    });
+
+    return Response.json({ data: { ok: true } });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

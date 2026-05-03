@@ -12,6 +12,7 @@ type EnsureContextInput = {
   propertyLocation?: string;
   roomId?: string;
   sessionTitle?: string;
+  status?: "SCHEDULED" | "LIVE" | "ENDED";
 };
 
 export async function ensureMockContext({
@@ -22,6 +23,7 @@ export async function ensureMockContext({
   propertyLocation = "Istanbul, Turkey",
   roomId,
   sessionTitle,
+  status = "LIVE",
 }: EnsureContextInput) {
   const agent = await prisma.agent.upsert({
     where: { id: agentId },
@@ -58,6 +60,7 @@ export async function ensureMockContext({
         update: {
           agentId: agent.id,
           propertyId: property.id,
+          status,
           title: sessionTitle ?? property.title,
         },
         create: {
@@ -65,7 +68,7 @@ export async function ensureMockContext({
           agentId: agent.id,
           propertyId: property.id,
           title: sessionTitle ?? property.title,
-          status: "LIVE",
+          status,
         },
       })
     : null;

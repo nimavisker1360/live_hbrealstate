@@ -3,11 +3,11 @@ import {
   CalendarClock,
   Eye,
   MessageCircle,
-  Plus,
   UsersRound,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { CreateLiveSessionButton } from "@/components/live/CreateLiveSessionButton";
 import { Card } from "@/components/ui/Card";
+import { properties as mockProperties } from "@/data/mock";
 import { cn } from "@/lib/utils";
 
 const overviewCards = [
@@ -205,15 +205,19 @@ export default function AgentDashboardPage() {
               follow-ups from one mock-data workspace.
             </p>
           </div>
-          <Button className="w-full sm:w-auto" href="/live">
-            <Plus aria-hidden className="size-4" />
-            Create New Live
-          </Button>
         </div>
+
+        <CreateLiveSessionButton
+          properties={mockProperties.map((property) => ({
+            id: property.id,
+            location: property.location,
+            title: property.title,
+          }))}
+        />
 
         <section
           aria-label="Overview"
-          className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+          className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
         >
           {overviewCards.map((card) => {
             const Icon = card.icon;

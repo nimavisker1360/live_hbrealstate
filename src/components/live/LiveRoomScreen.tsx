@@ -1,5 +1,6 @@
 "use client";
 
+import Hls from "hls.js";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,12 +13,14 @@ import {
   Heart,
   MapPin,
   MessageCircle,
+  Radio,
   Send,
   Share2,
   ShieldCheck,
   Sparkles,
   User,
   Users,
+  WifiOff,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -89,6 +92,15 @@ type AuthMeResponse = {
 };
 
 type LiveViewer = ClientAuthSession | SyncedLiveUser;
+
+type StreamStatus = "SCHEDULED" | "LIVE" | "ENDED";
+
+type LiveStreamState = {
+  playbackId?: string | null;
+  provider?: string | null;
+  startsAt?: string | null;
+  status: StreamStatus;
+};
 
 const VISITOR_ID_KEY = "hb-live-visitor-id";
 const LIKE_COOLDOWN_MS = 2_000;
@@ -224,10 +236,12 @@ function mergeComment(
 export function LiveRoomScreen({
   databaseLiveSessionId,
   property,
+  stream,
   tour,
 }: {
   databaseLiveSessionId?: string;
   property?: Property;
+  stream?: LiveStreamState;
   tour: LiveTour;
 }) {
   const [comments, setComments] = useState<LiveComment[]>([]);
@@ -270,6 +284,8 @@ export function LiveRoomScreen({
   const [savedOfferCount, setSavedOfferCount] = useState(0);
   const lastLikeAtRef = useRef(0);
   const pendingLikeEventIdsRef = useRef(new Set<string>());
+  const streamStatus = stream?.status ?? (tour.status === "Live" ? "LIVE" : "SCHEDULED");
+  const playbackId = stream?.playbackId ?? null;
 
   const spawnHeart = useCallback(() => {
     const id = Date.now() + Math.random();
@@ -703,20 +719,21 @@ export function LiveRoomScreen({
     <div className="min-h-svh overflow-hidden bg-black text-white">
       <div className="mx-auto min-h-svh max-w-[520px] bg-black lg:max-w-none">
         <section className="relative min-h-svh lg:mx-auto lg:max-w-[520px] lg:overflow-hidden lg:border-x lg:border-white/10">
-          <Image
-            alt={tour.title}
-            className="object-cover"
-            fill
-            priority
-            sizes="(min-width: 1024px) 520px, 100vw"
-            src={tour.image}
+          <LiveVideoSurface
+            image={tour.image}
+            playbackId={playbackId}
+            startsAt={stream?.startsAt ?? null}
+            status={streamStatus}
+            title={tour.title}
           />
 
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/10 to-black/88" />
           <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/70 to-transparent" />
 
           <TopOverlay
+            hasPlaybackId={Boolean(playbackId)}
             isCheckingViewer={isCheckingViewer}
+            streamStatus={streamStatus}
             tour={tour}
             viewer={viewerUser}
             viewerCount={viewerCount}
@@ -767,13 +784,151 @@ export function LiveRoomScreen({
   );
 }
 
+function getHlsUrl(playbackId: string) {
+  return `https://stream.mux.com/${playbackId}.m3u8`;
+}
+
+function getOfflineTitle(status: StreamStatus) {
+  if (status === "ENDED") {
+    return "Live session ended";
+  }
+
+  return "Stream offline";
+}
+
+function getOfflineDetail(status: StreamStatus, startsAt?: string | null) {
+  if (status === "ENDED") {
+    return "The agent has closed this room.";
+  }
+
+  if (!startsAt) {
+    return "The agent has not started broadcasting yet.";
+  }
+
+  return `Scheduled for ${new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(startsAt))}`;
+}
+
+function LiveVideoSurface({
+  image,
+  playbackId,
+  startsAt,
+  status,
+  title,
+}: {
+  image: string;
+  playbackId?: string | null;
+  startsAt?: string | null;
+  status: StreamStatus;
+  title: string;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [playerError, setPlayerError] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const shouldPlay = status === "LIVE" && Boolean(playbackId);
+  const hlsUrl = playbackId ? getHlsUrl(playbackId) : null;
+  const showOfflineState = !shouldPlay || playerError;
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video || !hlsUrl || !shouldPlay) {
+      return;
+    }
+
+    if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = hlsUrl;
+      video.load();
+      void video.play().catch(() => undefined);
+
+      return () => {
+        video.removeAttribute("src");
+        video.load();
+      };
+    }
+
+    if (!Hls.isSupported()) {
+      const timeoutId = window.setTimeout(() => setPlayerError(true), 0);
+
+      return () => window.clearTimeout(timeoutId);
+    }
+
+    const hls = new Hls({
+      liveDurationInfinity: true,
+    });
+
+    hls.loadSource(hlsUrl);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.ERROR, (_event, data) => {
+      if (data.fatal) {
+        setPlayerError(true);
+      }
+    });
+
+    return () => {
+      hls.destroy();
+    };
+  }, [hlsUrl, shouldPlay]);
+
+  return (
+    <div className="absolute inset-0 bg-black">
+      <Image
+        alt={title}
+        className={cn(
+          "object-cover transition-opacity duration-500",
+          videoReady && !showOfflineState && "opacity-0",
+        )}
+        fill
+        priority
+        sizes="(min-width: 1024px) 520px, 100vw"
+        src={image}
+      />
+
+      {shouldPlay && !playerError ? (
+        <video
+          aria-label={title}
+          autoPlay
+          className="absolute inset-0 h-full w-full object-cover"
+          muted
+          onError={() => setPlayerError(true)}
+          onPlaying={() => setVideoReady(true)}
+          playsInline
+          ref={videoRef}
+        />
+      ) : null}
+
+      {showOfflineState ? (
+        <div className="absolute inset-0 z-10 flex items-center justify-center px-8 text-center">
+          <div className="rounded-lg border border-white/12 bg-black/46 px-5 py-4 shadow-[0_20px_70px_rgba(0,0,0,0.36)] backdrop-blur-xl">
+            <div className="mx-auto mb-3 flex size-11 items-center justify-center rounded-full border border-white/14 bg-white/10 text-[#f0cf79]">
+              <WifiOff aria-hidden className="size-5" />
+            </div>
+            <p className="text-base font-semibold text-white">
+              {getOfflineTitle(status)}
+            </p>
+            <p className="mt-1 max-w-56 text-sm leading-5 text-white/64">
+              {getOfflineDetail(status, startsAt)}
+            </p>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function TopOverlay({
+  hasPlaybackId,
   isCheckingViewer,
+  streamStatus,
   tour,
   viewer,
   viewerCount,
 }: {
+  hasPlaybackId: boolean;
   isCheckingViewer: boolean;
+  streamStatus: StreamStatus;
   tour: LiveTour;
   viewer: LiveViewer | null;
   viewerCount: number;
@@ -783,6 +938,14 @@ function TopOverlay({
     : viewer
       ? getViewerLabel(viewer)
       : "Guest viewer";
+  const isPlayableLive = streamStatus === "LIVE" && hasPlaybackId;
+  const streamLabel = isPlayableLive
+    ? "Live"
+    : streamStatus === "ENDED"
+      ? "Ended"
+      : hasPlaybackId
+        ? "Offline"
+        : "Scheduled";
 
   return (
     <div className="absolute left-0 right-0 top-0 z-20 flex items-start justify-between gap-3 px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
@@ -815,8 +978,20 @@ function TopOverlay({
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        <span className="rounded-full bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-white shadow-[0_0_24px_rgba(220,38,38,0.45)]">
-          Live
+        <span
+          className={cn(
+            "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-white shadow-[0_0_24px_rgba(0,0,0,0.35)]",
+            isPlayableLive
+              ? "bg-red-600 shadow-[0_0_24px_rgba(220,38,38,0.45)]"
+              : "bg-black/58 backdrop-blur-md",
+          )}
+        >
+          {isPlayableLive ? (
+            <span className="size-1.5 rounded-full bg-white" />
+          ) : (
+            <Radio aria-hidden className="size-3.5 text-[#d6b15f]" />
+          )}
+          {streamLabel}
         </span>
         <span className="flex items-center gap-1 rounded-full bg-black/45 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
           <Users aria-hidden className="size-3.5 text-[#d6b15f]" />

@@ -1,0 +1,60 @@
+Mux live stream creation failed. Error [MuxApiError]: Mux request failed with status 400.
+    at createMuxLiveStream (src\lib\mux.ts:77:11)
+    at async POST (src\app\api\live-sessions\route.ts:113:27)
+  75 |
+  76 |   if (!response.ok || !body.data) {
+> 77 |     throw new MuxApiError(mapMuxError(body, response.status), response.status);
+     |           ^
+  78 |   }
+  79 |
+  80 |   const playbackId = body.data.playback_ids?.find( {
+  status: 400
+}
+Mux live stream creation failed. Error [MuxApiError]: Mux request failed with status 400.
+    at createMuxLiveStream (src\lib\mux.ts:79:11)
+    at async POST (src\app\api\live-sessions\route.ts:113:27)
+  77 |
+  78 |   if (!response.ok || !body.data) {
+> 79 |     throw new MuxApiError(
+     |           ^
+  80 |       mapMuxError(body, response.status),
+  81 |       response.status,
+  82 |       body.error, {
+  details: {
+    type: 'invalid_parameters',
+    messages: [ 'Live streams are unavailable on the free plan' ]
+  },
+  status: 400
+}
+Mux live stream creation failed. Error [MuxApiError]: Live streams are unavailable on the free plan
+    at createMuxLiveStream (src\lib\mux.ts:85:11)
+    at async POST (src\app\api\live-sessions\route.ts:113:27)
+  83 |
+  84 |   if (!response.ok || !body.data) {
+> 85 |     throw new MuxApiError(
+     |           ^
+  86 |       mapMuxError(body, response.status),
+  87 |       response.status,
+  88 |       body.error, {
+  details: {
+    type: 'invalid_parameters',
+    messages: [ 'Live streams are unavailable on the free plan' ]
+  },
+  status: 400
+}
+Mux live stream creation failed. Error [MuxApiError]: Live streams are unavailable on the free plan
+    at createMuxLiveStream (src\lib\mux.ts:85:11)
+    at async POST (src\app\api\live-sessions\route.ts:113:27)
+  83 |
+  84 |   if (!response.ok || !body.data) {
+> 85 |     throw new MuxApiError(
+     |           ^
+  86 |       mapMuxError(body, response.status),
+  87 |       response.status,
+  88 |       body.error, {
+  details: {
+    type: 'invalid_parameters',
+    messages: [ 'Live streams are unavailable on the free plan' ]
+  },
+  status: 400
+}

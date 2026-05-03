@@ -19,7 +19,7 @@ export type LiveTour = {
   image: string;
   price: string;
   agent: string;
-  status: "Live" | "Starting Soon" | "Scheduled";
+  status: "Live" | "Starting Soon" | "Scheduled" | "Ended";
   viewers: number;
   startsAt: string;
   duration: string;

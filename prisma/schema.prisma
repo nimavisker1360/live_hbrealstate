@@ -98,26 +98,33 @@ model Property {
 }
 
 model LiveSession {
-  id         String            @id @default(cuid())
-  roomId     String            @unique
-  propertyId String
-  property   Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  agentId    String
-  agent      Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  title      String
-  status     LiveSessionStatus @default(SCHEDULED)
-  viewers    Int               @default(0)
-  startsAt   DateTime?
-  endedAt    DateTime?
-  leads      Lead[]
-  offers     Offer[]
-  comments   Comment[]
-  likeEvents LikeEvent[]
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
+  id             String            @id @default(cuid())
+  roomId         String            @unique
+  propertyId     String
+  property       Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  agentId        String
+  agent          Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  title          String
+  streamProvider String?           @default("mux")
+  muxLiveStreamId String?
+  streamKey      String?
+  playbackId     String?
+  rtmpUrl        String?
+  status         LiveSessionStatus @default(SCHEDULED)
+  viewers        Int               @default(0)
+  startsAt       DateTime?
+  endedAt        DateTime?
+  leads          Lead[]
+  offers         Offer[]
+  comments       Comment[]
+  likeEvents     LikeEvent[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@index([agentId])
   @@index([propertyId])
+  @@index([muxLiveStreamId])
+  @@index([playbackId])
 }
 
 model Lead {
