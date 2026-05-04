@@ -147,24 +147,20 @@ export function normalizeRole(role?: string): AuthRole {
   return "BUYER";
 }
 
-function resolveMainSiteRole(role?: string, email?: string): AuthRole {
+function resolveLiveSessionRole(email?: string): AuthRole {
   const normalizedEmail = email?.trim().toLowerCase();
+  const ownerEmails = readEmailList(process.env.HB_LIVE_OWNER_EMAILS);
+  const agentEmails = readEmailList(process.env.HB_LIVE_AGENT_EMAILS);
 
-  if (
-    normalizedEmail &&
-    readEmailList(process.env.HB_LIVE_OWNER_EMAILS).includes(normalizedEmail)
-  ) {
+  if (normalizedEmail && ownerEmails.includes(normalizedEmail)) {
     return "OWNER";
   }
 
-  if (
-    normalizedEmail &&
-    readEmailList(process.env.HB_LIVE_AGENT_EMAILS).includes(normalizedEmail)
-  ) {
+  if (normalizedEmail && agentEmails.includes(normalizedEmail)) {
     return "AGENT";
   }
 
-  return normalizeRole(role);
+  return "BUYER";
 }
 
 export async function createSessionToken(
@@ -187,7 +183,19 @@ export async function verifySessionToken(token?: string) {
     return null;
   }
 
-  return verifyJwt<AuthSession>(token, getRequiredSecret("HB_LIVE_SESSION_SECRET"));
+  const session = await verifyJwt<AuthSession>(
+    token,
+    getRequiredSecret("HB_LIVE_SESSION_SECRET"),
+  );
+
+  if (!session) {
+    return null;
+  }
+
+  return {
+    ...session,
+    role: resolveLiveSessionRole(session.email),
+  };
 }
 
 export async function getCurrentSession() {
@@ -217,7 +225,7 @@ export async function verifyMainSiteToken(token: string) {
     name: payload.name,
     email: payload.email,
     phone: payload.phone,
-    role: resolveMainSiteRole(payload.role, payload.email),
+    role: resolveLiveSessionRole(payload.email),
   };
 }
 
