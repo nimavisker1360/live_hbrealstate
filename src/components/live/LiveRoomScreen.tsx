@@ -102,6 +102,14 @@ type LiveStreamState = {
   status: StreamStatus;
 };
 
+type StreamStatusResponse = {
+  id: string;
+  playbackId: string | null;
+  roomId: string;
+  startsAt: string | null;
+  status: StreamStatus;
+};
+
 const VISITOR_ID_KEY = "hb-live-visitor-id";
 const LIKE_COOLDOWN_MS = 2_000;
 
@@ -284,8 +292,14 @@ export function LiveRoomScreen({
   const [savedOfferCount, setSavedOfferCount] = useState(0);
   const lastLikeAtRef = useRef(0);
   const pendingLikeEventIdsRef = useRef(new Set<string>());
-  const streamStatus = stream?.status ?? (tour.status === "Live" ? "LIVE" : "SCHEDULED");
-  const playbackId = stream?.playbackId ?? null;
+  const [streamState, setStreamState] = useState<LiveStreamState>(() => ({
+    playbackId: stream?.playbackId ?? null,
+    provider: stream?.provider ?? null,
+    startsAt: stream?.startsAt ?? null,
+    status: stream?.status ?? (tour.status === "Live" ? "LIVE" : "SCHEDULED"),
+  }));
+  const streamStatus = streamState.status;
+  const playbackId = streamState.playbackId ?? null;
 
   const spawnHeart = useCallback(() => {
     const id = Date.now() + Math.random();
@@ -295,6 +309,45 @@ export function LiveRoomScreen({
       setHearts((current) => current.filter((heart) => heart.id !== id));
     }, 950);
   }, []);
+
+  useEffect(() => {
+    const liveSessionId = databaseLiveSessionId ?? "";
+
+    if (!liveSessionId) {
+      return;
+    }
+
+    let ignore = false;
+
+    async function syncStreamStatus() {
+      try {
+        const data = await getJson<StreamStatusResponse>(
+          `/api/live-sessions/status?liveSessionId=${encodeURIComponent(
+            liveSessionId,
+          )}`,
+        );
+
+        if (!ignore && data) {
+          setStreamState((current) => ({
+            ...current,
+            playbackId: data.playbackId,
+            startsAt: data.startsAt,
+            status: data.status,
+          }));
+        }
+      } catch {
+        // Keep the current page state if Mux status sync is temporarily unavailable.
+      }
+    }
+
+    void syncStreamStatus();
+    const intervalId = window.setInterval(syncStreamStatus, 5_000);
+
+    return () => {
+      ignore = true;
+      window.clearInterval(intervalId);
+    };
+  }, [databaseLiveSessionId]);
 
   useEffect(() => {
     function updateSyncedUser(event: Event) {
@@ -722,7 +775,7 @@ export function LiveRoomScreen({
           <LiveVideoSurface
             image={tour.image}
             playbackId={playbackId}
-            startsAt={stream?.startsAt ?? null}
+            startsAt={streamState.startsAt ?? null}
             status={streamStatus}
             title={tour.title}
           />
@@ -825,10 +878,11 @@ function LiveVideoSurface({
   title: string;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [playerError, setPlayerError] = useState(false);
+  const [failedHlsUrl, setFailedHlsUrl] = useState<string | null>(null);
   const [videoReady, setVideoReady] = useState(false);
   const shouldPlay = status === "LIVE" && Boolean(playbackId);
   const hlsUrl = playbackId ? getHlsUrl(playbackId) : null;
+  const playerError = Boolean(hlsUrl && failedHlsUrl === hlsUrl);
   const showOfflineState = !shouldPlay || playerError;
 
   useEffect(() => {
@@ -850,7 +904,7 @@ function LiveVideoSurface({
     }
 
     if (!Hls.isSupported()) {
-      const timeoutId = window.setTimeout(() => setPlayerError(true), 0);
+      const timeoutId = window.setTimeout(() => setFailedHlsUrl(hlsUrl), 0);
 
       return () => window.clearTimeout(timeoutId);
     }
@@ -863,7 +917,7 @@ function LiveVideoSurface({
     hls.attachMedia(video);
     hls.on(Hls.Events.ERROR, (_event, data) => {
       if (data.fatal) {
-        setPlayerError(true);
+        setFailedHlsUrl(hlsUrl);
       }
     });
 
@@ -891,8 +945,9 @@ function LiveVideoSurface({
           aria-label={title}
           autoPlay
           className="absolute inset-0 h-full w-full object-cover"
+          key={hlsUrl}
           muted
-          onError={() => setPlayerError(true)}
+          onError={() => setFailedHlsUrl(hlsUrl)}
           onPlaying={() => setVideoReady(true)}
           playsInline
           ref={videoRef}

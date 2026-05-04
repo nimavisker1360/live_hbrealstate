@@ -53,6 +53,13 @@ function getMuxCredentials() {
   return { tokenId, tokenSecret };
 }
 
+function getMuxAuthHeader() {
+  const { tokenId, tokenSecret } = getMuxCredentials();
+  const authToken = Buffer.from(`${tokenId}:${tokenSecret}`).toString("base64");
+
+  return `Basic ${authToken}`;
+}
+
 function mapMuxError(body: MuxApiResponse<unknown>, status: number) {
   return (
     body.error?.message ??
@@ -62,12 +69,10 @@ function mapMuxError(body: MuxApiResponse<unknown>, status: number) {
 }
 
 export async function createMuxLiveStream() {
-  const { tokenId, tokenSecret } = getMuxCredentials();
-  const authToken = Buffer.from(`${tokenId}:${tokenSecret}`).toString("base64");
   const response = await fetch("https://api.mux.com/video/v1/live-streams", {
     method: "POST",
     headers: {
-      Authorization: `Basic ${authToken}`,
+      Authorization: getMuxAuthHeader(),
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -103,5 +108,40 @@ export async function createMuxLiveStream() {
     rtmpUrl: MUX_RTMP_URL,
     status: body.data.status,
     streamKey: body.data.stream_key,
+  };
+}
+
+export async function getMuxLiveStream(muxLiveStreamId: string) {
+  const response = await fetch(
+    `https://api.mux.com/video/v1/live-streams/${encodeURIComponent(
+      muxLiveStreamId,
+    )}`,
+    {
+      headers: {
+        Authorization: getMuxAuthHeader(),
+      },
+    },
+  );
+  const body = (await response.json().catch(() => ({}))) as MuxApiResponse<
+    MuxLiveStreamData
+  >;
+
+  if (!response.ok || !body.data) {
+    throw new MuxApiError(
+      mapMuxError(body, response.status),
+      response.status,
+      body.error,
+    );
+  }
+
+  const playbackId =
+    body.data.playback_ids?.find((item) => item.policy === "public")?.id ??
+    body.data.playback_ids?.[0]?.id ??
+    null;
+
+  return {
+    muxLiveStreamId: body.data.id,
+    playbackId,
+    status: body.data.status ?? null,
   };
 }
