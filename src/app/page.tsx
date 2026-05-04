@@ -63,7 +63,7 @@ export default async function Home() {
               new Date(liveSessions[0].startsAt),
             )
           : "Scheduled",
-        status: (liveSessions[0].status === "LIVE" ? "Live" : "Scheduled") as const,
+        status: liveSessions[0].status === "LIVE" ? ("Live" as const) : ("Scheduled" as const),
         title: liveSessions[0].property.title,
         viewers: liveSessions[0].viewers,
       } satisfies LiveTour)
