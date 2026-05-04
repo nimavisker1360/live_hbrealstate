@@ -8,6 +8,7 @@ import {
 import Link from "next/link";
 import { CreateLiveSessionButton } from "@/components/live/CreateLiveSessionButton";
 import { RecordingActions } from "@/components/live/RecordingActions";
+import { SessionDeleteButton } from "@/components/live/SessionDeleteButton";
 import { Card } from "@/components/ui/Card";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
@@ -288,7 +289,8 @@ export default async function AgentDashboardPage() {
                       Leads
                     </th>
                     <th className="pb-3 pr-4 font-semibold">Date</th>
-                    <th className="pb-3 font-semibold">Recording</th>
+                    <th className="pb-3 pr-4 font-semibold">Recording</th>
+                    <th className="pb-3 font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -319,7 +321,7 @@ export default async function AgentDashboardPage() {
                       <td className="py-4 pr-4 text-white/62">
                         {formatDate(session.startsAt ?? session.createdAt)}
                       </td>
-                      <td className="py-4">
+                      <td className="py-4 pr-4">
                         <RecordingActions
                           canDelete={canDeleteRecording(session)}
                           canWatch={isRecordingVisible(session)}
@@ -327,11 +329,14 @@ export default async function AgentDashboardPage() {
                           roomId={session.roomId}
                         />
                       </td>
+                      <td className="py-4">
+                        <SessionDeleteButton liveSessionId={session.id} />
+                      </td>
                     </tr>
                   ))}
                   {databaseLiveSessions.length === 0 ? (
                     <tr>
-                      <td className="py-6 text-sm text-white/52" colSpan={6}>
+                      <td className="py-6 text-sm text-white/52" colSpan={7}>
                         No live sessions yet.
                       </td>
                     </tr>
