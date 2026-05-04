@@ -86,6 +86,7 @@ export async function createMuxLiveStream() {
     },
     body: JSON.stringify({
       playback_policies: ["public"],
+      latency_mode: "low",
       new_asset_settings: {
         playback_policies: ["public"],
       },

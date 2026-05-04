@@ -38,6 +38,7 @@ import {
 } from "@/lib/live-auth-client";
 import { cn } from "@/lib/utils";
 import type { LiveTour, Property } from "@/types/platform";
+import { NetworkQuality } from "@/components/live/NetworkQuality";
 
 type LiveComment = {
   id: string;
@@ -840,6 +841,7 @@ export function LiveRoomScreen({
         </section>
       </div>
     </div>
+    </>
   );
 }
 
@@ -918,6 +920,19 @@ function LiveVideoSurface({
 
     const hls = new Hls({
       liveDurationInfinity: true,
+      lowLatencyMode: true,
+      fragLoadingTimeOut: 20000,
+      fragLoadingMaxRetry: 2,
+      levelLoadingTimeOut: 20000,
+      levelLoadingMaxRetry: 2,
+      manifestLoadingTimeOut: 10000,
+      manifestLoadingMaxRetry: 2,
+      maxMaxBufferLength: 30,
+      maxBufferLength: 5,
+      maxBufferSize: 60 * 1000 * 1000,
+      backBufferLength: 30,
+      startLevel: 2,
+      testBandwidth: true,
     });
 
     hls.loadSource(hlsUrl);
@@ -934,18 +949,20 @@ function LiveVideoSurface({
   }, [hlsUrl, shouldPlay]);
 
   return (
-    <div className="absolute inset-0 bg-black">
-      <Image
-        alt={title}
-        className={cn(
-          "object-cover transition-opacity duration-500",
-          videoReady && !showOfflineState && "opacity-0",
-        )}
-        fill
-        priority
-        sizes="(min-width: 1024px) 520px, 100vw"
-        src={image}
-      />
+    <>
+      <NetworkQuality />
+      <div className="absolute inset-0 bg-black">
+        <Image
+          alt={title}
+          className={cn(
+            "object-cover transition-opacity duration-500",
+            videoReady && !showOfflineState && "opacity-0",
+          )}
+          fill
+          priority
+          sizes="(min-width: 1024px) 520px, 100vw"
+          src={image}
+        />
 
       {shouldPlay && !playerError ? (
         <video
