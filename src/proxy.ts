@@ -57,7 +57,16 @@ function unauthorizedResponse(request: NextRequest) {
     );
   }
 
-  return NextResponse.redirect(new URL("/live", request.url));
+  const forceLoginUrl = new URL("/api/auth/start", request.url);
+  const nextPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+
+  forceLoginUrl.searchParams.set("next", nextPath);
+  forceLoginUrl.searchParams.set("force", "true");
+
+  const response = NextResponse.redirect(forceLoginUrl);
+  response.cookies.delete(AUTH_COOKIE_NAME);
+
+  return response;
 }
 
 function unauthenticatedResponse(request: NextRequest) {
