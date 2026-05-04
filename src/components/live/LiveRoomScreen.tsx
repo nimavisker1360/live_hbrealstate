@@ -38,7 +38,6 @@ import {
 } from "@/lib/live-auth-client";
 import { cn } from "@/lib/utils";
 import type { LiveTour, Property } from "@/types/platform";
-import { NetworkQuality } from "@/components/live/NetworkQuality";
 
 type LiveComment = {
   id: string;
@@ -841,7 +840,6 @@ export function LiveRoomScreen({
         </section>
       </div>
     </div>
-    </>
   );
 }
 
@@ -949,9 +947,7 @@ function LiveVideoSurface({
   }, [hlsUrl, shouldPlay]);
 
   return (
-    <>
-      <NetworkQuality />
-      <div className="absolute inset-0 bg-black">
+    <div className="absolute inset-0 bg-black">
         <Image
           alt={title}
           className={cn(
