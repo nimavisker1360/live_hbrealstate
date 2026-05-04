@@ -1,7 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import { Clock, Eye, MapPin, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { isInlineImageSrc } from "@/lib/live-media";
 import type { LiveTour } from "@/types/platform";
 
 export function LiveCard({ tour }: { tour: LiveTour }) {
@@ -12,13 +14,21 @@ export function LiveCard({ tour }: { tour: LiveTour }) {
   return (
     <Card className="overflow-hidden">
       <div className="relative aspect-[4/3] min-h-64">
-        <Image
-          alt={tour.title}
-          className="object-cover"
-          fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          src={tour.image}
-        />
+        {isInlineImageSrc(tour.image) ? (
+          <img
+            alt={tour.title}
+            className="absolute inset-0 h-full w-full object-cover"
+            src={tour.image}
+          />
+        ) : (
+          <Image
+            alt={tour.title}
+            className="object-cover"
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            src={tour.image}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
         <div className="absolute left-4 top-4 flex items-center gap-2">
           <span className="rounded-full bg-black/75 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white backdrop-blur">

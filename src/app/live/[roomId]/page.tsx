@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { LiveRoomScreen } from "@/components/live/LiveRoomScreen";
+import { getLiveSessionPreviewImage } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
 import type { LiveTour, Property } from "@/types/platform";
 
@@ -8,9 +9,6 @@ type RoomPageProps = {
     roomId: string;
   }>;
 };
-
-const FALLBACK_PROPERTY_IMAGE =
-  "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=80";
 
 function getTourStatus(
   status: "SCHEDULED" | "LIVE" | "ENDED",
@@ -78,11 +76,18 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
     notFound();
   }
 
+  const previewImage = getLiveSessionPreviewImage({
+    propertyImage: liveSession.property.image,
+    recordingPlaybackId: liveSession.recordingPlaybackId,
+    recordingStatus: liveSession.recordingStatus,
+    status: liveSession.status,
+  });
+
   const property = {
     baths: 0,
     beds: 0,
     id: liveSession.property.id,
-    image: liveSession.property.image ?? FALLBACK_PROPERTY_IMAGE,
+    image: previewImage,
     location: liveSession.property.location,
     price: formatPrice(liveSession.property.price, liveSession.property.currency),
     sqft: "",

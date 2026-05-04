@@ -72,7 +72,6 @@ function getSessionStatus(eventType?: string, muxStatus?: string) {
   if (
     eventType === "video.live_stream.disabled" ||
     eventType === "video.live_stream.deleted" ||
-    eventType === "video.live_stream.disconnected" ||
     eventType === "video.live_stream.idle" ||
     muxStatus === "disabled"
   ) {

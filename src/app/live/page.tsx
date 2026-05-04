@@ -1,13 +1,11 @@
 import { Radio, SlidersHorizontal } from "lucide-react";
 import { LiveCard } from "@/components/live/LiveCard";
 import { Button } from "@/components/ui/Button";
+import { getLiveSessionPreviewImage } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
 import type { LiveTour } from "@/types/platform";
 
 export const dynamic = "force-dynamic";
-
-const FALLBACK_PROPERTY_IMAGE =
-  "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=80";
 
 function formatPrice(
   price: { toString(): string } | null | undefined,
@@ -86,7 +84,12 @@ export default async function LiveToursPage() {
       agent: session.agent.name,
       duration: status === "Recorded" ? "Replay" : "Live session",
       id: session.id,
-      image: session.property.image ?? FALLBACK_PROPERTY_IMAGE,
+      image: getLiveSessionPreviewImage({
+        propertyImage: session.property.image,
+        recordingPlaybackId: session.recordingPlaybackId,
+        recordingStatus: session.recordingStatus,
+        status: session.status,
+      }),
       location: session.property.location,
       price: formatPrice(session.property.price, session.property.currency),
       propertyId: session.propertyId,

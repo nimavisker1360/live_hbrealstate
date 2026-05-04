@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Hls from "hls.js";
@@ -36,6 +37,7 @@ import {
   readStoredLiveUser,
   type SyncedLiveUser,
 } from "@/lib/live-auth-client";
+import { isInlineImageSrc } from "@/lib/live-media";
 import { cn } from "@/lib/utils";
 import type { LiveTour, Property } from "@/types/platform";
 import { LiveActivityFeed } from "./LiveActivityFeed";
@@ -126,6 +128,7 @@ type StreamStatusResponse = {
 
 const VISITOR_ID_KEY = "hb-live-visitor-id";
 const LIKE_COOLDOWN_MS = 2_000;
+const MAX_HLS_RECOVERY_ATTEMPTS = 8;
 
 class ApiRequestError<T = unknown> extends Error {
   data?: T;
@@ -954,13 +957,19 @@ function LiveVideoSurface({
   title: string;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const recoveryAttemptsRef = useRef(0);
   const [failedHlsUrl, setFailedHlsUrl] = useState<string | null>(null);
-  const [videoReady, setVideoReady] = useState(false);
+  const [readyHlsUrl, setReadyHlsUrl] = useState<string | null>(null);
   const shouldPlay =
     (status === "LIVE" || status === "ENDED") && Boolean(playbackId);
   const hlsUrl = playbackId ? getHlsUrl(playbackId) : null;
   const playerError = Boolean(hlsUrl && failedHlsUrl === hlsUrl);
+  const videoReady = Boolean(hlsUrl && readyHlsUrl === hlsUrl);
   const showOfflineState = !shouldPlay || playerError;
+
+  useEffect(() => {
+    recoveryAttemptsRef.current = 0;
+  }, [hlsUrl, status]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -989,26 +998,50 @@ function LiveVideoSurface({
     const hls = new Hls({
       liveDurationInfinity: true,
       lowLatencyMode: true,
-      fragLoadingTimeOut: 20000,
-      fragLoadingMaxRetry: 2,
-      levelLoadingTimeOut: 20000,
-      levelLoadingMaxRetry: 2,
-      manifestLoadingTimeOut: 10000,
-      manifestLoadingMaxRetry: 2,
+      fragLoadingTimeOut: 30000,
+      fragLoadingMaxRetry: 6,
+      fragLoadingRetryDelay: 1000,
+      fragLoadingMaxRetryTimeout: 12000,
+      levelLoadingTimeOut: 30000,
+      levelLoadingMaxRetry: 6,
+      levelLoadingRetryDelay: 1000,
+      levelLoadingMaxRetryTimeout: 12000,
+      manifestLoadingTimeOut: 20000,
+      manifestLoadingMaxRetry: 8,
+      manifestLoadingRetryDelay: 1000,
+      manifestLoadingMaxRetryTimeout: 15000,
       maxMaxBufferLength: 30,
-      maxBufferLength: 5,
+      maxBufferLength: 12,
       maxBufferSize: 60 * 1000 * 1000,
       backBufferLength: 30,
-      startLevel: 2,
       testBandwidth: true,
     });
 
     hls.loadSource(hlsUrl);
     hls.attachMedia(video);
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      if (data.fatal) {
-        setFailedHlsUrl(hlsUrl);
+      if (!data.fatal) {
+        return;
       }
+
+      recoveryAttemptsRef.current += 1;
+
+      if (recoveryAttemptsRef.current > MAX_HLS_RECOVERY_ATTEMPTS) {
+        setFailedHlsUrl(hlsUrl);
+        return;
+      }
+
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+        window.setTimeout(() => hls.startLoad(), recoveryAttemptsRef.current * 750);
+        return;
+      }
+
+      if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+        hls.recoverMediaError();
+        return;
+      }
+
+      setFailedHlsUrl(hlsUrl);
     });
 
     return () => {
@@ -1018,27 +1051,41 @@ function LiveVideoSurface({
 
   return (
     <div className="absolute inset-0 bg-black">
-        <Image
-          alt={title}
-          className={cn(
-            "object-cover transition-opacity duration-500",
-            videoReady && !showOfflineState && "opacity-0",
-          )}
-          fill
-          priority
-          sizes="(min-width: 1024px) 520px, 100vw"
-          src={image}
-        />
+        {isInlineImageSrc(image) ? (
+          <img
+            alt={title}
+            className={cn(
+              "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",
+              videoReady && !showOfflineState && "opacity-0",
+            )}
+            src={image}
+          />
+        ) : (
+          <Image
+            alt={title}
+            className={cn(
+              "object-cover transition-opacity duration-500",
+              videoReady && !showOfflineState && "opacity-0",
+            )}
+            fill
+            priority
+            sizes="(min-width: 1024px) 520px, 100vw"
+            src={image}
+          />
+        )}
 
       {shouldPlay && !playerError ? (
         <video
           aria-label={title}
           autoPlay
           className="absolute inset-0 h-full w-full object-cover"
+          controls
           key={hlsUrl}
           onError={() => setFailedHlsUrl(hlsUrl)}
-          onPlaying={() => setVideoReady(true)}
+          onPlaying={() => setReadyHlsUrl(hlsUrl)}
+          poster={image}
           playsInline
+          preload="auto"
           ref={videoRef}
         />
       ) : null}

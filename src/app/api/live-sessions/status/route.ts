@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 export const runtime = "nodejs";
 
 type DatabaseStreamStatus = "SCHEDULED" | "LIVE" | "ENDED";
+const STREAM_IDLE_GRACE_MS = 45_000;
 
 function mapMuxStatus(status?: string | null): DatabaseStreamStatus | null {
   if (status === "active") {
@@ -37,6 +38,7 @@ export async function GET(request: Request) {
         recordingPlaybackId: true,
         recordingStatus: true,
         roomId: true,
+        endedAt: true,
         startsAt: true,
         status: true,
       },
@@ -51,21 +53,38 @@ export async function GET(request: Request) {
     let recordingStatus = liveSession.recordingStatus;
     let status = liveSession.status;
     let muxAssetId = liveSession.muxAssetId;
+    let endedAt = liveSession.endedAt;
     const recordingDeleted = liveSession.recordingStatus === "deleted";
 
     if (liveSession.muxLiveStreamId) {
       const muxLiveStream = await getMuxLiveStream(liveSession.muxLiveStreamId);
       const latestAssetId =
         muxLiveStream.recentAssetIds.at(-1) ?? muxLiveStream.activeAssetId;
-      const muxStatus =
-        muxLiveStream.status === "idle"
-          ? liveSession.status === "LIVE" || latestAssetId
-            ? "ENDED"
-            : "SCHEDULED"
-          : mapMuxStatus(muxLiveStream.status);
+      const muxStatus = mapMuxStatus(muxLiveStream.status);
 
       playbackId = muxLiveStream.playbackId ?? playbackId;
       status = muxStatus ?? status;
+
+      if (muxLiveStream.status === "active") {
+        endedAt = null;
+      }
+
+      if (status === "ENDED" && !endedAt) {
+        endedAt = new Date();
+      }
+
+      if (muxLiveStream.status === "idle") {
+        if (liveSession.status === "LIVE") {
+          const idleDetectedAt = endedAt ?? new Date();
+          const idleMs = Date.now() - idleDetectedAt.getTime();
+
+          endedAt = idleDetectedAt;
+          status = idleMs >= STREAM_IDLE_GRACE_MS ? "ENDED" : "LIVE";
+        } else {
+          status = latestAssetId ? "ENDED" : "SCHEDULED";
+          endedAt = status === "ENDED" ? (endedAt ?? new Date()) : null;
+        }
+      }
 
       if (latestAssetId && !recordingDeleted) {
         const muxAsset = await getMuxAsset(latestAssetId).catch(() => null);
@@ -83,13 +102,14 @@ export async function GET(request: Request) {
         muxAssetId !== liveSession.muxAssetId ||
         recordingPlaybackId !== liveSession.recordingPlaybackId ||
         recordingStatus !== liveSession.recordingStatus ||
+        endedAt?.getTime() !== liveSession.endedAt?.getTime() ||
         status !== liveSession.status ||
         playbackId !== liveSession.playbackId
       ) {
         await prisma.liveSession.update({
           where: { id: liveSession.id },
           data: {
-            endedAt: status === "ENDED" ? new Date() : null,
+            endedAt,
             muxAssetId,
             playbackId,
             recordingPlaybackId,
