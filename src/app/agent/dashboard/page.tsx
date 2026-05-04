@@ -283,7 +283,7 @@ export default async function AgentDashboardPage() {
               const latestSession = property.liveSessions[0];
               const fallbackImage = "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=80";
               const imageUrl = property.image || fallbackImage;
-              const description = (property as any).description || "";
+              const description = property.description || "";
               const descriptionPreview = description
                 ? description.substring(0, 100) + (description.length > 100 ? "..." : "")
                 : "No description added yet";

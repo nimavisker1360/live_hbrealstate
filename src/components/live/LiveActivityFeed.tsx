@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, X } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ActivityType = "like" | "comment";
@@ -16,21 +16,17 @@ type Activity = {
 };
 
 export function LiveActivityFeed({ activities }: { activities: Activity[] }) {
-  const [visibleActivities, setVisibleActivities] = useState<Activity[]>([]);
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const now = Date.now();
-    setVisibleActivities(activities.filter((a) => a.expiresAt > now));
-
     const timer = setInterval(() => {
-      const now = Date.now();
-      setVisibleActivities((current) =>
-        current.filter((a) => a.expiresAt > now)
-      );
+      setNow(Date.now());
     }, 300);
 
     return () => clearInterval(timer);
-  }, [activities]);
+  }, []);
+
+  const visibleActivities = activities.filter((activity) => activity.expiresAt > now);
 
   if (visibleActivities.length === 0) {
     return null;
@@ -47,7 +43,6 @@ export function LiveActivityFeed({ activities }: { activities: Activity[] }) {
 
 function ActivityItem({ activity }: { activity: Activity }) {
   const isLike = activity.type === "like";
-  const isComment = activity.type === "comment";
 
   return (
     <div
@@ -73,7 +68,9 @@ function ActivityItem({ activity }: { activity: Activity }) {
           ) : (
             <>
               <span className="font-semibold text-[#f0cf79]">{activity.author}</span>{" "}
-              <span className="text-white/70 line-clamp-1">"{activity.message}"</span>
+              <span className="text-white/70 line-clamp-1">
+                &ldquo;{activity.message}&rdquo;
+              </span>
             </>
           )}
         </span>

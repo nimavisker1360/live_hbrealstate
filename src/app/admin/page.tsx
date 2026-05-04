@@ -1,12 +1,9 @@
 import {
-  Activity,
   BadgeDollarSign,
   BarChart3,
   Building2,
-  Crown,
   Radio,
   ShieldCheck,
-  Sparkles,
   UsersRound,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";

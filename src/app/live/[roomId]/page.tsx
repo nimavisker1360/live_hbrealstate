@@ -12,18 +12,6 @@ type RoomPageProps = {
 const FALLBACK_PROPERTY_IMAGE =
   "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=80";
 
-function getDatabaseStatus(status: LiveTour["status"]) {
-  if (status === "Live") {
-    return "LIVE" as const;
-  }
-
-  if (status === "Ended") {
-    return "ENDED" as const;
-  }
-
-  return "SCHEDULED" as const;
-}
-
 function getTourStatus(
   status: "SCHEDULED" | "LIVE" | "ENDED",
   hasRecording = false,

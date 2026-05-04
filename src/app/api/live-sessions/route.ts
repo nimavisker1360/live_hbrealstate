@@ -141,7 +141,7 @@ export async function POST(request: Request) {
       },
       include: {
         agent: { select: { id: true, name: true, company: true } },
-        property: { select: { id: true, title: true, location: true, image: true } as any },
+        property: { select: { id: true, title: true, location: true, image: true } },
       },
     });
 

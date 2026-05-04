@@ -5,40 +5,71 @@ import { Wifi, WifiOff, Zap } from "lucide-react";
 
 type NetworkQuality = "excellent" | "good" | "fair" | "poor" | "offline";
 
+type BrowserNetworkConnection = EventTarget & {
+  downlink?: number;
+  effectiveType?: string;
+};
+
+type NavigatorWithConnection = Navigator & {
+  connection?: BrowserNetworkConnection;
+  mozConnection?: BrowserNetworkConnection;
+  webkitConnection?: BrowserNetworkConnection;
+};
+
+function getConnection() {
+  if (typeof navigator === "undefined") {
+    return null;
+  }
+
+  const navigatorWithConnection = navigator as NavigatorWithConnection;
+
+  return (
+    navigatorWithConnection.connection ??
+    navigatorWithConnection.mozConnection ??
+    navigatorWithConnection.webkitConnection ??
+    null
+  );
+}
+
+function getNetworkQuality(connection: BrowserNetworkConnection): NetworkQuality {
+  const effectiveType = connection.effectiveType;
+  const downlink = connection.downlink || 0;
+
+  if (!navigator.onLine) {
+    return "offline";
+  }
+
+  if (effectiveType === "4g" || downlink >= 5) {
+    return "excellent";
+  }
+
+  if (effectiveType === "3g" || downlink >= 2) {
+    return "good";
+  }
+
+  if (effectiveType === "2g" || downlink >= 1) {
+    return "fair";
+  }
+
+  return "poor";
+}
+
 export function NetworkQuality() {
-  const [quality, setQuality] = useState<NetworkQuality>("good");
-  const [isVisible, setIsVisible] = useState(true);
+  const [connection] = useState(() => getConnection());
+  const [quality, setQuality] = useState<NetworkQuality>(() =>
+    connection ? getNetworkQuality(connection) : "good",
+  );
+  const isVisible = Boolean(connection);
 
   useEffect(() => {
-    // Check connection using Navigation API
-    const connection =
-      (navigator as any).connection ||
-      (navigator as any).mozConnection ||
-      (navigator as any).webkitConnection;
-
     if (!connection) {
-      setIsVisible(false);
       return;
     }
 
     function updateQuality() {
-      const effectiveType = connection.effectiveType;
-      const downlink = connection.downlink || 0;
-
-      if (!navigator.onLine) {
-        setQuality("offline");
-      } else if (effectiveType === "4g" || downlink >= 5) {
-        setQuality("excellent");
-      } else if (effectiveType === "3g" || downlink >= 2) {
-        setQuality("good");
-      } else if (effectiveType === "2g" || downlink >= 1) {
-        setQuality("fair");
-      } else {
-        setQuality("poor");
-      }
+      setQuality(getNetworkQuality(connection!));
     }
 
-    updateQuality();
     connection.addEventListener("change", updateQuality);
     window.addEventListener("online", updateQuality);
     window.addEventListener("offline", updateQuality);
@@ -48,7 +79,7 @@ export function NetworkQuality() {
       window.removeEventListener("online", updateQuality);
       window.removeEventListener("offline", updateQuality);
     };
-  }, []);
+  }, [connection]);
 
   if (!isVisible) {
     return null;
