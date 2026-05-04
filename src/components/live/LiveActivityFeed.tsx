@@ -37,7 +37,7 @@ export function LiveActivityFeed({ activities }: { activities: Activity[] }) {
   }
 
   return (
-    <div className="absolute left-4 top-48 z-25 max-w-xs space-y-2">
+    <div className="absolute left-4 top-48 z-20 max-w-xs space-y-2">
       {visibleActivities.map((activity) => (
         <ActivityItem key={activity.id} activity={activity} />
       ))}
