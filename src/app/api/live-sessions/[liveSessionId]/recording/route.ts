@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -46,6 +47,7 @@ export async function DELETE(
       },
     });
 
+    revalidatePath("/agent/dashboard");
     return Response.json({ data: liveSession });
   } catch (error) {
     return handleApiError(error);
