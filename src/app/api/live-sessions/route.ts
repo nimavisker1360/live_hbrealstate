@@ -23,6 +23,81 @@ function slugifyRoomPart(value: string) {
   );
 }
 
+function normalizePropertyIdentity(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+function getEditDistance(left: string, right: string) {
+  const previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    const current = [leftIndex];
+
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const substitutionCost =
+        left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1;
+
+      current[rightIndex] = Math.min(
+        current[rightIndex - 1] + 1,
+        previous[rightIndex] + 1,
+        previous[rightIndex - 1] + substitutionCost,
+      );
+    }
+
+    previous.splice(0, previous.length, ...current);
+  }
+
+  return previous[right.length];
+}
+
+function isReusablePropertyMatch(
+  property: { location: string; title: string },
+  input: { location: string; title: string },
+) {
+  const propertyLocation = normalizePropertyIdentity(property.location);
+  const inputLocation = normalizePropertyIdentity(input.location);
+
+  if (propertyLocation !== inputLocation) {
+    return false;
+  }
+
+  const propertyTitle = normalizePropertyIdentity(property.title);
+  const inputTitle = normalizePropertyIdentity(input.title);
+
+  if (propertyTitle === inputTitle) {
+    return true;
+  }
+
+  const longestTitleLength = Math.max(propertyTitle.length, inputTitle.length);
+
+  return longestTitleLength >= 7 && getEditDistance(propertyTitle, inputTitle) <= 2;
+}
+
+async function findReusablePropertyId({
+  agentId,
+  location,
+  title,
+}: {
+  agentId?: string;
+  location: string;
+  title: string;
+}) {
+  const properties = await prisma.property.findMany({
+    where: agentId ? { agentId } : undefined,
+    select: {
+      id: true,
+      location: true,
+      title: true,
+    },
+    take: 100,
+  });
+  const match = properties.find(
+    (property) => isReusablePropertyMatch(property, { location, title }),
+  );
+
+  return match?.id ?? null;
+}
+
 function serializeLiveSession<
   T extends {
     createdAt: Date;
@@ -104,8 +179,17 @@ export async function POST(request: Request) {
 
     const payload = liveSessionPayloadSchema.parse(await request.json());
     const title = payload.title ?? payload.propertyTitle;
+    const agentId = payload.agentId ?? writable.session?.sub;
+    const reusablePropertyId = payload.propertyId
+      ? null
+      : await findReusablePropertyId({
+          agentId,
+          location: payload.propertyLocation,
+          title: payload.propertyTitle,
+        });
     const propertyId =
       payload.propertyId ??
+      reusablePropertyId ??
       `property-${randomUUID().replace(/-/g, "").slice(0, 12)}`;
     const roomId =
       payload.roomId ??
@@ -113,7 +197,7 @@ export async function POST(request: Request) {
     const muxLiveStream = await createMuxLiveStream();
     const startsAt = payload.startsAt ? new Date(payload.startsAt) : null;
     const { liveSession } = await ensureMockContext({
-      agentId: payload.agentId ?? writable.session?.sub,
+      agentId,
       agentName: payload.agentName ?? writable.session?.name ?? "HB Live Agent",
       propertyId,
       propertyTitle: payload.propertyTitle,

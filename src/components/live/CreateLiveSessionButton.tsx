@@ -15,7 +15,7 @@ import {
   Radio,
 } from "lucide-react";
 import type { FormEvent, ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
@@ -145,6 +145,7 @@ export function CreateLiveSessionButton({
   const [copiedValue, setCopiedValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const isCreatingRef = useRef(false);
 
   const selectedProperty = useMemo(
     () => propertyOptions.find((property) => property.id === selectedPropertyId),
@@ -238,6 +239,12 @@ export function CreateLiveSessionButton({
 
   async function createLiveSession(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (isCreatingRef.current) {
+      return;
+    }
+
+    isCreatingRef.current = true;
     setErrorMessage("");
     setIsCreating(true);
 
@@ -301,6 +308,7 @@ export function CreateLiveSessionButton({
           : "Could not create live session.",
       );
     } finally {
+      isCreatingRef.current = false;
       setIsCreating(false);
     }
   }

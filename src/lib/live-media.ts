@@ -18,6 +18,10 @@ export function getLiveSessionPreviewImage({
   recordingStatus?: string | null;
   status: "SCHEDULED" | "LIVE" | "ENDED";
 }) {
+  if (propertyImage) {
+    return propertyImage;
+  }
+
   if (
     status !== "LIVE" &&
     recordingStatus !== "deleted" &&
