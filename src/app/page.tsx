@@ -172,7 +172,20 @@ export default async function Home() {
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {allProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard
+                key={property.id}
+                property={{
+                  id: property.id,
+                  title: property.title,
+                  location: property.location,
+                  price: formatPrice(property.price, property.currency),
+                  beds: 0,
+                  baths: 0,
+                  sqft: "",
+                  image: property.image ?? FALLBACK_PROPERTY_IMAGE,
+                  tags: [],
+                }}
+              />
             ))}
           </div>
         </div>
