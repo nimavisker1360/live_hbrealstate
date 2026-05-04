@@ -9,143 +9,11 @@ import {
   Sparkles,
   UsersRound,
 } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 
-const kpis = [
-  {
-    label: "Total agents",
-    value: "128",
-    detail: "18 active right now",
-    icon: UsersRound,
-  },
-  {
-    label: "Total live sessions",
-    value: "742",
-    detail: "36 scheduled this week",
-    icon: Radio,
-  },
-  {
-    label: "Total leads",
-    value: "9,416",
-    detail: "1,284 qualified",
-    icon: BarChart3,
-  },
-  {
-    label: "Estimated revenue",
-    value: "$186k",
-    detail: "+22% projected",
-    icon: BadgeDollarSign,
-  },
-];
-
-const agents = [
-  {
-    name: "Selin Kaya",
-    company: "HB Real Estate Dubai",
-    status: "active",
-    plan: "Elite",
-    leads: 384,
-  },
-  {
-    name: "Mert Aydin",
-    company: "Bosphorus Prime Homes",
-    status: "active",
-    plan: "Pro",
-    leads: 271,
-  },
-  {
-    name: "Nadia Hart",
-    company: "London Collector Estates",
-    status: "pending",
-    plan: "Starter",
-    leads: 94,
-  },
-  {
-    name: "Karim Mansour",
-    company: "Gulf Signature Realty",
-    status: "paused",
-    plan: "Pro",
-    leads: 156,
-  },
-] as const;
-
-const liveSessions = [
-  {
-    title: "Palm Residence Sky Villa",
-    agent: "Selin Kaya",
-    status: "live",
-    viewers: 128,
-    leads: 24,
-  },
-  {
-    title: "Bosphorus Glass House",
-    agent: "Mert Aydin",
-    status: "scheduled",
-    viewers: 42,
-    leads: 8,
-  },
-  {
-    title: "Chelsea Collector Loft",
-    agent: "Nadia Hart",
-    status: "ended",
-    viewers: 214,
-    leads: 31,
-  },
-  {
-    title: "Jumeirah Garden Estate",
-    agent: "Karim Mansour",
-    status: "scheduled",
-    viewers: 19,
-    leads: 4,
-  },
-] as const;
-
-const revenueStreams = [
-  {
-    label: "Subscription revenue",
-    value: "$92,400",
-    detail: "Monthly recurring plans from active agents",
-  },
-  {
-    label: "Lead fee revenue",
-    value: "$57,850",
-    detail: "Qualified buyer lead fees across live sessions",
-  },
-  {
-    label: "Featured listing revenue",
-    value: "$35,900",
-    detail: "Premium placements and promoted live rooms",
-  },
-];
-
-const recentActivity = [
-  {
-    title: "Selin Kaya started a live session",
-    meta: "Palm Residence Sky Villa - 128 viewers",
-    time: "2 min ago",
-  },
-  {
-    title: "New Elite subscription activated",
-    meta: "HB Real Estate Dubai upgraded annual billing",
-    time: "18 min ago",
-  },
-  {
-    title: "31 leads exported",
-    meta: "Chelsea Collector Loft follow-up list",
-    time: "44 min ago",
-  },
-  {
-    title: "Featured listing slot purchased",
-    meta: "Bosphorus Glass House promoted for 7 days",
-    time: "1 hr ago",
-  },
-  {
-    title: "Agent account pending review",
-    meta: "London Collector Estates submitted documents",
-    time: "3 hrs ago",
-  },
-];
+export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
   active: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
@@ -193,7 +61,59 @@ function SectionHeader({
   );
 }
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const [agents, liveSessions, totalLeads] = await Promise.all([
+    prisma.agent.findMany({
+      include: {
+        _count: {
+          select: { leads: true },
+        },
+      },
+      take: 20,
+    }),
+    prisma.liveSession.findMany({
+      include: {
+        agent: { select: { name: true } },
+        _count: { select: { leads: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    }),
+    prisma.lead.count(),
+  ]);
+
+  const kpis = [
+    {
+      label: "Total agents",
+      value: agents.length.toString(),
+      detail: `${agents.filter((a) => a.status === "ACTIVE").length} active`,
+      icon: UsersRound,
+    },
+    {
+      label: "Total live sessions",
+      value: liveSessions.length.toString(),
+      detail: `${liveSessions.filter((s) => s.status === "SCHEDULED").length} scheduled`,
+      icon: Radio,
+    },
+    {
+      label: "Total leads",
+      value: totalLeads.toString(),
+      detail: "From all sessions",
+      icon: BarChart3,
+    },
+    {
+      label: "Avg viewers per session",
+      value: liveSessions.length > 0
+        ? Math.round(
+            liveSessions.reduce((sum, s) => sum + s.viewers, 0) /
+              liveSessions.length,
+          ).toString()
+        : "0",
+      detail: "Across all sessions",
+      icon: BadgeDollarSign,
+    },
+  ];
+
   return (
     <div className="bg-[#050505]">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -206,8 +126,8 @@ export default function AdminPage() {
             Platform owner overview
           </h1>
           <p className="mt-4 max-w-2xl leading-7 text-white/62">
-            Monitor agents, live sessions, lead flow, and revenue performance
-            with mock operational data.
+            Monitor agents, live sessions, lead flow, and performance with
+            real-time data from your database.
           </p>
         </div>
 
@@ -245,15 +165,13 @@ export default function AdminPage() {
               title="Agent accounts"
             />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px] text-left text-sm">
+              <table className="w-full min-w-180 text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
                     <th className="pb-3 pr-4 font-semibold">Agent name</th>
                     <th className="pb-3 pr-4 font-semibold">Company</th>
                     <th className="pb-3 pr-4 font-semibold">Status</th>
-                    <th className="pb-3 pr-4 font-semibold">
-                      Subscription plan
-                    </th>
+                    <th className="pb-3 pr-4 font-semibold">Plan</th>
                     <th className="pb-3 text-right font-semibold">
                       Total leads
                     </th>
@@ -261,7 +179,7 @@ export default function AdminPage() {
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {agents.map((agent) => (
-                    <tr key={agent.name}>
+                    <tr key={agent.id}>
                       <td className="py-4 pr-4 font-medium text-white">
                         {agent.name}
                       </td>
@@ -269,57 +187,67 @@ export default function AdminPage() {
                         {agent.company}
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge status={agent.status} />
+                        <StatusBadge status={agent.status.toLowerCase()} />
                       </td>
                       <td className="py-4 pr-4 text-white/72">
-                        {agent.plan}
+                        {agent.subscriptionPlan}
                       </td>
                       <td className="py-4 text-right font-semibold text-white">
-                        {agent.leads}
+                        {agent._count.leads}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {agents.length === 0 && (
+                <div className="py-8 text-center text-sm text-white/52">
+                  No agents yet.
+                </div>
+              )}
             </div>
           </Card>
 
           <Card className="p-5">
             <SectionHeader
-              eyebrow="Revenue model"
-              icon={Crown}
-              title="Estimated revenue streams"
+              eyebrow="Sessions"
+              icon={Radio}
+              title="Top performers"
             />
             <div className="space-y-3">
-              {revenueStreams.map((stream) => (
+              {liveSessions.slice(0, 5).map((session) => (
                 <div
                   className="rounded-md border border-white/10 bg-black/20 p-4"
-                  key={stream.label}
+                  key={session.id}
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <p className="font-medium text-white">{stream.label}</p>
+                    <p className="font-medium text-white">{session.title}</p>
                     <p className="shrink-0 font-semibold text-[#d6b15f]">
-                      {stream.value}
+                      {session.viewers} viewers
                     </p>
                   </div>
-                  <p className="mt-2 text-sm leading-6 text-white/56">
-                    {stream.detail}
+                  <p className="mt-2 text-sm text-white/56">
+                    {session._count.leads} leads • {session.agent.name}
                   </p>
                 </div>
               ))}
+              {liveSessions.length === 0 && (
+                <div className="py-8 text-center text-sm text-white/52">
+                  No sessions yet.
+                </div>
+              )}
             </div>
           </Card>
         </div>
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="mt-6">
           <Card className="p-5">
             <SectionHeader
               eyebrow="Live sessions"
               icon={Radio}
-              title="Session monitoring"
+              title="All sessions"
             />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[680px] text-left text-sm">
+              <table className="w-full min-w-170 text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
                     <th className="pb-3 pr-4 font-semibold">Title</th>
@@ -333,54 +261,31 @@ export default function AdminPage() {
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {liveSessions.map((session) => (
-                    <tr key={`${session.title}-${session.agent}`}>
+                    <tr key={session.id}>
                       <td className="py-4 pr-4 font-medium text-white">
                         {session.title}
                       </td>
                       <td className="py-4 pr-4 text-white/64">
-                        {session.agent}
+                        {session.agent.name}
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge status={session.status} />
+                        <StatusBadge status={session.status.toLowerCase()} />
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
                         {session.viewers}
                       </td>
                       <td className="py-4 text-right text-white/72">
-                        {session.leads}
+                        {session._count.leads}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-          </Card>
-
-          <Card className="p-5">
-            <SectionHeader
-              eyebrow="Recent activity"
-              icon={Activity}
-              title="Platform feed"
-            />
-            <div className="space-y-4">
-              {recentActivity.map((item) => (
-                <div className="flex gap-3" key={`${item.title}-${item.time}`}>
-                  <span className="mt-1 flex size-8 shrink-0 items-center justify-center rounded-md border border-[#d6b15f]/25 bg-[#d6b15f]/10 text-[#d6b15f]">
-                    <Sparkles aria-hidden className="size-4" />
-                  </span>
-                  <div className="min-w-0 border-b border-white/10 pb-4 last:border-b-0 last:pb-0">
-                    <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                      <p className="font-medium text-white">{item.title}</p>
-                      <p className="shrink-0 text-xs text-white/42">
-                        {item.time}
-                      </p>
-                    </div>
-                    <p className="mt-1 text-sm leading-6 text-white/56">
-                      {item.meta}
-                    </p>
-                  </div>
+              {liveSessions.length === 0 && (
+                <div className="py-8 text-center text-sm text-white/52">
+                  No sessions yet.
                 </div>
-              ))}
+              )}
             </div>
           </Card>
         </div>

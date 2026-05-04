@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { LiveRoomScreen } from "@/components/live/LiveRoomScreen";
-import { liveTours, properties } from "@/data/mock";
+import { prisma } from "@/lib/prisma";
 import type { LiveTour, Property } from "@/types/platform";
 
 type RoomPageProps = {
@@ -77,115 +77,65 @@ function formatStartsAt(startsAt: Date | null) {
 
 export default async function LiveRoomPage({ params }: RoomPageProps) {
   const { roomId } = await params;
-  const mockTour = liveTours.find((item) => item.roomId === roomId);
-  let tour: LiveTour | undefined = mockTour;
-  let property = mockTour
-    ? properties.find((item) => item.id === mockTour.propertyId)
-    : undefined;
-  let databaseLiveSessionId: string | undefined;
-  let playbackId: string | null | undefined;
-  let startsAt: string | null | undefined;
-  let streamProvider: string | null | undefined;
-  let streamStatus: "SCHEDULED" | "LIVE" | "ENDED" = tour
-    ? getDatabaseStatus(tour.status)
-    : "SCHEDULED";
 
-  if (tour) {
-    try {
-      const { ensureMockContext } = await import("@/lib/db-defaults");
-      const { liveSession } = await ensureMockContext({
-        agentName: tour.agent,
-        propertyId: property?.id ?? tour.propertyId,
-        propertyTitle: property?.title ?? tour.title,
-        propertyLocation: property?.location ?? tour.location,
-        roomId: tour.roomId,
-        sessionTitle: tour.title,
-        status: getDatabaseStatus(tour.status),
-      });
+  const liveSession = await prisma.liveSession.findUnique({
+    where: { roomId },
+    include: {
+      agent: { select: { name: true } },
+      property: true,
+    },
+  });
 
-      databaseLiveSessionId = liveSession?.id;
-      playbackId =
-        liveSession &&
-        liveSession.status !== "LIVE" &&
-        liveSession.recordingStatus !== "deleted" &&
-        liveSession.recordingPlaybackId
-          ? liveSession.recordingPlaybackId
-          : liveSession?.playbackId;
-      startsAt = liveSession?.startsAt?.toISOString() ?? null;
-      streamProvider = liveSession?.streamProvider;
-      streamStatus =
-        liveSession &&
-        liveSession.status !== "LIVE" &&
-        liveSession.recordingStatus !== "deleted" &&
-        liveSession.recordingPlaybackId
-          ? "ENDED"
-          : (liveSession?.status ?? streamStatus);
-    } catch (error) {
-      console.warn("Live room is running without database context.", error);
-    }
-  } else {
-    const { prisma } = await import("@/lib/prisma");
-    const liveSession = await prisma.liveSession.findUnique({
-      where: { roomId },
-      include: {
-        agent: { select: { name: true } },
-        property: true,
-      },
-    });
-
-    if (!liveSession) {
-      notFound();
-    }
-
-    property = {
-      baths: 0,
-      beds: 0,
-      id: liveSession.property.id,
-      image: liveSession.property.image ?? FALLBACK_PROPERTY_IMAGE,
-      location: liveSession.property.location,
-      price: formatPrice(liveSession.property.price, liveSession.property.currency),
-      sqft: "",
-      tags: [],
-      title: liveSession.property.title,
-    } satisfies Property;
-    tour = {
-      agent: liveSession.agent.name,
-      duration: "Live session",
-      id: liveSession.id,
-      image: property.image,
-      location: property.location,
-      price: property.price,
-      propertyId: property.id,
-      roomId: liveSession.roomId,
-      startsAt: formatStartsAt(liveSession.startsAt),
-      status: getTourStatus(
-        liveSession.status,
-        liveSession.recordingStatus !== "deleted" &&
-          Boolean(liveSession.recordingPlaybackId),
-      ),
-      title: liveSession.title,
-      viewers: liveSession.viewers,
-    };
-    databaseLiveSessionId = liveSession.id;
-    playbackId =
-      liveSession.status !== "LIVE" &&
-      liveSession.recordingStatus !== "deleted" &&
-      liveSession.recordingPlaybackId
-        ? liveSession.recordingPlaybackId
-        : liveSession.playbackId;
-    startsAt = liveSession.startsAt?.toISOString() ?? null;
-    streamProvider = liveSession.streamProvider;
-    streamStatus =
-      liveSession.status !== "LIVE" &&
-      liveSession.recordingStatus !== "deleted" &&
-      liveSession.recordingPlaybackId
-        ? "ENDED"
-        : liveSession.status;
-  }
-
-  if (!tour) {
+  if (!liveSession) {
     notFound();
   }
+
+  const property = {
+    baths: 0,
+    beds: 0,
+    id: liveSession.property.id,
+    image: liveSession.property.image ?? FALLBACK_PROPERTY_IMAGE,
+    location: liveSession.property.location,
+    price: formatPrice(liveSession.property.price, liveSession.property.currency),
+    sqft: "",
+    tags: [],
+    title: liveSession.property.title,
+  } satisfies Property;
+
+  const tour = {
+    agent: liveSession.agent.name,
+    duration: "Live session",
+    id: liveSession.id,
+    image: property.image,
+    location: property.location,
+    price: property.price,
+    propertyId: property.id,
+    roomId: liveSession.roomId,
+    startsAt: formatStartsAt(liveSession.startsAt),
+    status: getTourStatus(
+      liveSession.status,
+      liveSession.recordingStatus !== "deleted" &&
+        Boolean(liveSession.recordingPlaybackId),
+    ),
+    title: liveSession.title,
+    viewers: liveSession.viewers,
+  } satisfies LiveTour;
+
+  const databaseLiveSessionId = liveSession.id;
+  const playbackId =
+    liveSession.status !== "LIVE" &&
+    liveSession.recordingStatus !== "deleted" &&
+    liveSession.recordingPlaybackId
+      ? liveSession.recordingPlaybackId
+      : liveSession.playbackId;
+  const startsAt = liveSession.startsAt?.toISOString() ?? null;
+  const streamProvider = liveSession.streamProvider;
+  const streamStatus =
+    liveSession.status !== "LIVE" &&
+    liveSession.recordingStatus !== "deleted" &&
+    liveSession.recordingPlaybackId
+      ? "ENDED"
+      : liveSession.status;
 
   return (
     <LiveRoomScreen

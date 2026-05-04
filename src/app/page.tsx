@@ -4,10 +4,76 @@ import { PropertyCard } from "@/components/property/PropertyCard";
 import { CTAButtons } from "@/components/sections/CTAButtons";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { liveTours, platformMetrics, properties } from "@/data/mock";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
-  const featuredTour = liveTours.find((tour) => tour.featured) ?? liveTours[0];
+export const dynamic = "force-dynamic";
+
+const FALLBACK_PROPERTY_IMAGE =
+  "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=80";
+
+function formatPrice(
+  price: { toString(): string } | null | undefined,
+  currency: string,
+) {
+  if (!price) {
+    return "Price on request";
+  }
+
+  const amount = Number(price.toString());
+
+  if (!Number.isFinite(amount)) {
+    return `${currency} ${price.toString()}`;
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    currency,
+    maximumFractionDigits: 0,
+    style: "currency",
+  }).format(amount);
+}
+
+export default async function Home() {
+  const [liveSessions, allProperties] = await Promise.all([
+    prisma.liveSession.findMany({
+      include: { agent: { select: { name: true } }, property: true },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    }),
+    prisma.property.findMany({
+      take: 6,
+      orderBy: { updatedAt: "desc" },
+    }),
+  ]);
+
+  const featuredTour = liveSessions[0]
+    ? {
+        agent: liveSessions[0].agent.name,
+        duration: "Live session",
+        id: liveSessions[0].id,
+        image: liveSessions[0].property.image ?? FALLBACK_PROPERTY_IMAGE,
+        location: liveSessions[0].property.location,
+        price: formatPrice(
+          liveSessions[0].property.price,
+          liveSessions[0].property.currency,
+        ),
+        propertyId: liveSessions[0].propertyId,
+        roomId: liveSessions[0].roomId,
+        startsAt: liveSessions[0].startsAt
+          ? new Intl.DateTimeFormat("en-US", { dateStyle: "short" }).format(
+              new Date(liveSessions[0].startsAt),
+            )
+          : "Scheduled",
+        status: liveSessions[0].status === "LIVE" ? "Live" : "Scheduled",
+        title: liveSessions[0].property.title,
+        viewers: liveSessions[0].viewers,
+      }
+    : null;
+
+  const platformMetrics = [
+    { label: "Live tours", value: `${liveSessions.length}` },
+    { label: "Properties", value: `${allProperties.length}` },
+    { label: "Premium agents", value: "25+" },
+  ];
 
   return (
     <>
@@ -84,7 +150,7 @@ export default function Home() {
             <ArrowRight aria-hidden className="size-4" />
           </Button>
         </div>
-        <LiveCard tour={featuredTour} />
+        {featuredTour && <LiveCard tour={featuredTour} />}
       </section>
 
       <section className="bg-[#0a0a0a]">
@@ -104,7 +170,7 @@ export default function Home() {
             </Button>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
-            {properties.map((property) => (
+            {allProperties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>

@@ -1,7 +1,6 @@
 import { Radio, SlidersHorizontal } from "lucide-react";
 import { LiveCard } from "@/components/live/LiveCard";
 import { Button } from "@/components/ui/Button";
-import { liveTours } from "@/data/mock";
 import { prisma } from "@/lib/prisma";
 import type { LiveTour } from "@/types/platform";
 
@@ -76,31 +75,28 @@ export default async function LiveToursPage() {
     orderBy: [{ status: "asc" }, { createdAt: "desc" }],
     take: 24,
   });
-  const tours =
-    databaseLiveTours.length > 0
-      ? databaseLiveTours.map((session) => {
-          const status = getTourStatus(
-            session.status,
-            session.recordingStatus !== "deleted" &&
-              Boolean(session.recordingPlaybackId),
-          );
+  const tours = databaseLiveTours.map((session) => {
+    const status = getTourStatus(
+      session.status,
+      session.recordingStatus !== "deleted" &&
+        Boolean(session.recordingPlaybackId),
+    );
 
-          return {
-            agent: session.agent.name,
-            duration: status === "Recorded" ? "Replay" : "Live session",
-            id: session.id,
-            image: session.property.image ?? FALLBACK_PROPERTY_IMAGE,
-            location: session.property.location,
-            price: formatPrice(session.property.price, session.property.currency),
-            propertyId: session.propertyId,
-            roomId: session.roomId,
-            startsAt: formatStartsAt(session.startsAt, status),
-            status,
-            title: session.property.title,
-            viewers: session.viewers,
-          } satisfies LiveTour;
-        })
-      : liveTours;
+    return {
+      agent: session.agent.name,
+      duration: status === "Recorded" ? "Replay" : "Live session",
+      id: session.id,
+      image: session.property.image ?? FALLBACK_PROPERTY_IMAGE,
+      location: session.property.location,
+      price: formatPrice(session.property.price, session.property.currency),
+      propertyId: session.propertyId,
+      roomId: session.roomId,
+      startsAt: formatStartsAt(session.startsAt, status),
+      status,
+      title: session.property.title,
+      viewers: session.viewers,
+    } satisfies LiveTour;
+  });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
