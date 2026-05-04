@@ -134,6 +134,7 @@ export function CreateLiveSessionButton({
   const [newPropertyTitle, setNewPropertyTitle] = useState("");
   const [newPropertyDescription, setNewPropertyDescription] = useState("");
   const [newPropertyImage, setNewPropertyImage] = useState("");
+  const [newPropertyImagePreview, setNewPropertyImagePreview] = useState("");
   const [liveTitle, setLiveTitle] = useState(
     properties[0] ? `${properties[0].title} Live Tour` : "",
   );
@@ -198,6 +199,19 @@ export function CreateLiveSessionButton({
     date.setHours(10, 0, 0, 0);
     setScheduledDate(toDateInputValue(date));
     setScheduledTime(toTimeInputValue(date));
+  }
+
+  function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setNewPropertyImage(dataUrl);
+      setNewPropertyImagePreview(dataUrl);
+    };
+    reader.readAsDataURL(file);
   }
 
   async function createLiveSession(event: FormEvent<HTMLFormElement>) {
@@ -366,17 +380,45 @@ export function CreateLiveSessionButton({
                 </div>
                 <label className="block">
                   <span className="text-sm font-medium text-white/72">
-                    Preview image URL
+                    Preview image (optional)
                   </span>
-                  <input
-                    className={cn(fieldClassName, "mt-2")}
-                    onChange={(event) =>
-                      setNewPropertyImage(event.target.value)
-                    }
-                    placeholder="https://images.unsplash.com/photo-..."
-                    type="url"
-                    value={newPropertyImage}
-                  />
+                  <div className="mt-2">
+                    <input
+                      accept="image/*"
+                      className="hidden"
+                      id="property-image-upload"
+                      onChange={handleImageUpload}
+                      type="file"
+                    />
+                    <label
+                      className="flex cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-white/20 bg-white/[0.02] p-6 transition hover:border-[#d6b15f]/50 hover:bg-[#d6b15f]/5"
+                      htmlFor="property-image-upload"
+                    >
+                      <div className="text-center">
+                        {newPropertyImagePreview ? (
+                          <>
+                            <img
+                              alt="Preview"
+                              className="mx-auto max-h-32 max-w-full rounded"
+                              src={newPropertyImagePreview}
+                            />
+                            <p className="mt-2 text-xs text-white/62">
+                              Click to change image
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-sm text-white/72">
+                              📸 Click to upload or drag & drop
+                            </p>
+                            <p className="mt-1 text-xs text-white/48">
+                              PNG, JPG up to 5MB
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </label>
+                  </div>
                 </label>
                 <label className="block">
                   <span className="text-sm font-medium text-white/72">
