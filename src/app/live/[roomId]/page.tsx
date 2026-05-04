@@ -107,6 +107,7 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
       playbackId =
         liveSession &&
         liveSession.status !== "LIVE" &&
+        liveSession.recordingStatus !== "deleted" &&
         liveSession.recordingPlaybackId
           ? liveSession.recordingPlaybackId
           : liveSession?.playbackId;
@@ -115,6 +116,7 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
       streamStatus =
         liveSession &&
         liveSession.status !== "LIVE" &&
+        liveSession.recordingStatus !== "deleted" &&
         liveSession.recordingPlaybackId
           ? "ENDED"
           : (liveSession?.status ?? streamStatus);
@@ -158,20 +160,25 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
       startsAt: formatStartsAt(liveSession.startsAt),
       status: getTourStatus(
         liveSession.status,
-        Boolean(liveSession.recordingPlaybackId),
+        liveSession.recordingStatus !== "deleted" &&
+          Boolean(liveSession.recordingPlaybackId),
       ),
       title: liveSession.title,
       viewers: liveSession.viewers,
     };
     databaseLiveSessionId = liveSession.id;
     playbackId =
-      liveSession.status !== "LIVE" && liveSession.recordingPlaybackId
+      liveSession.status !== "LIVE" &&
+      liveSession.recordingStatus !== "deleted" &&
+      liveSession.recordingPlaybackId
         ? liveSession.recordingPlaybackId
         : liveSession.playbackId;
     startsAt = liveSession.startsAt?.toISOString() ?? null;
     streamProvider = liveSession.streamProvider;
     streamStatus =
-      liveSession.status !== "LIVE" && liveSession.recordingPlaybackId
+      liveSession.status !== "LIVE" &&
+      liveSession.recordingStatus !== "deleted" &&
+      liveSession.recordingPlaybackId
         ? "ENDED"
         : liveSession.status;
   }

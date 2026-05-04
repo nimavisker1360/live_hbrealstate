@@ -127,6 +127,9 @@ export async function POST(request: Request) {
 
     await prisma.liveSession.updateMany({
       where: {
+        NOT: {
+          recordingStatus: "deleted",
+        },
         OR: [
           ...(muxAssetId ? [{ muxAssetId }] : []),
           ...(muxLiveStreamId ? [{ muxLiveStreamId }] : []),

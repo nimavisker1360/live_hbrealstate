@@ -81,7 +81,8 @@ export default async function LiveToursPage() {
       ? databaseLiveTours.map((session) => {
           const status = getTourStatus(
             session.status,
-            Boolean(session.recordingPlaybackId),
+            session.recordingStatus !== "deleted" &&
+              Boolean(session.recordingPlaybackId),
           );
 
           return {

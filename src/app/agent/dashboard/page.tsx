@@ -178,6 +178,27 @@ function formatSessionStatus(status: string, hasRecording: boolean) {
   return status.toLowerCase();
 }
 
+function isRecordingVisible(session: {
+  recordingPlaybackId: string | null;
+  recordingStatus: string | null;
+}) {
+  return (
+    session.recordingStatus !== "deleted" &&
+    Boolean(session.recordingPlaybackId)
+  );
+}
+
+function canDeleteRecording(session: {
+  muxAssetId: string | null;
+  recordingPlaybackId: string | null;
+  recordingStatus: string | null;
+}) {
+  return (
+    session.recordingStatus !== "deleted" &&
+    Boolean(session.recordingPlaybackId || session.muxAssetId)
+  );
+}
+
 export default async function AgentDashboardPage() {
   const [databaseProperties, databaseLiveSessions] = await Promise.all([
     prisma.property.findMany({
@@ -313,7 +334,7 @@ export default async function AgentDashboardPage() {
                         <StatusBadge
                           status={formatSessionStatus(
                             session.status,
-                            Boolean(session.recordingPlaybackId),
+                            isRecordingVisible(session),
                           )}
                         />
                       </td>
@@ -328,10 +349,8 @@ export default async function AgentDashboardPage() {
                       </td>
                       <td className="py-4">
                         <RecordingActions
-                          canDelete={Boolean(
-                            session.recordingPlaybackId || session.muxAssetId,
-                          )}
-                          canWatch={Boolean(session.recordingPlaybackId)}
+                          canDelete={canDeleteRecording(session)}
+                          canWatch={isRecordingVisible(session)}
                           liveSessionId={session.id}
                           roomId={session.roomId}
                         />

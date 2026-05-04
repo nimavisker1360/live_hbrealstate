@@ -51,6 +51,7 @@ export async function GET(request: Request) {
     let recordingStatus = liveSession.recordingStatus;
     let status = liveSession.status;
     let muxAssetId = liveSession.muxAssetId;
+    const recordingDeleted = liveSession.recordingStatus === "deleted";
 
     if (liveSession.muxLiveStreamId) {
       const muxLiveStream = await getMuxLiveStream(liveSession.muxLiveStreamId);
@@ -66,12 +67,16 @@ export async function GET(request: Request) {
       playbackId = muxLiveStream.playbackId ?? playbackId;
       status = muxStatus ?? status;
 
-      if (latestAssetId) {
+      if (latestAssetId && !recordingDeleted) {
         const muxAsset = await getMuxAsset(latestAssetId).catch(() => null);
 
         muxAssetId = muxAsset?.muxAssetId ?? latestAssetId;
         recordingPlaybackId = muxAsset?.playbackId ?? recordingPlaybackId;
         recordingStatus = muxAsset?.status ?? recordingStatus ?? "preparing";
+      } else if (recordingDeleted) {
+        muxAssetId = null;
+        recordingPlaybackId = null;
+        recordingStatus = "deleted";
       }
 
       if (

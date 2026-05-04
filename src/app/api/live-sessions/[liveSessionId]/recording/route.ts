@@ -13,10 +13,6 @@ type RecordingRouteContext = {
 async function getWritableSession() {
   const session = await getCurrentSession().catch(() => null);
 
-  if (!session && process.env.NODE_ENV === "production") {
-    return { response: jsonError("Authentication required.", 401) };
-  }
-
   if (session?.role === "BUYER") {
     return { response: jsonError("Unauthorized.", 403) };
   }
@@ -42,7 +38,7 @@ export async function DELETE(
         muxAssetId: null,
         recordingPlaybackId: null,
         recordingReadyAt: null,
-        recordingStatus: null,
+        recordingStatus: "deleted",
       },
       select: {
         id: true,
