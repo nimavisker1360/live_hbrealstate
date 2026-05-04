@@ -185,6 +185,7 @@ export async function POST(request: Request) {
         liveSessionId: liveSession.id,
         count,
         userId: session.sub,
+        userName: session.name ?? session.email ?? "Someone",
       } satisfies RealtimeLikeEvent,
     );
 

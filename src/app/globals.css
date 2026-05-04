@@ -31,14 +31,13 @@ html {
 @keyframes float-heart {
   0% {
     opacity: 0;
-    transform: translate3d(0, 16px, 0) scale(0.72) rotate(-8deg);
+    transform: translate(-50%, -50%) translate(0, 0) scale(0.5) rotate(-8deg);
   }
-  15% {
+  10% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: translate3d(var(--heart-x, -18px), -128px, 0) scale(1.55)
-      rotate(14deg);
+    transform: translate(-50%, -50%) translate(var(--heart-x, 0), -150px) scale(1.2) rotate(14deg);
   }
 }

@@ -38,6 +38,7 @@ import {
 } from "@/lib/live-auth-client";
 import { cn } from "@/lib/utils";
 import type { LiveTour, Property } from "@/types/platform";
+import { LiveActivityFeed } from "./LiveActivityFeed";
 
 type LiveComment = {
   id: string;
@@ -52,6 +53,17 @@ type LiveComment = {
 type FloatingHeart = {
   id: number;
   x: number;
+  y?: number;
+  delay?: number;
+};
+
+type Activity = {
+  id: string;
+  type: "like" | "comment";
+  author?: string;
+  message?: string;
+  timestamp: number;
+  expiresAt: number;
 };
 
 type LeadIntent = "Citizenship" | "Investment" | "Living" | "Installment";
@@ -256,6 +268,7 @@ export function LiveRoomScreen({
 }) {
   const [comments, setComments] = useState<LiveComment[]>([]);
   const [comment, setComment] = useState("");
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [visitorId] = useState(() => {
     if (typeof window === "undefined") {
       return "";
@@ -304,12 +317,22 @@ export function LiveRoomScreen({
   const playbackId = streamState.playbackId ?? null;
 
   const spawnHeart = useCallback(() => {
-    const id = Date.now() + Math.random();
-    setHearts((current) => [...current, { id, x: Math.random() * 52 - 26 }]);
+    const baseId = Date.now() + Math.random();
+    const x1 = Math.random() * 80 - 40;
+    const x2 = Math.random() * 80 - 40;
+    const y = Math.random() * 20 + 10;
+
+    setHearts((current) => [
+      ...current,
+      { id: baseId, x: x1, y, delay: 0 },
+      { id: baseId + 0.5, x: x2, y, delay: 50 },
+    ]);
 
     window.setTimeout(() => {
-      setHearts((current) => current.filter((heart) => heart.id !== id));
-    }, 950);
+      setHearts((current) =>
+        current.filter((heart) => heart.id !== baseId && heart.id !== baseId + 0.5)
+      );
+    }, 1200);
   }, []);
 
   useEffect(() => {
@@ -534,19 +557,46 @@ export function LiveRoomScreen({
           event.clientEventId,
         ),
       );
+
+      const isOwnComment = event.clientEventId;
+      if (!isOwnComment) {
+        const now = Date.now();
+        setActivities((current) => [
+          ...current.slice(-9),
+          {
+            id: event.comment.id,
+            type: "comment" as const,
+            author: event.comment.author,
+            message: event.comment.message,
+            timestamp: now,
+            expiresAt: now + 5000,
+          },
+        ]);
+      }
     });
     channel.bind(PUSHER_EVENTS.LIKE_CREATED, (event: RealtimeLikeEvent) => {
       setLikeCount(event.count);
 
-      if (
-        event.clientEventId &&
-        pendingLikeEventIdsRef.current.has(event.clientEventId)
-      ) {
-        pendingLikeEventIdsRef.current.delete(event.clientEventId);
-        return;
-      }
+      const isOwnLike = event.clientEventId && pendingLikeEventIdsRef.current.has(event.clientEventId);
 
-      spawnHeart();
+      if (isOwnLike && event.clientEventId) {
+        pendingLikeEventIdsRef.current.delete(event.clientEventId);
+      } else {
+        spawnHeart();
+        spawnHeart();
+
+        const now = Date.now();
+        setActivities((current) => [
+          ...current.slice(-9),
+          {
+            id: `like-${now}-${Math.random()}`,
+            type: "like" as const,
+            author: event.userName ?? "Someone",
+            timestamp: now,
+            expiresAt: now + 4000,
+          },
+        ]);
+      }
     });
 
     return () => {
@@ -816,6 +866,7 @@ export function LiveRoomScreen({
             viewerCount={viewerCount}
           />
           <PropertyOverlay property={property} tour={tour} />
+          <LiveActivityFeed activities={activities} />
           <RightRail
             disableLike={session === undefined || isSavingLike}
             likeCount={likeCount}
@@ -1221,17 +1272,21 @@ function FloatingAction({
 
 function HeartLayer({ hearts }: { hearts: FloatingHeart[] }) {
   return (
-    <div className="pointer-events-none absolute bottom-48 right-8 z-30">
+    <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
       {hearts.map((heart) => (
         <Heart
           aria-hidden
-          className="absolute size-10 text-red-500"
+          className="absolute size-14 text-red-500 drop-shadow-[0_0_20px_rgba(239,63,86,0.6)]"
           fill="currentColor"
           key={heart.id}
           style={
             {
               "--heart-x": `${heart.x}px`,
-              animation: "float-heart 950ms ease-out forwards",
+              "--heart-y": `${heart.y ?? 50}%`,
+              left: "50%",
+              top: "var(--heart-y)",
+              animation: `float-heart 1200ms ease-out forwards`,
+              animationDelay: `${heart.delay ?? 0}ms`,
             } as React.CSSProperties
           }
         />

@@ -21,6 +21,7 @@ export type RealtimeLikeEvent = {
   count: number;
   clientEventId?: string;
   userId: string;
+  userName?: string;
 };
 
 export function getLivePresenceChannel(liveSessionId: string) {
