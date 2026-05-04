@@ -3,11 +3,11 @@ import {
   CalendarClock,
   Eye,
   MessageCircle,
-  PlayCircle,
   UsersRound,
 } from "lucide-react";
 import Link from "next/link";
 import { CreateLiveSessionButton } from "@/components/live/CreateLiveSessionButton";
+import { RecordingActions } from "@/components/live/RecordingActions";
 import { Card } from "@/components/ui/Card";
 import { properties as mockProperties } from "@/data/mock";
 import { prisma } from "@/lib/prisma";
@@ -104,6 +104,7 @@ const statusStyles: Record<string, string> = {
   lost: "border-rose-400/30 bg-rose-400/10 text-rose-200",
   new: "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
   qualified: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
+  recorded: "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
   scheduled: "border-violet-300/30 bg-violet-400/10 text-violet-100",
   "under review": "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
 };
@@ -169,7 +170,11 @@ function formatPrice(
   }).format(amount);
 }
 
-function formatSessionStatus(status: string) {
+function formatSessionStatus(status: string, hasRecording: boolean) {
+  if (status !== "LIVE" && hasRecording) {
+    return "recorded";
+  }
+
   return status.toLowerCase();
 }
 
@@ -278,7 +283,7 @@ export default async function AgentDashboardPage() {
           <Card className="p-5">
             <SectionHeader eyebrow="Live sessions" title="Session performance" />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[800px] text-left text-sm">
+              <table className="w-full min-w-[900px] text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
                     <th className="pb-3 pr-4 font-semibold">Title</th>
@@ -305,7 +310,12 @@ export default async function AgentDashboardPage() {
                         </Link>
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge status={formatSessionStatus(session.status)} />
+                        <StatusBadge
+                          status={formatSessionStatus(
+                            session.status,
+                            Boolean(session.recordingPlaybackId),
+                          )}
+                        />
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
                         {session.viewers}
@@ -317,19 +327,14 @@ export default async function AgentDashboardPage() {
                         {formatDate(session.startsAt ?? session.createdAt)}
                       </td>
                       <td className="py-4">
-                        {session.recordingPlaybackId ? (
-                          <Link
-                            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#d6b15f]/35 bg-[#d6b15f]/10 px-2.5 text-xs font-semibold text-[#f0cf79] transition hover:bg-[#d6b15f]/16 hover:text-white"
-                            href={`/live/${session.roomId}`}
-                          >
-                            <PlayCircle aria-hidden className="size-4" />
-                            Watch
-                          </Link>
-                        ) : (
-                          <span className="text-xs text-white/42">
-                            {session.muxAssetId ? "Processing" : "Not ready"}
-                          </span>
-                        )}
+                        <RecordingActions
+                          canDelete={Boolean(
+                            session.recordingPlaybackId || session.muxAssetId,
+                          )}
+                          canWatch={Boolean(session.recordingPlaybackId)}
+                          liveSessionId={session.id}
+                          roomId={session.roomId}
+                        />
                       </td>
                     </tr>
                   ))}

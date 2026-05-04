@@ -24,9 +24,16 @@ function getDatabaseStatus(status: LiveTour["status"]) {
   return "SCHEDULED" as const;
 }
 
-function getTourStatus(status: "SCHEDULED" | "LIVE" | "ENDED") {
+function getTourStatus(
+  status: "SCHEDULED" | "LIVE" | "ENDED",
+  hasRecording = false,
+) {
   if (status === "LIVE") {
     return "Live" as const;
+  }
+
+  if (hasRecording) {
+    return "Recorded" as const;
   }
 
   if (status === "ENDED") {
@@ -98,12 +105,19 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
 
       databaseLiveSessionId = liveSession?.id;
       playbackId =
-        liveSession?.status === "ENDED" && liveSession.recordingPlaybackId
+        liveSession &&
+        liveSession.status !== "LIVE" &&
+        liveSession.recordingPlaybackId
           ? liveSession.recordingPlaybackId
           : liveSession?.playbackId;
       startsAt = liveSession?.startsAt?.toISOString() ?? null;
       streamProvider = liveSession?.streamProvider;
-      streamStatus = liveSession?.status ?? streamStatus;
+      streamStatus =
+        liveSession &&
+        liveSession.status !== "LIVE" &&
+        liveSession.recordingPlaybackId
+          ? "ENDED"
+          : (liveSession?.status ?? streamStatus);
     } catch (error) {
       console.warn("Live room is running without database context.", error);
     }
@@ -142,18 +156,24 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
       propertyId: property.id,
       roomId: liveSession.roomId,
       startsAt: formatStartsAt(liveSession.startsAt),
-      status: getTourStatus(liveSession.status),
+      status: getTourStatus(
+        liveSession.status,
+        Boolean(liveSession.recordingPlaybackId),
+      ),
       title: liveSession.title,
       viewers: liveSession.viewers,
     };
     databaseLiveSessionId = liveSession.id;
     playbackId =
-      liveSession.status === "ENDED" && liveSession.recordingPlaybackId
+      liveSession.status !== "LIVE" && liveSession.recordingPlaybackId
         ? liveSession.recordingPlaybackId
         : liveSession.playbackId;
     startsAt = liveSession.startsAt?.toISOString() ?? null;
     streamProvider = liveSession.streamProvider;
-    streamStatus = liveSession.status;
+    streamStatus =
+      liveSession.status !== "LIVE" && liveSession.recordingPlaybackId
+        ? "ENDED"
+        : liveSession.status;
   }
 
   if (!tour) {

@@ -56,8 +56,12 @@ function getTourStatus(
     return "Live";
   }
 
+  if (hasRecording) {
+    return "Recorded";
+  }
+
   if (status === "ENDED") {
-    return hasRecording ? "Recorded" : "Ended";
+    return "Ended";
   }
 
   return "Scheduled";
