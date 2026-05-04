@@ -8,7 +8,10 @@ type MuxWebhookEvent = {
   type?: string;
   data?: {
     id?: string;
+    active_asset_id?: string;
+    live_stream_id?: string;
     playback_ids?: Array<{ id?: string }>;
+    recent_asset_ids?: string[];
     status?: string;
     stream_key?: string;
   };
@@ -58,27 +61,33 @@ function verifyMuxSignature(body: string, signatureHeader: string | null) {
 }
 
 function getSessionStatus(eventType?: string, muxStatus?: string) {
-  if (eventType === "video.live_stream.active" || muxStatus === "active") {
+  if (
+    eventType === "video.live_stream.active" ||
+    eventType === "video.live_stream.recording" ||
+    muxStatus === "active"
+  ) {
     return "LIVE" as const;
   }
 
   if (
     eventType === "video.live_stream.disabled" ||
     eventType === "video.live_stream.deleted" ||
+    eventType === "video.live_stream.disconnected" ||
+    eventType === "video.live_stream.idle" ||
     muxStatus === "disabled"
   ) {
     return "ENDED" as const;
   }
 
-  if (
-    eventType === "video.live_stream.idle" ||
-    eventType === "video.live_stream.disconnected" ||
-    muxStatus === "idle"
-  ) {
+  if (muxStatus === "idle") {
     return "SCHEDULED" as const;
   }
 
   return null;
+}
+
+function isAssetEvent(eventType?: string) {
+  return Boolean(eventType?.startsWith("video.asset."));
 }
 
 export async function POST(request: Request) {
@@ -95,24 +104,52 @@ export async function POST(request: Request) {
       event.data?.playback_ids
         ?.map((playbackId) => playbackId.id)
         .filter((playbackId): playbackId is string => Boolean(playbackId)) ?? [];
-    const muxLiveStreamId = event.data?.id;
+    const muxAssetId = isAssetEvent(event.type)
+      ? event.data?.id
+      : (event.data?.active_asset_id ?? event.data?.recent_asset_ids?.at(-1));
+    const muxLiveStreamId = isAssetEvent(event.type)
+      ? event.data?.live_stream_id
+      : event.data?.id;
+    const recordingPlaybackId = isAssetEvent(event.type)
+      ? playbackIds[0]
+      : undefined;
     const streamKey = event.data?.stream_key;
 
-    if (!status || (!muxLiveStreamId && !streamKey && playbackIds.length === 0)) {
+    if (
+      !status &&
+      !muxAssetId &&
+      !muxLiveStreamId &&
+      !streamKey &&
+      playbackIds.length === 0
+    ) {
       return Response.json({ data: { ignored: true } });
     }
 
     await prisma.liveSession.updateMany({
       where: {
         OR: [
+          ...(muxAssetId ? [{ muxAssetId }] : []),
           ...(muxLiveStreamId ? [{ muxLiveStreamId }] : []),
           ...(streamKey ? [{ streamKey }] : []),
           ...(playbackIds.length > 0 ? [{ playbackId: { in: playbackIds } }] : []),
+          ...(playbackIds.length > 0
+            ? [{ recordingPlaybackId: { in: playbackIds } }]
+            : []),
         ],
       },
       data: {
-        status,
-        endedAt: status === "ENDED" ? new Date() : null,
+        ...(status ? { status } : {}),
+        ...(status ? { endedAt: status === "ENDED" ? new Date() : null } : {}),
+        ...(muxAssetId ? { muxAssetId } : {}),
+        ...(recordingPlaybackId
+          ? {
+              recordingPlaybackId,
+              recordingReadyAt: new Date(),
+              recordingStatus: event.data?.status ?? "ready",
+            }
+          : muxAssetId
+            ? { recordingStatus: event.data?.status ?? "preparing" }
+            : {}),
       },
     });
 

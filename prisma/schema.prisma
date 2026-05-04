@@ -107,8 +107,12 @@ model LiveSession {
   title          String
   streamProvider String?           @default("mux")
   muxLiveStreamId String?
+  muxAssetId     String?
   streamKey      String?
   playbackId     String?
+  recordingPlaybackId String?
+  recordingStatus String?
+  recordingReadyAt DateTime?
   rtmpUrl        String?
   status         LiveSessionStatus @default(SCHEDULED)
   viewers        Int               @default(0)
@@ -124,7 +128,9 @@ model LiveSession {
   @@index([agentId])
   @@index([propertyId])
   @@index([muxLiveStreamId])
+  @@index([muxAssetId])
   @@index([playbackId])
+  @@index([recordingPlaybackId])
 }
 
 model Lead {

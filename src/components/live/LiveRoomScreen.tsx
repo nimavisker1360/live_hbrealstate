@@ -105,6 +105,8 @@ type LiveStreamState = {
 type StreamStatusResponse = {
   id: string;
   playbackId: string | null;
+  recordingPlaybackId: string | null;
+  recordingStatus: string | null;
   roomId: string;
   startsAt: string | null;
   status: StreamStatus;
@@ -330,7 +332,10 @@ export function LiveRoomScreen({
         if (!ignore && data) {
           setStreamState((current) => ({
             ...current,
-            playbackId: data.playbackId,
+            playbackId:
+              data.status === "ENDED" && data.recordingPlaybackId
+                ? data.recordingPlaybackId
+                : data.playbackId,
             startsAt: data.startsAt,
             status: data.status,
           }));
@@ -880,7 +885,8 @@ function LiveVideoSurface({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [failedHlsUrl, setFailedHlsUrl] = useState<string | null>(null);
   const [videoReady, setVideoReady] = useState(false);
-  const shouldPlay = status === "LIVE" && Boolean(playbackId);
+  const shouldPlay =
+    (status === "LIVE" || status === "ENDED") && Boolean(playbackId);
   const hlsUrl = playbackId ? getHlsUrl(playbackId) : null;
   const playerError = Boolean(hlsUrl && failedHlsUrl === hlsUrl);
   const showOfflineState = !shouldPlay || playerError;

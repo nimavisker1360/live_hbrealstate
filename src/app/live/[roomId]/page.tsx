@@ -97,7 +97,10 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
       });
 
       databaseLiveSessionId = liveSession?.id;
-      playbackId = liveSession?.playbackId;
+      playbackId =
+        liveSession?.status === "ENDED" && liveSession.recordingPlaybackId
+          ? liveSession.recordingPlaybackId
+          : liveSession?.playbackId;
       startsAt = liveSession?.startsAt?.toISOString() ?? null;
       streamProvider = liveSession?.streamProvider;
       streamStatus = liveSession?.status ?? streamStatus;
@@ -144,7 +147,10 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
       viewers: liveSession.viewers,
     };
     databaseLiveSessionId = liveSession.id;
-    playbackId = liveSession.playbackId;
+    playbackId =
+      liveSession.status === "ENDED" && liveSession.recordingPlaybackId
+        ? liveSession.recordingPlaybackId
+        : liveSession.playbackId;
     startsAt = liveSession.startsAt?.toISOString() ?? null;
     streamProvider = liveSession.streamProvider;
     streamStatus = liveSession.status;

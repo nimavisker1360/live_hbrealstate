@@ -4,10 +4,19 @@ type MuxPlaybackId = {
 };
 
 type MuxLiveStreamData = {
+  active_asset_id?: string;
   id: string;
   playback_ids?: MuxPlaybackId[];
+  recent_asset_ids?: string[];
   status?: string;
   stream_key: string;
+};
+
+type MuxAssetData = {
+  id: string;
+  live_stream_id?: string;
+  playback_ids?: MuxPlaybackId[];
+  status?: string;
 };
 
 type MuxApiResponse<T> = {
@@ -140,7 +149,43 @@ export async function getMuxLiveStream(muxLiveStreamId: string) {
     null;
 
   return {
+    activeAssetId: body.data.active_asset_id ?? null,
     muxLiveStreamId: body.data.id,
+    playbackId,
+    recentAssetIds: body.data.recent_asset_ids ?? [],
+    status: body.data.status ?? null,
+  };
+}
+
+export async function getMuxAsset(muxAssetId: string) {
+  const response = await fetch(
+    `https://api.mux.com/video/v1/assets/${encodeURIComponent(muxAssetId)}`,
+    {
+      headers: {
+        Authorization: getMuxAuthHeader(),
+      },
+    },
+  );
+  const body = (await response.json().catch(() => ({}))) as MuxApiResponse<
+    MuxAssetData
+  >;
+
+  if (!response.ok || !body.data) {
+    throw new MuxApiError(
+      mapMuxError(body, response.status),
+      response.status,
+      body.error,
+    );
+  }
+
+  const playbackId =
+    body.data.playback_ids?.find((item) => item.policy === "public")?.id ??
+    body.data.playback_ids?.[0]?.id ??
+    null;
+
+  return {
+    liveStreamId: body.data.live_stream_id ?? null,
+    muxAssetId: body.data.id,
     playbackId,
     status: body.data.status ?? null,
   };

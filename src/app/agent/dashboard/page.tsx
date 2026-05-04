@@ -3,11 +3,14 @@ import {
   CalendarClock,
   Eye,
   MessageCircle,
+  PlayCircle,
   UsersRound,
 } from "lucide-react";
+import Link from "next/link";
 import { CreateLiveSessionButton } from "@/components/live/CreateLiveSessionButton";
 import { Card } from "@/components/ui/Card";
 import { properties as mockProperties } from "@/data/mock";
+import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
 const overviewCards = [
@@ -36,37 +39,6 @@ const overviewCards = [
     icon: MessageCircle,
   },
 ];
-
-const liveSessions = [
-  {
-    title: "Palm Residence Sky Villa",
-    status: "live",
-    viewers: 128,
-    leads: 24,
-    date: "May 1, 2026",
-  },
-  {
-    title: "Bosphorus Glass House",
-    status: "scheduled",
-    viewers: 42,
-    leads: 8,
-    date: "May 2, 2026",
-  },
-  {
-    title: "Chelsea Collector Loft",
-    status: "ended",
-    viewers: 214,
-    leads: 31,
-    date: "Apr 29, 2026",
-  },
-  {
-    title: "Palm Jumeirah Garden Estate",
-    status: "scheduled",
-    viewers: 19,
-    leads: 4,
-    date: "May 5, 2026",
-  },
-] as const;
 
 const leads = [
   {
@@ -123,27 +95,6 @@ const offers = [
   },
 ] as const;
 
-const properties = [
-  {
-    name: "Palm Residence Sky Villa",
-    location: "Dubai Marina, UAE",
-    price: "$4,850,000",
-    activity: "1 live now",
-  },
-  {
-    name: "Bosphorus Glass House",
-    location: "Bebek, Istanbul",
-    price: "$7,200,000",
-    activity: "Next: May 2",
-  },
-  {
-    name: "Chelsea Collector Loft",
-    location: "London, UK",
-    price: "$3,450,000",
-    activity: "31 leads",
-  },
-] as const;
-
 const statusStyles: Record<string, string> = {
   accepted: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
   contacted: "border-sky-400/30 bg-sky-400/10 text-sky-200",
@@ -187,7 +138,93 @@ function SectionHeader({
   );
 }
 
-export default function AgentDashboardPage() {
+function formatDate(value: Date | null) {
+  if (!value) {
+    return "Not scheduled";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+  }).format(value);
+}
+
+function formatPrice(
+  price: { toString(): string } | null | undefined,
+  currency: string,
+) {
+  if (!price) {
+    return "Price on request";
+  }
+
+  const amount = Number(price.toString());
+
+  if (!Number.isFinite(amount)) {
+    return `${currency} ${price.toString()}`;
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    currency,
+    maximumFractionDigits: 0,
+    style: "currency",
+  }).format(amount);
+}
+
+function formatSessionStatus(status: string) {
+  return status.toLowerCase();
+}
+
+export default async function AgentDashboardPage() {
+  const [databaseProperties, databaseLiveSessions] = await Promise.all([
+    prisma.property.findMany({
+      include: {
+        _count: {
+          select: {
+            leads: true,
+            liveSessions: true,
+          },
+        },
+        liveSessions: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            startsAt: true,
+            status: true,
+          },
+          take: 1,
+        },
+      },
+      orderBy: { updatedAt: "desc" },
+      take: 6,
+    }),
+    prisma.liveSession.findMany({
+      include: {
+        _count: {
+          select: {
+            leads: true,
+          },
+        },
+        property: {
+          select: {
+            title: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
+  ]);
+  const propertyOptions =
+    databaseProperties.length > 0
+      ? databaseProperties.map((property) => ({
+          id: property.id,
+          location: property.location,
+          title: property.title,
+        }))
+      : mockProperties.map((property) => ({
+          id: property.id,
+          location: property.location,
+          title: property.title,
+        }));
+
   return (
     <div className="bg-[#050505]">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -208,11 +245,7 @@ export default function AgentDashboardPage() {
         </div>
 
         <CreateLiveSessionButton
-          properties={mockProperties.map((property) => ({
-            id: property.id,
-            location: property.location,
-            title: property.title,
-          }))}
+          properties={propertyOptions}
         />
 
         <section
@@ -245,7 +278,7 @@ export default function AgentDashboardPage() {
           <Card className="p-5">
             <SectionHeader eyebrow="Live sessions" title="Session performance" />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[680px] text-left text-sm">
+              <table className="w-full min-w-[800px] text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
                     <th className="pb-3 pr-4 font-semibold">Title</th>
@@ -256,27 +289,57 @@ export default function AgentDashboardPage() {
                     <th className="pb-3 pr-4 text-right font-semibold">
                       Leads
                     </th>
-                    <th className="pb-3 font-semibold">Date</th>
+                    <th className="pb-3 pr-4 font-semibold">Date</th>
+                    <th className="pb-3 font-semibold">Recording</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                  {liveSessions.map((session) => (
-                    <tr key={`${session.title}-${session.date}`}>
+                  {databaseLiveSessions.map((session) => (
+                    <tr key={session.id}>
                       <td className="py-4 pr-4 font-medium text-white">
-                        {session.title}
+                        <Link
+                          className="transition hover:text-[#f0cf79]"
+                          href={`/live/${session.roomId}`}
+                        >
+                          {session.title}
+                        </Link>
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge status={session.status} />
+                        <StatusBadge status={formatSessionStatus(session.status)} />
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
                         {session.viewers}
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
-                        {session.leads}
+                        {session._count.leads}
                       </td>
-                      <td className="py-4 text-white/62">{session.date}</td>
+                      <td className="py-4 pr-4 text-white/62">
+                        {formatDate(session.startsAt ?? session.createdAt)}
+                      </td>
+                      <td className="py-4">
+                        {session.recordingPlaybackId ? (
+                          <Link
+                            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#d6b15f]/35 bg-[#d6b15f]/10 px-2.5 text-xs font-semibold text-[#f0cf79] transition hover:bg-[#d6b15f]/16 hover:text-white"
+                            href={`/live/${session.roomId}`}
+                          >
+                            <PlayCircle aria-hidden className="size-4" />
+                            Watch
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-white/42">
+                            {session.muxAssetId ? "Processing" : "Not ready"}
+                          </span>
+                        )}
+                      </td>
                     </tr>
                   ))}
+                  {databaseLiveSessions.length === 0 ? (
+                    <tr>
+                      <td className="py-6 text-sm text-white/52" colSpan={6}>
+                        No live sessions yet.
+                      </td>
+                    </tr>
+                  ) : null}
                 </tbody>
               </table>
             </div>
@@ -285,27 +348,42 @@ export default function AgentDashboardPage() {
           <Card className="p-5">
             <SectionHeader eyebrow="Properties" title="Active inventory" />
             <div className="space-y-3">
-              {properties.map((property) => (
+              {databaseProperties.map((property) => {
+                const latestSession = property.liveSessions[0];
+                const activity =
+                  latestSession?.status === "LIVE"
+                    ? "1 live now"
+                    : latestSession?.startsAt
+                      ? `Next: ${formatDate(latestSession.startsAt)}`
+                      : `${property._count.leads} leads`;
+
+                return (
                 <div
                   className="rounded-md border border-white/10 bg-black/20 p-4"
-                  key={property.name}
+                  key={property.id}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium text-white">{property.name}</p>
+                      <p className="font-medium text-white">{property.title}</p>
                       <p className="mt-1 text-sm text-white/52">
                         {property.location}
                       </p>
                     </div>
                     <p className="shrink-0 text-sm font-semibold text-[#d6b15f]">
-                      {property.price}
+                      {formatPrice(property.price, property.currency)}
                     </p>
                   </div>
                   <p className="mt-3 text-sm text-white/56">
-                    {property.activity}
+                    {activity}
                   </p>
                 </div>
-              ))}
+                );
+              })}
+              {databaseProperties.length === 0 ? (
+                <div className="rounded-md border border-white/10 bg-black/20 p-4 text-sm text-white/52">
+                  No properties in the database yet.
+                </div>
+              ) : null}
             </div>
           </Card>
         </div>

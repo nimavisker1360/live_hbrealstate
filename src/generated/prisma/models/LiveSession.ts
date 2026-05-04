@@ -42,8 +42,12 @@ export type LiveSessionMinAggregateOutputType = {
   title: string | null
   streamProvider: string | null
   muxLiveStreamId: string | null
+  muxAssetId: string | null
   streamKey: string | null
   playbackId: string | null
+  recordingPlaybackId: string | null
+  recordingStatus: string | null
+  recordingReadyAt: Date | null
   rtmpUrl: string | null
   status: $Enums.LiveSessionStatus | null
   viewers: number | null
@@ -61,8 +65,12 @@ export type LiveSessionMaxAggregateOutputType = {
   title: string | null
   streamProvider: string | null
   muxLiveStreamId: string | null
+  muxAssetId: string | null
   streamKey: string | null
   playbackId: string | null
+  recordingPlaybackId: string | null
+  recordingStatus: string | null
+  recordingReadyAt: Date | null
   rtmpUrl: string | null
   status: $Enums.LiveSessionStatus | null
   viewers: number | null
@@ -80,8 +88,12 @@ export type LiveSessionCountAggregateOutputType = {
   title: number
   streamProvider: number
   muxLiveStreamId: number
+  muxAssetId: number
   streamKey: number
   playbackId: number
+  recordingPlaybackId: number
+  recordingStatus: number
+  recordingReadyAt: number
   rtmpUrl: number
   status: number
   viewers: number
@@ -109,8 +121,12 @@ export type LiveSessionMinAggregateInputType = {
   title?: true
   streamProvider?: true
   muxLiveStreamId?: true
+  muxAssetId?: true
   streamKey?: true
   playbackId?: true
+  recordingPlaybackId?: true
+  recordingStatus?: true
+  recordingReadyAt?: true
   rtmpUrl?: true
   status?: true
   viewers?: true
@@ -128,8 +144,12 @@ export type LiveSessionMaxAggregateInputType = {
   title?: true
   streamProvider?: true
   muxLiveStreamId?: true
+  muxAssetId?: true
   streamKey?: true
   playbackId?: true
+  recordingPlaybackId?: true
+  recordingStatus?: true
+  recordingReadyAt?: true
   rtmpUrl?: true
   status?: true
   viewers?: true
@@ -147,8 +167,12 @@ export type LiveSessionCountAggregateInputType = {
   title?: true
   streamProvider?: true
   muxLiveStreamId?: true
+  muxAssetId?: true
   streamKey?: true
   playbackId?: true
+  recordingPlaybackId?: true
+  recordingStatus?: true
+  recordingReadyAt?: true
   rtmpUrl?: true
   status?: true
   viewers?: true
@@ -253,8 +277,12 @@ export type LiveSessionGroupByOutputType = {
   title: string
   streamProvider: string | null
   muxLiveStreamId: string | null
+  muxAssetId: string | null
   streamKey: string | null
   playbackId: string | null
+  recordingPlaybackId: string | null
+  recordingStatus: string | null
+  recordingReadyAt: Date | null
   rtmpUrl: string | null
   status: $Enums.LiveSessionStatus
   viewers: number
@@ -295,8 +323,12 @@ export type LiveSessionWhereInput = {
   title?: Prisma.StringFilter<"LiveSession"> | string
   streamProvider?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   muxLiveStreamId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  muxAssetId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   streamKey?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   playbackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingPlaybackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingStatus?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingReadyAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
@@ -320,8 +352,12 @@ export type LiveSessionOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   streamProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   muxLiveStreamId?: Prisma.SortOrderInput | Prisma.SortOrder
+  muxAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   streamKey?: Prisma.SortOrderInput | Prisma.SortOrder
   playbackId?: Prisma.SortOrderInput | Prisma.SortOrder
+  recordingPlaybackId?: Prisma.SortOrderInput | Prisma.SortOrder
+  recordingStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  recordingReadyAt?: Prisma.SortOrderInput | Prisma.SortOrder
   rtmpUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
@@ -348,8 +384,12 @@ export type LiveSessionWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"LiveSession"> | string
   streamProvider?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   muxLiveStreamId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  muxAssetId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   streamKey?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   playbackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingPlaybackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingStatus?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingReadyAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
@@ -373,8 +413,12 @@ export type LiveSessionOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   streamProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   muxLiveStreamId?: Prisma.SortOrderInput | Prisma.SortOrder
+  muxAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   streamKey?: Prisma.SortOrderInput | Prisma.SortOrder
   playbackId?: Prisma.SortOrderInput | Prisma.SortOrder
+  recordingPlaybackId?: Prisma.SortOrderInput | Prisma.SortOrder
+  recordingStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  recordingReadyAt?: Prisma.SortOrderInput | Prisma.SortOrder
   rtmpUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
@@ -400,8 +444,12 @@ export type LiveSessionScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"LiveSession"> | string
   streamProvider?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
   muxLiveStreamId?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  muxAssetId?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
   streamKey?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
   playbackId?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  recordingPlaybackId?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  recordingStatus?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
+  recordingReadyAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
   rtmpUrl?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusWithAggregatesFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntWithAggregatesFilter<"LiveSession"> | number
@@ -417,8 +465,12 @@ export type LiveSessionCreateInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -442,8 +494,12 @@ export type LiveSessionUncheckedCreateInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -463,8 +519,12 @@ export type LiveSessionUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -488,8 +548,12 @@ export type LiveSessionUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -511,8 +575,12 @@ export type LiveSessionCreateManyInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -528,8 +596,12 @@ export type LiveSessionUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -547,8 +619,12 @@ export type LiveSessionUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -576,8 +652,12 @@ export type LiveSessionCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   streamProvider?: Prisma.SortOrder
   muxLiveStreamId?: Prisma.SortOrder
+  muxAssetId?: Prisma.SortOrder
   streamKey?: Prisma.SortOrder
   playbackId?: Prisma.SortOrder
+  recordingPlaybackId?: Prisma.SortOrder
+  recordingStatus?: Prisma.SortOrder
+  recordingReadyAt?: Prisma.SortOrder
   rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
@@ -599,8 +679,12 @@ export type LiveSessionMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   streamProvider?: Prisma.SortOrder
   muxLiveStreamId?: Prisma.SortOrder
+  muxAssetId?: Prisma.SortOrder
   streamKey?: Prisma.SortOrder
   playbackId?: Prisma.SortOrder
+  recordingPlaybackId?: Prisma.SortOrder
+  recordingStatus?: Prisma.SortOrder
+  recordingReadyAt?: Prisma.SortOrder
   rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
@@ -618,8 +702,12 @@ export type LiveSessionMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   streamProvider?: Prisma.SortOrder
   muxLiveStreamId?: Prisma.SortOrder
+  muxAssetId?: Prisma.SortOrder
   streamKey?: Prisma.SortOrder
   playbackId?: Prisma.SortOrder
+  recordingPlaybackId?: Prisma.SortOrder
+  recordingStatus?: Prisma.SortOrder
+  recordingReadyAt?: Prisma.SortOrder
   rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
@@ -805,8 +893,12 @@ export type LiveSessionCreateWithoutAgentInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -828,8 +920,12 @@ export type LiveSessionUncheckedCreateWithoutAgentInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -880,8 +976,12 @@ export type LiveSessionScalarWhereInput = {
   title?: Prisma.StringFilter<"LiveSession"> | string
   streamProvider?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   muxLiveStreamId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  muxAssetId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   streamKey?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   playbackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingPlaybackId?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingStatus?: Prisma.StringNullableFilter<"LiveSession"> | string | null
+  recordingReadyAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
@@ -897,8 +997,12 @@ export type LiveSessionCreateWithoutPropertyInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -920,8 +1024,12 @@ export type LiveSessionUncheckedCreateWithoutPropertyInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -967,8 +1075,12 @@ export type LiveSessionCreateWithoutLeadsInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -991,8 +1103,12 @@ export type LiveSessionUncheckedCreateWithoutLeadsInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1027,8 +1143,12 @@ export type LiveSessionUpdateWithoutLeadsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1051,8 +1171,12 @@ export type LiveSessionUncheckedUpdateWithoutLeadsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1071,8 +1195,12 @@ export type LiveSessionCreateWithoutOffersInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1095,8 +1223,12 @@ export type LiveSessionUncheckedCreateWithoutOffersInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1131,8 +1263,12 @@ export type LiveSessionUpdateWithoutOffersInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1155,8 +1291,12 @@ export type LiveSessionUncheckedUpdateWithoutOffersInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1175,8 +1315,12 @@ export type LiveSessionCreateWithoutCommentsInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1199,8 +1343,12 @@ export type LiveSessionUncheckedCreateWithoutCommentsInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1235,8 +1383,12 @@ export type LiveSessionUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1259,8 +1411,12 @@ export type LiveSessionUncheckedUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1279,8 +1435,12 @@ export type LiveSessionCreateWithoutLikeEventsInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1303,8 +1463,12 @@ export type LiveSessionUncheckedCreateWithoutLikeEventsInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1339,8 +1503,12 @@ export type LiveSessionUpdateWithoutLikeEventsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1363,8 +1531,12 @@ export type LiveSessionUncheckedUpdateWithoutLikeEventsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1384,8 +1556,12 @@ export type LiveSessionCreateManyAgentInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1401,8 +1577,12 @@ export type LiveSessionUpdateWithoutAgentInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1424,8 +1604,12 @@ export type LiveSessionUncheckedUpdateWithoutAgentInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1446,8 +1630,12 @@ export type LiveSessionUncheckedUpdateManyWithoutAgentInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1464,8 +1652,12 @@ export type LiveSessionCreateManyPropertyInput = {
   title: string
   streamProvider?: string | null
   muxLiveStreamId?: string | null
+  muxAssetId?: string | null
   streamKey?: string | null
   playbackId?: string | null
+  recordingPlaybackId?: string | null
+  recordingStatus?: string | null
+  recordingReadyAt?: Date | string | null
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
@@ -1481,8 +1673,12 @@ export type LiveSessionUpdateWithoutPropertyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1504,8 +1700,12 @@ export type LiveSessionUncheckedUpdateWithoutPropertyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1526,8 +1726,12 @@ export type LiveSessionUncheckedUpdateManyWithoutPropertyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1603,8 +1807,12 @@ export type LiveSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   title?: boolean
   streamProvider?: boolean
   muxLiveStreamId?: boolean
+  muxAssetId?: boolean
   streamKey?: boolean
   playbackId?: boolean
+  recordingPlaybackId?: boolean
+  recordingStatus?: boolean
+  recordingReadyAt?: boolean
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
@@ -1629,8 +1837,12 @@ export type LiveSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   title?: boolean
   streamProvider?: boolean
   muxLiveStreamId?: boolean
+  muxAssetId?: boolean
   streamKey?: boolean
   playbackId?: boolean
+  recordingPlaybackId?: boolean
+  recordingStatus?: boolean
+  recordingReadyAt?: boolean
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
@@ -1650,8 +1862,12 @@ export type LiveSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   title?: boolean
   streamProvider?: boolean
   muxLiveStreamId?: boolean
+  muxAssetId?: boolean
   streamKey?: boolean
   playbackId?: boolean
+  recordingPlaybackId?: boolean
+  recordingStatus?: boolean
+  recordingReadyAt?: boolean
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
@@ -1671,8 +1887,12 @@ export type LiveSessionSelectScalar = {
   title?: boolean
   streamProvider?: boolean
   muxLiveStreamId?: boolean
+  muxAssetId?: boolean
   streamKey?: boolean
   playbackId?: boolean
+  recordingPlaybackId?: boolean
+  recordingStatus?: boolean
+  recordingReadyAt?: boolean
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
@@ -1682,7 +1902,7 @@ export type LiveSessionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "streamProvider" | "muxLiveStreamId" | "streamKey" | "playbackId" | "rtmpUrl" | "status" | "viewers" | "startsAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
+export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "streamProvider" | "muxLiveStreamId" | "muxAssetId" | "streamKey" | "playbackId" | "recordingPlaybackId" | "recordingStatus" | "recordingReadyAt" | "rtmpUrl" | "status" | "viewers" | "startsAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
 export type LiveSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
@@ -1719,8 +1939,12 @@ export type $LiveSessionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     title: string
     streamProvider: string | null
     muxLiveStreamId: string | null
+    muxAssetId: string | null
     streamKey: string | null
     playbackId: string | null
+    recordingPlaybackId: string | null
+    recordingStatus: string | null
+    recordingReadyAt: Date | null
     rtmpUrl: string | null
     status: $Enums.LiveSessionStatus
     viewers: number
@@ -2164,8 +2388,12 @@ export interface LiveSessionFieldRefs {
   readonly title: Prisma.FieldRef<"LiveSession", 'String'>
   readonly streamProvider: Prisma.FieldRef<"LiveSession", 'String'>
   readonly muxLiveStreamId: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly muxAssetId: Prisma.FieldRef<"LiveSession", 'String'>
   readonly streamKey: Prisma.FieldRef<"LiveSession", 'String'>
   readonly playbackId: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly recordingPlaybackId: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly recordingStatus: Prisma.FieldRef<"LiveSession", 'String'>
+  readonly recordingReadyAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
   readonly rtmpUrl: Prisma.FieldRef<"LiveSession", 'String'>
   readonly status: Prisma.FieldRef<"LiveSession", 'LiveSessionStatus'>
   readonly viewers: Prisma.FieldRef<"LiveSession", 'Int'>
