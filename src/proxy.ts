@@ -57,13 +57,9 @@ function unauthorizedResponse(request: NextRequest) {
     );
   }
 
-  const forceLoginUrl = new URL("/api/auth/start", request.url);
-  const nextPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
-
-  forceLoginUrl.searchParams.set("next", nextPath);
-  forceLoginUrl.searchParams.set("force", "true");
-
-  const response = NextResponse.redirect(forceLoginUrl);
+  const response = NextResponse.rewrite(
+    new URL("/__dashboard-not-found", request.url),
+  );
   response.cookies.delete(AUTH_COOKIE_NAME);
 
   return response;
