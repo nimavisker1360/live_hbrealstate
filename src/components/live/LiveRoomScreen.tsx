@@ -330,6 +330,9 @@ export function LiveRoomScreen({
         );
 
         if (!ignore && data) {
+          const wasLive = streamState.status === "LIVE";
+          const isNowEnded = data.status === "ENDED";
+
           setStreamState((current) => ({
             ...current,
             playbackId:
@@ -339,6 +342,22 @@ export function LiveRoomScreen({
             startsAt: data.startsAt,
             status: data.status,
           }));
+
+          // Finalize session when it ends
+          if (wasLive && isNowEnded) {
+            try {
+              await fetch(
+                `/api/live-sessions/${encodeURIComponent(liveSessionId)}/finalize`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ viewers: viewerCount }),
+                },
+              );
+            } catch (error) {
+              console.error("Failed to finalize session:", error);
+            }
+          }
         }
       } catch {
         // Keep the current page state if Mux status sync is temporarily unavailable.
@@ -352,7 +371,7 @@ export function LiveRoomScreen({
       ignore = true;
       window.clearInterval(intervalId);
     };
-  }, [databaseLiveSessionId]);
+  }, [databaseLiveSessionId, streamState.status, viewerCount]);
 
   useEffect(() => {
     function updateSyncedUser(event: Event) {
@@ -966,7 +985,6 @@ function LiveVideoSurface({
           autoPlay
           className="absolute inset-0 h-full w-full object-cover"
           key={hlsUrl}
-          muted
           onError={() => setFailedHlsUrl(hlsUrl)}
           onPlaying={() => setVideoReady(true)}
           playsInline
