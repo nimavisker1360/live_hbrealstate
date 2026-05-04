@@ -70,9 +70,9 @@ export default async function Home() {
     : null;
 
   const platformMetrics = [
-    { label: "Live tours", value: `${liveSessions.length}` },
-    { label: "Properties", value: `${allProperties.length}` },
-    { label: "Premium agents", value: "25+" },
+    { label: "Live tours", value: `${liveSessions.length}`, detail: "Active sessions" },
+    { label: "Properties", value: `${allProperties.length}`, detail: "In inventory" },
+    { label: "Premium agents", value: "25+", detail: "On platform" },
   ];
 
   return (
