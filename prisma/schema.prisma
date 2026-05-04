@@ -116,6 +116,7 @@ model LiveSession {
   rtmpUrl        String?
   status         LiveSessionStatus @default(SCHEDULED)
   viewers        Int               @default(0)
+  whatsappClicks Int               @default(0)
   startsAt       DateTime?
   endedAt        DateTime?
   leads          Lead[]

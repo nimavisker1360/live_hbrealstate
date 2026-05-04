@@ -13,87 +13,6 @@ import { properties as mockProperties } from "@/data/mock";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
-const overviewCards = [
-  {
-    label: "Total live views",
-    value: "2,846",
-    detail: "+18% from last month",
-    icon: Eye,
-  },
-  {
-    label: "Total leads",
-    value: "184",
-    detail: "42 new this week",
-    icon: UsersRound,
-  },
-  {
-    label: "Total offers",
-    value: "27",
-    detail: "$18.4M total value",
-    icon: BadgeDollarSign,
-  },
-  {
-    label: "WhatsApp clicks",
-    value: "316",
-    detail: "68 high-intent taps",
-    icon: MessageCircle,
-  },
-];
-
-const leads = [
-  {
-    name: "Aylin Demir",
-    phone: "+90 532 441 20 18",
-    interest: "Palm Residence Sky Villa",
-    budget: "$4.5M - $5M",
-    status: "qualified",
-  },
-  {
-    name: "Karim Haddad",
-    phone: "+971 55 210 8841",
-    interest: "Dubai Marina penthouse",
-    budget: "$3M - $4M",
-    status: "contacted",
-  },
-  {
-    name: "Mina Laurent",
-    phone: "+44 7700 900314",
-    interest: "Chelsea Collector Loft",
-    budget: "$2.8M - $3.6M",
-    status: "new",
-  },
-  {
-    name: "Omar Aksoy",
-    phone: "+90 555 019 44 27",
-    interest: "Bosphorus waterfront homes",
-    budget: "$6M - $8M",
-    status: "lost",
-  },
-] as const;
-
-const offers = [
-  {
-    property: "Palm Residence Sky Villa",
-    amount: "$4,650,000",
-    buyer: "Aylin Demir",
-    phone: "+90 532 441 20 18",
-    status: "under review",
-  },
-  {
-    property: "Bosphorus Glass House",
-    amount: "$6,950,000",
-    buyer: "Omar Aksoy",
-    phone: "+90 555 019 44 27",
-    status: "countered",
-  },
-  {
-    property: "Chelsea Collector Loft",
-    amount: "$3,380,000",
-    buyer: "Mina Laurent",
-    phone: "+44 7700 900314",
-    status: "accepted",
-  },
-] as const;
 
 const statusStyles: Record<string, string> = {
   accepted: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
@@ -200,44 +119,105 @@ function canDeleteRecording(session: {
 }
 
 export default async function AgentDashboardPage() {
-  const [databaseProperties, databaseLiveSessions] = await Promise.all([
-    prisma.property.findMany({
-      include: {
-        _count: {
-          select: {
-            leads: true,
-            liveSessions: true,
+  const [databaseProperties, databaseLiveSessions, allLeads, allOffers] =
+    await Promise.all([
+      prisma.property.findMany({
+        include: {
+          _count: {
+            select: {
+              leads: true,
+              liveSessions: true,
+            },
+          },
+          liveSessions: {
+            orderBy: { createdAt: "desc" },
+            select: {
+              startsAt: true,
+              status: true,
+            },
+            take: 1,
           },
         },
-        liveSessions: {
-          orderBy: { createdAt: "desc" },
-          select: {
-            startsAt: true,
-            status: true,
+        orderBy: { updatedAt: "desc" },
+        take: 6,
+      }),
+      prisma.liveSession.findMany({
+        include: {
+          _count: {
+            select: {
+              leads: true,
+            },
           },
-          take: 1,
-        },
-      },
-      orderBy: { updatedAt: "desc" },
-      take: 6,
-    }),
-    prisma.liveSession.findMany({
-      include: {
-        _count: {
-          select: {
-            leads: true,
+          property: {
+            select: {
+              title: true,
+            },
           },
         },
-        property: {
-          select: {
-            title: true,
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      }),
+      prisma.lead.findMany({
+        include: {
+          liveSession: {
+            select: {
+              title: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-    }),
-  ]);
+        orderBy: { createdAt: "desc" },
+        take: 6,
+      }),
+      prisma.offer.findMany({
+        include: {
+          property: {
+            select: {
+              title: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+      }),
+    ]);
+
+  const totalViews = databaseLiveSessions.reduce(
+    (sum, session) => sum + session.viewers,
+    0,
+  );
+  const totalLeads = allLeads.length;
+  const totalOffers = allOffers.length;
+  const totalWhatsappClicks = databaseLiveSessions.reduce(
+    (sum, session) => sum + session.whatsappClicks,
+    0,
+  );
+
+  const overviewCards = [
+    {
+      label: "Total live views",
+      value: totalViews.toLocaleString(),
+      detail: `${databaseLiveSessions.length} active sessions`,
+      icon: Eye,
+    },
+    {
+      label: "Total leads",
+      value: totalLeads.toLocaleString(),
+      detail: `${allLeads.filter((l) => l.status === "NEW").length} new leads`,
+      icon: UsersRound,
+    },
+    {
+      label: "Total offers",
+      value: totalOffers.toLocaleString(),
+      detail: allOffers.length > 0 ? "Offers tracked" : "No offers yet",
+      icon: BadgeDollarSign,
+    },
+    {
+      label: "WhatsApp clicks",
+      value: totalWhatsappClicks.toLocaleString(),
+      detail: "High-intent interactions",
+      icon: MessageCircle,
+    },
+  ];
   const propertyOptions =
     databaseProperties.length > 0
       ? databaseProperties.map((property) => ({
@@ -427,23 +407,31 @@ export default async function AgentDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                  {leads.map((lead) => (
-                    <tr key={lead.phone}>
-                      <td className="py-4 pr-4 font-medium text-white">
-                        {lead.name}
-                      </td>
-                      <td className="py-4 pr-4 text-white/62">{lead.phone}</td>
-                      <td className="py-4 pr-4 text-white/72">
-                        {lead.interest}
-                      </td>
-                      <td className="py-4 pr-4 text-white/72">
-                        {lead.budget}
-                      </td>
-                      <td className="py-4">
-                        <StatusBadge status={lead.status} />
+                  {allLeads.length > 0 ? (
+                    allLeads.map((lead) => (
+                      <tr key={lead.id}>
+                        <td className="py-4 pr-4 font-medium text-white">
+                          {lead.fullName}
+                        </td>
+                        <td className="py-4 pr-4 text-white/62">{lead.phone}</td>
+                        <td className="py-4 pr-4 text-white/72">
+                          {lead.liveSession?.title || lead.interest}
+                        </td>
+                        <td className="py-4 pr-4 text-white/72">
+                          {lead.budget}
+                        </td>
+                        <td className="py-4">
+                          <StatusBadge status={lead.status.toLowerCase()} />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className="py-6 text-sm text-white/52" colSpan={5}>
+                        No leads yet.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -463,25 +451,40 @@ export default async function AgentDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                  {offers.map((offer) => (
-                    <tr key={`${offer.property}-${offer.buyer}`}>
-                      <td className="py-4 pr-4 font-medium text-white">
-                        {offer.property}
-                      </td>
-                      <td className="py-4 pr-4 font-semibold text-[#d6b15f]">
-                        {offer.amount}
-                      </td>
-                      <td className="py-4 pr-4 text-white/72">
-                        {offer.buyer}
-                      </td>
-                      <td className="py-4 pr-4 text-white/62">
-                        {offer.phone}
-                      </td>
-                      <td className="py-4">
-                        <StatusBadge status={offer.status} />
+                  {allOffers.length > 0 ? (
+                    allOffers.map((offer) => (
+                      <tr key={offer.id}>
+                        <td className="py-4 pr-4 font-medium text-white">
+                          {offer.property?.title}
+                        </td>
+                        <td className="py-4 pr-4 font-semibold text-[#d6b15f]">
+                          {new Intl.NumberFormat("en-US", {
+                            currency: offer.currency,
+                            style: "currency",
+                          }).format(Number(offer.amount))}
+                        </td>
+                        <td className="py-4 pr-4 text-white/72">
+                          {offer.buyerName}
+                        </td>
+                        <td className="py-4 pr-4 text-white/62">
+                          {offer.phone}
+                        </td>
+                        <td className="py-4">
+                          <StatusBadge
+                            status={offer.status
+                              .toLowerCase()
+                              .replace("_", " ")}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className="py-6 text-sm text-white/52" colSpan={5}>
+                        No offers yet.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

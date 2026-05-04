@@ -28,10 +28,12 @@ export type AggregateLiveSession = {
 
 export type LiveSessionAvgAggregateOutputType = {
   viewers: number | null
+  whatsappClicks: number | null
 }
 
 export type LiveSessionSumAggregateOutputType = {
   viewers: number | null
+  whatsappClicks: number | null
 }
 
 export type LiveSessionMinAggregateOutputType = {
@@ -51,6 +53,7 @@ export type LiveSessionMinAggregateOutputType = {
   rtmpUrl: string | null
   status: $Enums.LiveSessionStatus | null
   viewers: number | null
+  whatsappClicks: number | null
   startsAt: Date | null
   endedAt: Date | null
   createdAt: Date | null
@@ -74,6 +77,7 @@ export type LiveSessionMaxAggregateOutputType = {
   rtmpUrl: string | null
   status: $Enums.LiveSessionStatus | null
   viewers: number | null
+  whatsappClicks: number | null
   startsAt: Date | null
   endedAt: Date | null
   createdAt: Date | null
@@ -97,6 +101,7 @@ export type LiveSessionCountAggregateOutputType = {
   rtmpUrl: number
   status: number
   viewers: number
+  whatsappClicks: number
   startsAt: number
   endedAt: number
   createdAt: number
@@ -107,10 +112,12 @@ export type LiveSessionCountAggregateOutputType = {
 
 export type LiveSessionAvgAggregateInputType = {
   viewers?: true
+  whatsappClicks?: true
 }
 
 export type LiveSessionSumAggregateInputType = {
   viewers?: true
+  whatsappClicks?: true
 }
 
 export type LiveSessionMinAggregateInputType = {
@@ -130,6 +137,7 @@ export type LiveSessionMinAggregateInputType = {
   rtmpUrl?: true
   status?: true
   viewers?: true
+  whatsappClicks?: true
   startsAt?: true
   endedAt?: true
   createdAt?: true
@@ -153,6 +161,7 @@ export type LiveSessionMaxAggregateInputType = {
   rtmpUrl?: true
   status?: true
   viewers?: true
+  whatsappClicks?: true
   startsAt?: true
   endedAt?: true
   createdAt?: true
@@ -176,6 +185,7 @@ export type LiveSessionCountAggregateInputType = {
   rtmpUrl?: true
   status?: true
   viewers?: true
+  whatsappClicks?: true
   startsAt?: true
   endedAt?: true
   createdAt?: true
@@ -286,6 +296,7 @@ export type LiveSessionGroupByOutputType = {
   rtmpUrl: string | null
   status: $Enums.LiveSessionStatus
   viewers: number
+  whatsappClicks: number
   startsAt: Date | null
   endedAt: Date | null
   createdAt: Date
@@ -332,6 +343,7 @@ export type LiveSessionWhereInput = {
   rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
+  whatsappClicks?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
@@ -361,6 +373,7 @@ export type LiveSessionOrderByWithRelationInput = {
   rtmpUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
+  whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -393,6 +406,7 @@ export type LiveSessionWhereUniqueInput = Prisma.AtLeast<{
   rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
+  whatsappClicks?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
@@ -422,6 +436,7 @@ export type LiveSessionOrderByWithAggregationInput = {
   rtmpUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
+  whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -453,6 +468,7 @@ export type LiveSessionScalarWhereWithAggregatesInput = {
   rtmpUrl?: Prisma.StringNullableWithAggregatesFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusWithAggregatesFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntWithAggregatesFilter<"LiveSession"> | number
+  whatsappClicks?: Prisma.IntWithAggregatesFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LiveSession"> | Date | string
@@ -474,6 +490,7 @@ export type LiveSessionCreateInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -503,6 +520,7 @@ export type LiveSessionUncheckedCreateInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -528,6 +546,7 @@ export type LiveSessionUpdateInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -557,6 +576,7 @@ export type LiveSessionUncheckedUpdateInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -584,6 +604,7 @@ export type LiveSessionCreateManyInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -605,6 +626,7 @@ export type LiveSessionUpdateManyMutationInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -628,6 +650,7 @@ export type LiveSessionUncheckedUpdateManyInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -661,6 +684,7 @@ export type LiveSessionCountOrderByAggregateInput = {
   rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
+  whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -669,6 +693,7 @@ export type LiveSessionCountOrderByAggregateInput = {
 
 export type LiveSessionAvgOrderByAggregateInput = {
   viewers?: Prisma.SortOrder
+  whatsappClicks?: Prisma.SortOrder
 }
 
 export type LiveSessionMaxOrderByAggregateInput = {
@@ -688,6 +713,7 @@ export type LiveSessionMaxOrderByAggregateInput = {
   rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
+  whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -711,6 +737,7 @@ export type LiveSessionMinOrderByAggregateInput = {
   rtmpUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   viewers?: Prisma.SortOrder
+  whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -719,6 +746,7 @@ export type LiveSessionMinOrderByAggregateInput = {
 
 export type LiveSessionSumOrderByAggregateInput = {
   viewers?: Prisma.SortOrder
+  whatsappClicks?: Prisma.SortOrder
 }
 
 export type LiveSessionNullableScalarRelationFilter = {
@@ -902,6 +930,7 @@ export type LiveSessionCreateWithoutAgentInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -929,6 +958,7 @@ export type LiveSessionUncheckedCreateWithoutAgentInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -985,6 +1015,7 @@ export type LiveSessionScalarWhereInput = {
   rtmpUrl?: Prisma.StringNullableFilter<"LiveSession"> | string | null
   status?: Prisma.EnumLiveSessionStatusFilter<"LiveSession"> | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFilter<"LiveSession"> | number
+  whatsappClicks?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
@@ -1006,6 +1037,7 @@ export type LiveSessionCreateWithoutPropertyInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1033,6 +1065,7 @@ export type LiveSessionUncheckedCreateWithoutPropertyInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1084,6 +1117,7 @@ export type LiveSessionCreateWithoutLeadsInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1112,6 +1146,7 @@ export type LiveSessionUncheckedCreateWithoutLeadsInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1152,6 +1187,7 @@ export type LiveSessionUpdateWithoutLeadsInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1180,6 +1216,7 @@ export type LiveSessionUncheckedUpdateWithoutLeadsInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1204,6 +1241,7 @@ export type LiveSessionCreateWithoutOffersInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1232,6 +1270,7 @@ export type LiveSessionUncheckedCreateWithoutOffersInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1272,6 +1311,7 @@ export type LiveSessionUpdateWithoutOffersInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1300,6 +1340,7 @@ export type LiveSessionUncheckedUpdateWithoutOffersInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1324,6 +1365,7 @@ export type LiveSessionCreateWithoutCommentsInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1352,6 +1394,7 @@ export type LiveSessionUncheckedCreateWithoutCommentsInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1392,6 +1435,7 @@ export type LiveSessionUpdateWithoutCommentsInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1420,6 +1464,7 @@ export type LiveSessionUncheckedUpdateWithoutCommentsInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1444,6 +1489,7 @@ export type LiveSessionCreateWithoutLikeEventsInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1472,6 +1518,7 @@ export type LiveSessionUncheckedCreateWithoutLikeEventsInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1512,6 +1559,7 @@ export type LiveSessionUpdateWithoutLikeEventsInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1540,6 +1588,7 @@ export type LiveSessionUncheckedUpdateWithoutLikeEventsInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1565,6 +1614,7 @@ export type LiveSessionCreateManyAgentInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1586,6 +1636,7 @@ export type LiveSessionUpdateWithoutAgentInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1613,6 +1664,7 @@ export type LiveSessionUncheckedUpdateWithoutAgentInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1639,6 +1691,7 @@ export type LiveSessionUncheckedUpdateManyWithoutAgentInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1661,6 +1714,7 @@ export type LiveSessionCreateManyPropertyInput = {
   rtmpUrl?: string | null
   status?: $Enums.LiveSessionStatus
   viewers?: number
+  whatsappClicks?: number
   startsAt?: Date | string | null
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -1682,6 +1736,7 @@ export type LiveSessionUpdateWithoutPropertyInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1709,6 +1764,7 @@ export type LiveSessionUncheckedUpdateWithoutPropertyInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1735,6 +1791,7 @@ export type LiveSessionUncheckedUpdateManyWithoutPropertyInput = {
   rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
+  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1816,6 +1873,7 @@ export type LiveSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
+  whatsappClicks?: boolean
   startsAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
@@ -1846,6 +1904,7 @@ export type LiveSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
+  whatsappClicks?: boolean
   startsAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
@@ -1871,6 +1930,7 @@ export type LiveSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
+  whatsappClicks?: boolean
   startsAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
@@ -1896,13 +1956,14 @@ export type LiveSessionSelectScalar = {
   rtmpUrl?: boolean
   status?: boolean
   viewers?: boolean
+  whatsappClicks?: boolean
   startsAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "streamProvider" | "muxLiveStreamId" | "muxAssetId" | "streamKey" | "playbackId" | "recordingPlaybackId" | "recordingStatus" | "recordingReadyAt" | "rtmpUrl" | "status" | "viewers" | "startsAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
+export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "streamProvider" | "muxLiveStreamId" | "muxAssetId" | "streamKey" | "playbackId" | "recordingPlaybackId" | "recordingStatus" | "recordingReadyAt" | "rtmpUrl" | "status" | "viewers" | "whatsappClicks" | "startsAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
 export type LiveSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
@@ -1948,6 +2009,7 @@ export type $LiveSessionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     rtmpUrl: string | null
     status: $Enums.LiveSessionStatus
     viewers: number
+    whatsappClicks: number
     startsAt: Date | null
     endedAt: Date | null
     createdAt: Date
@@ -2397,6 +2459,7 @@ export interface LiveSessionFieldRefs {
   readonly rtmpUrl: Prisma.FieldRef<"LiveSession", 'String'>
   readonly status: Prisma.FieldRef<"LiveSession", 'LiveSessionStatus'>
   readonly viewers: Prisma.FieldRef<"LiveSession", 'Int'>
+  readonly whatsappClicks: Prisma.FieldRef<"LiveSession", 'Int'>
   readonly startsAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
   readonly endedAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"LiveSession", 'DateTime'>

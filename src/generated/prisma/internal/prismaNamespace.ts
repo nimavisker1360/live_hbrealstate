@@ -1104,6 +1104,7 @@ export const LiveSessionScalarFieldEnum = {
   rtmpUrl: 'rtmpUrl',
   status: 'status',
   viewers: 'viewers',
+  whatsappClicks: 'whatsappClicks',
   startsAt: 'startsAt',
   endedAt: 'endedAt',
   createdAt: 'createdAt',

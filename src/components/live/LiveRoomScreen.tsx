@@ -812,6 +812,7 @@ export function LiveRoomScreen({
             commentsError={commentsError}
             comments={comments}
             commentsLoading={isLoadingComments}
+            databaseLiveSessionId={databaseLiveSessionId}
             isSavingComment={isSavingComment}
             onCommentChange={setComment}
             onOpenLead={openLeadModal}
@@ -1217,6 +1218,7 @@ function BottomOverlay({
   onCommentChange,
   onOpenLead,
   onSubmit,
+  databaseLiveSessionId,
 }: {
   comment: string;
   commentsError: string;
@@ -1226,7 +1228,24 @@ function BottomOverlay({
   onCommentChange: (value: string) => void;
   onOpenLead: (source: LeadSource) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void | Promise<void>;
+  databaseLiveSessionId?: string;
 }) {
+  async function handleWhatsAppClick() {
+    if (!databaseLiveSessionId) return;
+
+    try {
+      await fetch(
+        `/api/live-sessions/${encodeURIComponent(databaseLiveSessionId)}/click`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "whatsapp" }),
+        },
+      );
+    } catch (error) {
+      console.error("Failed to track WhatsApp click:", error);
+    }
+  }
   return (
     <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/82 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-24">
       <div className="mb-4 max-h-40 space-y-2 overflow-hidden pr-16">
@@ -1291,7 +1310,11 @@ function BottomOverlay({
       </form>
 
       <div className="mt-3 grid grid-cols-3 gap-2">
-        <Button className="h-11 px-2 text-xs sm:text-sm" variant="secondary">
+        <Button
+          className="h-11 px-2 text-xs sm:text-sm"
+          onClick={handleWhatsAppClick}
+          variant="secondary"
+        >
           <MessageCircle aria-hidden className="size-4" />
           WhatsApp
         </Button>
