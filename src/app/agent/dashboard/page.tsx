@@ -9,7 +9,6 @@ import Link from "next/link";
 import { CreateLiveSessionButton } from "@/components/live/CreateLiveSessionButton";
 import { RecordingActions } from "@/components/live/RecordingActions";
 import { Card } from "@/components/ui/Card";
-import { properties as mockProperties } from "@/data/mock";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
@@ -218,18 +217,11 @@ export default async function AgentDashboardPage() {
       icon: MessageCircle,
     },
   ];
-  const propertyOptions =
-    databaseProperties.length > 0
-      ? databaseProperties.map((property) => ({
-          id: property.id,
-          location: property.location,
-          title: property.title,
-        }))
-      : mockProperties.map((property) => ({
-          id: property.id,
-          location: property.location,
-          title: property.title,
-        }));
+  const propertyOptions = databaseProperties.map((property) => ({
+    id: property.id,
+    location: property.location,
+    title: property.title,
+  }));
 
   return (
     <div className="bg-[#050505]">
