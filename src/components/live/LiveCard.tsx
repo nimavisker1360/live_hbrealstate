@@ -6,6 +6,8 @@ import type { LiveTour } from "@/types/platform";
 
 export function LiveCard({ tour }: { tour: LiveTour }) {
   const isLive = tour.status === "Live";
+  const isRecording = tour.status === "Recorded";
+  const actionLabel = isRecording ? "Watch recording" : "Enter room";
 
   return (
     <Card className="overflow-hidden">
@@ -54,7 +56,7 @@ export function LiveCard({ tour }: { tour: LiveTour }) {
           <p className="text-sm text-white/52">Hosted by {tour.agent}</p>
           <Button href={`/live/${tour.roomId}`} size="sm">
             <PlayCircle aria-hidden className="size-4" />
-            Enter room
+            {actionLabel}
           </Button>
         </div>
       </div>
