@@ -46,7 +46,7 @@ export default async function Home() {
   ]);
 
   const featuredTour = liveSessions[0]
-    ? {
+    ? ({
         agent: liveSessions[0].agent.name,
         duration: "Live session",
         id: liveSessions[0].id,
@@ -63,10 +63,10 @@ export default async function Home() {
               new Date(liveSessions[0].startsAt),
             )
           : "Scheduled",
-        status: liveSessions[0].status === "LIVE" ? "Live" : "Scheduled",
+        status: (liveSessions[0].status === "LIVE" ? "Live" : "Scheduled") as const,
         title: liveSessions[0].property.title,
         viewers: liveSessions[0].viewers,
-      }
+      } satisfies LiveTour)
     : null;
 
   const platformMetrics = [
