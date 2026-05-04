@@ -5,6 +5,7 @@ import { CTAButtons } from "@/components/sections/CTAButtons";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { prisma } from "@/lib/prisma";
+import type { LiveTour } from "@/types/platform";
 
 export const dynamic = "force-dynamic";
 
