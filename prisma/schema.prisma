@@ -87,6 +87,7 @@ model Property {
   price        Decimal?      @db.Decimal(14, 2)
   currency     String        @default("USD")
   image        String?
+  description  String?
   liveSessions LiveSession[]
   leads        Lead[]
   offers       Offer[]

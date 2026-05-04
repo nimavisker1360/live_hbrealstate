@@ -273,6 +273,74 @@ export default async function AgentDashboardPage() {
           })}
         </section>
 
+        <section
+          aria-label="Live Tour Previews"
+          className="mt-8"
+        >
+          <SectionHeader eyebrow="Live tours" title="Property previews" />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {databaseProperties.map((property) => {
+              const latestSession = property.liveSessions[0];
+              const fallbackImage = "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=80";
+              const imageUrl = property.image || fallbackImage;
+              const descriptionPreview = property.description
+                ? property.description.substring(0, 100) + (property.description.length > 100 ? "..." : "")
+                : "No description added yet";
+
+              return (
+                <Card className="overflow-hidden" key={property.id}>
+                  <div className="relative aspect-video w-full overflow-hidden bg-black/40">
+                    <img
+                      alt={property.title}
+                      className="h-full w-full object-cover"
+                      src={imageUrl}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <p className="text-sm font-medium text-[#d6b15f]">
+                        {formatPrice(property.price, property.currency)}
+                      </p>
+                      <h3 className="mt-1 text-lg font-semibold text-white">
+                        {property.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="space-y-3 p-4">
+                    <p className="flex items-center gap-2 text-sm text-white/58">
+                      <span className="text-[#d6b15f]">📍</span>
+                      {property.location}
+                    </p>
+                    <p className="text-sm text-white/64 line-clamp-2">
+                      {descriptionPreview}
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-xs text-white/52">
+                      <span>{property._count.leads} leads</span>
+                      <span>•</span>
+                      <span>{property._count.liveSessions} sessions</span>
+                    </div>
+                    {latestSession && (
+                      <div className="pt-2">
+                        <p className="text-xs text-white/48">
+                          {latestSession.status === "LIVE"
+                            ? "🔴 Live now"
+                            : latestSession.startsAt
+                              ? `Next: ${formatDate(latestSession.startsAt)}`
+                              : "No upcoming session"}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              );
+            })}
+            {databaseProperties.length === 0 ? (
+              <Card className="col-span-full p-8 text-center">
+                <p className="text-sm text-white/52">No properties to preview yet.</p>
+              </Card>
+            ) : null}
+          </div>
+        </section>
+
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
           <Card className="p-5">
             <SectionHeader eyebrow="Live sessions" title="Session performance" />

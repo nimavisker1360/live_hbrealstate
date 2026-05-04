@@ -10,6 +10,8 @@ type EnsureContextInput = {
   propertyId?: string;
   propertyTitle?: string;
   propertyLocation?: string;
+  propertyDescription?: string;
+  propertyImage?: string;
   roomId?: string;
   sessionTitle?: string;
   status?: "SCHEDULED" | "LIVE" | "ENDED";
@@ -21,6 +23,8 @@ export async function ensureMockContext({
   propertyId = MOCK_PROPERTY_ID,
   propertyTitle = "HB Live Property",
   propertyLocation = "Istanbul, Turkey",
+  propertyDescription,
+  propertyImage,
   roomId,
   sessionTitle,
   status = "LIVE",
@@ -45,12 +49,16 @@ export async function ensureMockContext({
       title: propertyTitle,
       location: propertyLocation,
       agentId: agent.id,
+      ...(propertyDescription && { description: propertyDescription }),
+      ...(propertyImage && { image: propertyImage }),
     },
     create: {
       id: propertyId,
       agentId: agent.id,
       title: propertyTitle,
       location: propertyLocation,
+      ...(propertyDescription && { description: propertyDescription }),
+      ...(propertyImage && { image: propertyImage }),
     },
   });
 

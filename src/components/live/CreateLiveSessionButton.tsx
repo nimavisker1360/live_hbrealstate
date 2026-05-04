@@ -132,6 +132,8 @@ export function CreateLiveSessionButton({
   );
   const [newPropertyLocation, setNewPropertyLocation] = useState("");
   const [newPropertyTitle, setNewPropertyTitle] = useState("");
+  const [newPropertyDescription, setNewPropertyDescription] = useState("");
+  const [newPropertyImage, setNewPropertyImage] = useState("");
   const [liveTitle, setLiveTitle] = useState(
     properties[0] ? `${properties[0].title} Live Tour` : "",
   );
@@ -236,6 +238,8 @@ export function CreateLiveSessionButton({
           propertyId: propertyMode === "existing" ? property.id : undefined,
           propertyLocation: property.location,
           propertyTitle: property.title,
+          ...(propertyMode === "new" && newPropertyDescription && { propertyDescription: newPropertyDescription.trim() }),
+          ...(propertyMode === "new" && newPropertyImage && { propertyImage: newPropertyImage.trim() }),
           startsAt: startsAt.toISOString(),
           title: liveTitle.trim(),
         }),
@@ -329,34 +333,67 @@ export function CreateLiveSessionButton({
                 </select>
               </label>
             ) : (
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="text-sm font-medium text-white/72">
+                      Property name
+                    </span>
+                    <input
+                      className={cn(fieldClassName, "mt-2")}
+                      onChange={(event) =>
+                        handleNewPropertyTitleChange(event.target.value)
+                      }
+                      placeholder="Bebek Hill Residence"
+                      type="text"
+                      value={newPropertyTitle}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-sm font-medium text-white/72">
+                      Location
+                    </span>
+                    <input
+                      className={cn(fieldClassName, "mt-2")}
+                      onChange={(event) =>
+                        setNewPropertyLocation(event.target.value)
+                      }
+                      placeholder="Istanbul, Turkey"
+                      type="text"
+                      value={newPropertyLocation}
+                    />
+                  </label>
+                </div>
                 <label className="block">
                   <span className="text-sm font-medium text-white/72">
-                    Property name
+                    Preview image URL
                   </span>
                   <input
                     className={cn(fieldClassName, "mt-2")}
                     onChange={(event) =>
-                      handleNewPropertyTitleChange(event.target.value)
+                      setNewPropertyImage(event.target.value)
                     }
-                    placeholder="Bebek Hill Residence"
-                    type="text"
-                    value={newPropertyTitle}
+                    placeholder="https://images.unsplash.com/photo-..."
+                    type="url"
+                    value={newPropertyImage}
                   />
                 </label>
                 <label className="block">
                   <span className="text-sm font-medium text-white/72">
-                    Location
+                    Property description (optional)
                   </span>
-                  <input
-                    className={cn(fieldClassName, "mt-2")}
+                  <textarea
+                    className={cn(fieldClassName, "mt-2 resize-none")}
                     onChange={(event) =>
-                      setNewPropertyLocation(event.target.value)
+                      setNewPropertyDescription(event.target.value)
                     }
-                    placeholder="Istanbul, Turkey"
-                    type="text"
-                    value={newPropertyLocation}
+                    placeholder="Describe the property, features, amenities, etc."
+                    rows={3}
+                    value={newPropertyDescription}
                   />
+                  <p className="mt-1 text-xs text-white/48">
+                    Max 2000 characters
+                  </p>
                 </label>
               </div>
             )}

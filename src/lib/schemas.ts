@@ -95,6 +95,8 @@ export const liveSessionPayloadSchema = z.object({
   propertyId: nonEmptyString.optional(),
   propertyTitle: z.string().trim().min(2).max(160),
   propertyLocation: z.string().trim().min(2).max(160),
+  propertyDescription: z.string().trim().max(2000).optional(),
+  propertyImage: z.string().trim().url().optional(),
   roomId: z
     .string()
     .trim()

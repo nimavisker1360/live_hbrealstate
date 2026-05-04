@@ -118,6 +118,8 @@ export async function POST(request: Request) {
       propertyId,
       propertyTitle: payload.propertyTitle,
       propertyLocation: payload.propertyLocation,
+      propertyDescription: payload.propertyDescription,
+      propertyImage: payload.propertyImage,
       roomId,
       sessionTitle: title,
       status: "SCHEDULED",
@@ -139,7 +141,7 @@ export async function POST(request: Request) {
       },
       include: {
         agent: { select: { id: true, name: true, company: true } },
-        property: { select: { id: true, title: true, location: true } },
+        property: { select: { id: true, title: true, location: true, description: true, image: true } },
       },
     });
 
