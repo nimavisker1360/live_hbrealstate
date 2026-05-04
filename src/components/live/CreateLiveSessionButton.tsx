@@ -207,9 +207,31 @@ export function CreateLiveSessionButton({
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      const dataUrl = e.target?.result as string;
-      setNewPropertyImage(dataUrl);
-      setNewPropertyImagePreview(dataUrl);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let { width, height } = img;
+
+        // Resize if image is too large
+        const maxWidth = 800;
+        const maxHeight = 600;
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = width * ratio;
+          height = height * ratio;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Compress to JPEG with quality 0.8
+        const compressedUrl = canvas.toDataURL("image/jpeg", 0.8);
+        setNewPropertyImage(compressedUrl);
+        setNewPropertyImagePreview(compressedUrl);
+      };
+      img.src = e.target?.result as string;
     };
     reader.readAsDataURL(file);
   }
