@@ -83,7 +83,11 @@ export async function POST(request: Request) {
       },
     });
 
-    await sendLeadNotificationEmail(lead);
+    try {
+      await sendLeadNotificationEmail(lead);
+    } catch (emailError) {
+      console.error("Lead notification email failed:", emailError);
+    }
 
     return Response.json({ data: lead }, { status: 201 });
   } catch (error) {
