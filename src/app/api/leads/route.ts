@@ -1,10 +1,8 @@
 import { LeadStatus, type Prisma } from "@/generated/prisma/client";
 import { handleApiError, getStringParam, jsonError } from "@/lib/api";
-import { ensureMockContext } from "@/lib/db-defaults";
+import { createLeadAndSendEmail } from "@/lib/lead-service";
 import { prisma } from "@/lib/prisma";
-import { leadPayloadSchema } from "@/lib/schemas";
 import { getCurrentSession } from "@/lib/auth";
-import { sendLeadNotificationEmail } from "@/lib/lead-email";
 
 export async function GET(request: Request) {
   try {
@@ -53,42 +51,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const payload = leadPayloadSchema.parse(await request.json());
-    const { agent, property, liveSession } = await ensureMockContext({
-      agentId: payload.agentId,
-      agentName: payload.agentName,
-      propertyId: payload.propertyId,
-      propertyTitle: payload.propertyTitle,
-      propertyLocation: payload.propertyLocation,
-      roomId: payload.roomId,
-      sessionTitle: payload.propertyTitle,
-    });
-
-    const lead = await prisma.lead.create({
-      data: {
-        agentId: agent.id,
-        propertyId: property.id,
-        liveSessionId: liveSession?.id,
-        fullName: payload.fullName,
-        phone: payload.phone,
-        interest: payload.interest,
-        budget: payload.budget,
-        source: payload.source,
-        message: payload.message,
-      },
-      include: {
-        agent: { select: { id: true, name: true, company: true } },
-        property: { select: { id: true, title: true, location: true } },
-        liveSession: { select: { id: true, roomId: true, title: true } },
-      },
-    });
-
-    try {
-      await sendLeadNotificationEmail(lead);
-    } catch (emailError) {
-      console.error("Lead notification email failed:", emailError);
-    }
-
+    const lead = await createLeadAndSendEmail(await request.json());
     return Response.json({ data: lead }, { status: 201 });
   } catch (error) {
     return handleApiError(error);

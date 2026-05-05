@@ -792,11 +792,11 @@ export function LiveRoomScreen({
     setSuccessMessage("");
 
     try {
-      await postJson("/api/leads", payload);
+      await postJson("/api/email/send", payload);
       setSavedLeadCount((count) => count + 1);
       form.reset();
       setSuccessMessage(
-        "Lead saved to PostgreSQL. The HB team will follow up soon.",
+        "Lead saved and emailed to the HB team. They will follow up soon.",
       );
     } catch (error) {
       setErrorMessage(
