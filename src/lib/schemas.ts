@@ -14,12 +14,23 @@ export const leadPayloadSchema = z
     fullName: z.string().trim().min(2).max(120),
     phone: z.string().trim().min(6).max(32),
     budget: z.string().trim().min(2).max(120),
+    viewingAt: z.string().datetime().optional(),
     interest: z.string().trim().max(240).optional(),
     interestedIn: z.array(z.string().trim().min(1)).max(8).optional(),
     message: z.string().trim().max(1000).optional(),
   })
+  .superRefine((payload, context) => {
+    if (payload.source === "Book Viewing" && !payload.viewingAt) {
+      context.addIssue({
+        code: "custom",
+        message: "Viewing date and time is required for booking requests.",
+        path: ["viewingAt"],
+      });
+    }
+  })
   .transform((payload) => ({
     ...payload,
+    viewingAt: payload.viewingAt ? new Date(payload.viewingAt) : undefined,
     interest:
       payload.interest ??
       payload.interestedIn?.join(", ") ??

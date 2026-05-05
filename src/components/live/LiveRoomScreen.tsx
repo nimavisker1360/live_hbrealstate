@@ -128,6 +128,11 @@ type StreamStatusResponse = {
 };
 
 const VISITOR_ID_KEY = "hb-live-visitor-id";
+
+function getLocalDateTimeInputValue(date: Date) {
+  const offsetMs = date.getTimezoneOffset() * 60_000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+}
 const LIKE_COOLDOWN_MS = 2_000;
 const MAX_HLS_RECOVERY_ATTEMPTS = 8;
 
@@ -772,11 +777,16 @@ export function LiveRoomScreen({
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const viewingAtValue = String(formData.get("viewingAt") ?? "");
+    const viewingAt = viewingAtValue
+      ? new Date(viewingAtValue).toISOString()
+      : undefined;
     const payload = {
       source: activeModal?.type === "lead" ? activeModal.source : "Get Details",
       fullName: String(formData.get("fullName") ?? ""),
       phone: String(formData.get("whatsapp") ?? ""),
       budget: String(formData.get("budget") ?? ""),
+      viewingAt,
       interestedIn: formData.getAll("interestedIn") as LeadIntent[],
       message: String(formData.get("message") ?? ""),
       roomId: tour.roomId,
@@ -1631,6 +1641,9 @@ function LeadForm({
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   source: LeadSource;
 }) {
+  const isBooking = source === "Book Viewing";
+  const minViewingAt = getLocalDateTimeInputValue(new Date());
+
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -1649,6 +1662,15 @@ function LeadForm({
         placeholder="$500,000 - $1,000,000"
         required
       />
+      {isBooking ? (
+        <FormField
+          label="Viewing date and time"
+          min={minViewingAt}
+          name="viewingAt"
+          required
+          type="datetime-local"
+        />
+      ) : null}
       <fieldset>
         <legend className="mb-2 text-sm font-medium text-white/78">
           Interested in
@@ -1741,15 +1763,19 @@ function OfferForm({
 function FormField({
   inputMode,
   label,
+  min,
   name,
   placeholder,
   required,
+  type = "text",
 }: {
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   label: string;
+  min?: string;
   name: string;
   placeholder?: string;
   required?: boolean;
+  type?: React.HTMLInputTypeAttribute;
 }) {
   return (
     <label className="block">
@@ -1759,9 +1785,11 @@ function FormField({
       <input
         className="h-12 w-full rounded-md border border-white/10 bg-white/[0.04] px-3 text-sm text-white outline-none transition placeholder:text-white/32 focus:border-[#d6b15f] focus:ring-2 focus:ring-[#d6b15f]/20"
         inputMode={inputMode}
+        min={min}
         name={name}
         placeholder={placeholder}
         required={required}
+        type={type}
       />
     </label>
   );

@@ -1,0 +1,1 @@
+ALTER TABLE "Lead" ADD COLUMN "viewingAt" TIMESTAMP(3);

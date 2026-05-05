@@ -16,6 +16,7 @@ type LeadNotificationInput = {
   interest: string;
   budget: string;
   source: string;
+  viewingAt: Date | null;
   message: string | null;
   createdAt: Date;
   agent: {
@@ -52,6 +53,22 @@ function formatTimestamp(value: Date) {
   return value.toISOString();
 }
 
+function formatViewingTime(value: Date | null) {
+  if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    month: "short",
+    timeZone: "Europe/Istanbul",
+    timeZoneName: "short",
+    year: "numeric",
+  }).format(value);
+}
+
 function buildDetailRows(fields: Array<{ label: string; value?: string | null }>) {
   return fields
     .filter((field) => field.value)
@@ -72,6 +89,7 @@ function buildDetailRows(fields: Array<{ label: string; value?: string | null }>
 
 function buildLeadEmailHtml(lead: LeadNotificationInput) {
   const timestamp = formatTimestamp(lead.createdAt);
+  const viewingTime = formatViewingTime(lead.viewingAt);
   const rows = buildDetailRows([
     { label: "Lead ID", value: escapeHtml(lead.id) },
     { label: "Full name", value: escapeHtml(lead.fullName) },
@@ -80,6 +98,7 @@ function buildLeadEmailHtml(lead: LeadNotificationInput) {
       value: `<a href="tel:${escapeHtml(lead.phone)}" style="color: #0f766e;">${escapeHtml(lead.phone)}</a>`,
     },
     { label: "Budget", value: escapeHtml(lead.budget) },
+    { label: "Viewing time", value: viewingTime ? escapeHtml(viewingTime) : null },
     { label: "Interested in", value: escapeHtml(lead.interest) },
     { label: "Source", value: escapeHtml(lead.source) },
     {
@@ -123,6 +142,8 @@ function buildLeadEmailHtml(lead: LeadNotificationInput) {
 }
 
 function buildLeadEmailText(lead: LeadNotificationInput) {
+  const viewingTime = formatViewingTime(lead.viewingAt);
+
   return [
     "New HB Live Lead",
     "",
@@ -130,6 +151,7 @@ function buildLeadEmailText(lead: LeadNotificationInput) {
     `Full name: ${lead.fullName}`,
     `WhatsApp number: ${lead.phone}`,
     `Budget: ${lead.budget}`,
+    `Viewing time: ${viewingTime || "Not provided"}`,
     `Interested in: ${lead.interest}`,
     `Source: ${lead.source}`,
     `Property: ${lead.property.title}`,

@@ -160,6 +160,7 @@ export const LeadScalarFieldEnum = {
   interest: 'interest',
   budget: 'budget',
   source: 'source',
+  viewingAt: 'viewingAt',
   message: 'message',
   status: 'status',
   createdAt: 'createdAt',

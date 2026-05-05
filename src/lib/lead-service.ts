@@ -25,6 +25,7 @@ export async function createLeadAndSendEmail(input: unknown) {
       interest: payload.interest,
       budget: payload.budget,
       source: payload.source,
+      viewingAt: payload.viewingAt,
       message: payload.message,
     },
     include: {

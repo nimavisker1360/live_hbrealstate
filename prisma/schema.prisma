@@ -148,6 +148,7 @@ model Lead {
   interest      String
   budget        String
   source        String
+  viewingAt     DateTime?
   message       String?
   status        LeadStatus   @default(NEW)
   createdAt     DateTime     @default(now())
