@@ -10,6 +10,7 @@ import {
   BadgeDollarSign,
   CalendarCheck,
   ChevronLeft,
+  ChevronRight,
   FileText,
   Heart,
   MapPin,
@@ -128,11 +129,90 @@ type StreamStatusResponse = {
 };
 
 const VISITOR_ID_KEY = "hb-live-visitor-id";
+const CALENDAR_WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;
 
-function getLocalDateTimeInputValue(date: Date) {
-  const offsetMs = date.getTimezoneOffset() * 60_000;
-  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+type CalendarDay = {
+  date: Date;
+  isCurrentMonth: boolean;
+};
+
+function getCalendarDays(monthDate: Date) {
+  const firstDayOfMonth = new Date(
+    monthDate.getFullYear(),
+    monthDate.getMonth(),
+    1,
+  );
+  const mondayOffset = (firstDayOfMonth.getDay() + 6) % 7;
+  const firstVisibleDay = new Date(firstDayOfMonth);
+  firstVisibleDay.setDate(firstDayOfMonth.getDate() - mondayOffset);
+
+  return Array.from({ length: 42 }, (_, index): CalendarDay => {
+    const date = new Date(firstVisibleDay);
+    date.setDate(firstVisibleDay.getDate() + index);
+
+    return {
+      date,
+      isCurrentMonth: date.getMonth() === monthDate.getMonth(),
+    };
+  });
 }
+
+function isSameCalendarDay(a: Date | null, b: Date) {
+  return (
+    Boolean(a) &&
+    a?.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function isPastCalendarDay(date: Date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const candidate = new Date(date);
+  candidate.setHours(0, 0, 0, 0);
+
+  return candidate < today;
+}
+
+function combineLocalDateAndTime(date: Date, time: string) {
+  const [hours = "12", minutes = "00"] = time.split(":");
+  const dateTime = new Date(date);
+  dateTime.setHours(Number(hours), Number(minutes), 0, 0);
+
+  return dateTime;
+}
+
+function formatBookingDisplay(value: string) {
+  if (!value) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+function formatCalendarMonth(value: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    year: "numeric",
+  }).format(value);
+}
+
+function formatIsoDate(value: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(value);
+}
+
 const LIKE_COOLDOWN_MS = 2_000;
 const MAX_HLS_RECOVERY_ATTEMPTS = 8;
 
@@ -778,11 +858,20 @@ export function LiveRoomScreen({
     const form = event.currentTarget;
     const formData = new FormData(form);
     const viewingAtValue = String(formData.get("viewingAt") ?? "");
+    const leadSource =
+      activeModal?.type === "lead" ? activeModal.source : "Get Details";
+
+    if (leadSource === "Book Viewing" && !viewingAtValue) {
+      setErrorMessage("Please select a viewing date and time.");
+      setSuccessMessage("");
+      return;
+    }
+
     const viewingAt = viewingAtValue
       ? new Date(viewingAtValue).toISOString()
       : undefined;
     const payload = {
-      source: activeModal?.type === "lead" ? activeModal.source : "Get Details",
+      source: leadSource,
       fullName: String(formData.get("fullName") ?? ""),
       phone: String(formData.get("whatsapp") ?? ""),
       budget: String(formData.get("budget") ?? ""),
@@ -1618,6 +1707,7 @@ function LiveActionModal({
         ) : (
           <LeadForm
             isSubmitting={isSubmitting}
+            key={`${modal.source}-${leadCount}`}
             source={modal.source}
             onSubmit={onSubmitLead}
           />
@@ -1642,7 +1732,6 @@ function LeadForm({
   source: LeadSource;
 }) {
   const isBooking = source === "Book Viewing";
-  const minViewingAt = getLocalDateTimeInputValue(new Date());
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
@@ -1663,13 +1752,7 @@ function LeadForm({
         required
       />
       {isBooking ? (
-        <FormField
-          label="Viewing date and time"
-          min={minViewingAt}
-          name="viewingAt"
-          required
-          type="datetime-local"
-        />
+        <BookingDateTimeField name="viewingAt" />
       ) : null}
       <fieldset>
         <legend className="mb-2 text-sm font-medium text-white/78">
@@ -1760,22 +1843,189 @@ function OfferForm({
   );
 }
 
+function BookingDateTimeField({ name }: { name: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [visibleMonth, setVisibleMonth] = useState(() => new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState("12:00");
+  const [committedValue, setCommittedValue] = useState("");
+  const [minimumBookingTime, setMinimumBookingTime] = useState(0);
+  const calendarDays = getCalendarDays(visibleMonth);
+  const selectedDateTime = selectedDate
+    ? combineLocalDateAndTime(selectedDate, selectedTime)
+    : null;
+  const isSelectedInPast =
+    selectedDateTime !== null &&
+    minimumBookingTime > 0 &&
+    selectedDateTime.getTime() < minimumBookingTime;
+  const displayValue = formatBookingDisplay(committedValue);
+
+  function commitSelection() {
+    if (!selectedDate) {
+      return;
+    }
+
+    const nextValue = combineLocalDateAndTime(selectedDate, selectedTime);
+
+    if (nextValue.getTime() < Date.now()) {
+      setMinimumBookingTime(Date.now());
+      return;
+    }
+
+    setCommittedValue(nextValue.toISOString());
+    setIsOpen(false);
+  }
+
+  function openCalendar() {
+    setMinimumBookingTime(Date.now());
+    setIsOpen(true);
+  }
+
+  function moveMonth(direction: -1 | 1) {
+    setVisibleMonth(
+      (current) => new Date(current.getFullYear(), current.getMonth() + direction, 1),
+    );
+  }
+
+  return (
+    <div>
+      <span className="mb-2 block text-sm font-medium text-white/78">
+        Viewing date and time
+      </span>
+      <input name={name} readOnly type="hidden" value={committedValue} />
+      <button
+        className="flex h-12 w-full items-center justify-between rounded-md border border-white/10 bg-white/[0.04] px-3 text-left text-sm text-white outline-none transition hover:border-[#d6b15f]/70 focus:border-[#d6b15f] focus:ring-2 focus:ring-[#d6b15f]/20"
+        onClick={openCalendar}
+        type="button"
+      >
+        <span className={displayValue ? "text-white" : "text-white/32"}>
+          {displayValue || "Select viewing date and time"}
+        </span>
+        <CalendarCheck aria-hidden className="size-4 text-[#d6b15f]" />
+      </button>
+
+      {isOpen ? (
+        <div
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/62 px-4 backdrop-blur-[1px]"
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            aria-label="Close calendar"
+            className="absolute inset-0 cursor-default"
+            onClick={() => setIsOpen(false)}
+            type="button"
+          />
+          <div className="relative w-full max-w-[550px] rounded-[4px] bg-white p-5 text-[#151515] shadow-[0_24px_70px_rgba(0,0,0,0.35)] sm:p-6">
+            <div className="mb-7 flex items-center justify-between gap-4">
+              <h3 className="text-xl font-semibold">Ziyaret Tarihi Seçin</h3>
+              <button
+                aria-label="Close calendar"
+                className="flex size-9 items-center justify-center rounded-full text-[#5f6670] transition hover:bg-black/5"
+                onClick={() => setIsOpen(false)}
+                type="button"
+              >
+                <X aria-hidden className="size-5" />
+              </button>
+            </div>
+
+            <div className="mx-auto max-w-[360px]">
+              <div className="mb-5 flex items-center justify-between">
+                <button
+                  aria-label="Previous month"
+                  className="flex size-9 items-center justify-center rounded-full text-[#8b949e] transition hover:bg-black/5"
+                  onClick={() => moveMonth(-1)}
+                  type="button"
+                >
+                  <ChevronLeft aria-hidden className="size-5" />
+                </button>
+                <p className="text-lg font-semibold">{formatCalendarMonth(visibleMonth)}</p>
+                <button
+                  aria-label="Next month"
+                  className="flex size-9 items-center justify-center rounded-full text-[#151515] transition hover:bg-black/5"
+                  onClick={() => moveMonth(1)}
+                  type="button"
+                >
+                  <ChevronRight aria-hidden className="size-5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-7 gap-y-3 text-center">
+                {CALENDAR_WEEKDAYS.map((weekday) => (
+                  <div className="text-base font-medium text-[#89929c]" key={weekday}>
+                    {weekday}
+                  </div>
+                ))}
+                {calendarDays.map(({ date, isCurrentMonth }) => {
+                  const isPast = isPastCalendarDay(date);
+                  const isSelected = isSameCalendarDay(selectedDate, date);
+                  const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+
+                  return (
+                    <button
+                      className={cn(
+                        "mx-auto flex size-9 items-center justify-center rounded-full text-base transition",
+                        isCurrentMonth ? "text-[#151515]" : "text-[#c6ccd2]",
+                        isWeekend && isCurrentMonth ? "text-[#ff4d4f]" : "",
+                        isPast ? "cursor-not-allowed text-[#c6ccd2]" : "hover:bg-[#eef1f4]",
+                        isSelected ? "bg-[#d6b15f] font-semibold text-black hover:bg-[#d6b15f]" : "",
+                      )}
+                      disabled={isPast}
+                      key={formatIsoDate(date)}
+                      onClick={() => {
+                        setSelectedDate(date);
+                        if (!isCurrentMonth) {
+                          setVisibleMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+                        }
+                      }}
+                      type="button"
+                    >
+                      {date.getDate()}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <label className="mt-6 block">
+                <span className="mb-2 block text-sm font-semibold text-[#5f6670]">
+                  Viewing time
+                </span>
+                <input
+                  className="h-11 w-full rounded-md border border-[#dfe4ea] bg-white px-3 text-base text-[#151515] outline-none transition focus:border-[#d6b15f] focus:ring-2 focus:ring-[#d6b15f]/25"
+                  onChange={(event) => setSelectedTime(event.target.value)}
+                  type="time"
+                  value={selectedTime}
+                />
+              </label>
+
+              <Button
+                className="mt-5 w-full bg-[#d6b15f] text-black hover:bg-[#e0bd6a] disabled:bg-[#edf0f3] disabled:text-[#b8c0c8]"
+                disabled={!selectedDate || isSelectedInPast}
+                onClick={commitSelection}
+                type="button"
+              >
+                Ziyareti Rezerve Et
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function FormField({
   inputMode,
   label,
-  min,
   name,
   placeholder,
   required,
-  type = "text",
 }: {
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   label: string;
-  min?: string;
   name: string;
   placeholder?: string;
   required?: boolean;
-  type?: React.HTMLInputTypeAttribute;
 }) {
   return (
     <label className="block">
@@ -1785,11 +2035,9 @@ function FormField({
       <input
         className="h-12 w-full rounded-md border border-white/10 bg-white/[0.04] px-3 text-sm text-white outline-none transition placeholder:text-white/32 focus:border-[#d6b15f] focus:ring-2 focus:ring-[#d6b15f]/20"
         inputMode={inputMode}
-        min={min}
         name={name}
         placeholder={placeholder}
         required={required}
-        type={type}
       />
     </label>
   );
