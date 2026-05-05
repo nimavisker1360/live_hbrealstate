@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { LiveRoomScreen } from "@/components/live/LiveRoomScreen";
+import { getConsultantByAgent } from "@/lib/hb-consultants";
 import { getLiveSessionPreviewImage } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
 import type { LiveTour, Property } from "@/types/platform";
@@ -67,7 +68,7 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
   const liveSession = await prisma.liveSession.findUnique({
     where: { roomId },
     include: {
-      agent: { select: { name: true } },
+      agent: { select: { id: true, name: true } },
       property: true,
     },
   });
@@ -82,6 +83,7 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
     recordingStatus: liveSession.recordingStatus,
     status: liveSession.status,
   });
+  const consultant = getConsultantByAgent(liveSession.agent);
 
   const property = {
     baths: 0,
@@ -97,6 +99,11 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
 
   const tour = {
     agent: liveSession.agent.name,
+    agentId: liveSession.agent.id,
+    agentImage: consultant?.image,
+    agentPhone: consultant?.phone,
+    agentSpecialty: consultant?.specialty,
+    agentWhatsapp: consultant?.whatsapp,
     duration: "Live session",
     id: liveSession.id,
     image: property.image,

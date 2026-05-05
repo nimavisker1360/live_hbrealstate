@@ -32,6 +32,7 @@ import {
   type RealtimeCommentEvent,
   type RealtimeLikeEvent,
 } from "@/lib/pusher-channels";
+import { buildWhatsAppUrl, HB_LEAD_WHATSAPP } from "@/lib/hb-consultants";
 import {
   LIVE_USER_UPDATED_EVENT,
   readStoredLiveUser,
@@ -782,6 +783,7 @@ export function LiveRoomScreen({
       propertyId: property?.id,
       propertyTitle: property?.title ?? tour.title,
       propertyLocation: property?.location ?? tour.location,
+      agentId: tour.agentId,
       agentName: tour.agent,
     };
 
@@ -822,6 +824,7 @@ export function LiveRoomScreen({
       propertyId: property?.id,
       propertyTitle: property?.title ?? tour.title,
       propertyLocation: property?.location ?? tour.location,
+      agentId: tour.agentId,
       agentName: tour.agent,
     };
 
@@ -844,6 +847,11 @@ export function LiveRoomScreen({
       setIsSubmitting(false);
     }
   }
+
+  const advisorWhatsAppUrl = buildWhatsAppUrl({
+    text: `Hello ${tour.agent}, I am interested in ${property?.title ?? tour.title} (${property?.location ?? tour.location}). Please send details.`,
+    whatsapp: tour.agentWhatsapp ?? HB_LEAD_WHATSAPP,
+  });
 
   return (
     <div className="min-h-svh overflow-hidden bg-black text-white">
@@ -890,6 +898,7 @@ export function LiveRoomScreen({
             onCommentChange={setComment}
             onOpenLead={openLeadModal}
             onSubmit={submitComment}
+            whatsappUrl={advisorWhatsAppUrl}
           />
           {activeModal?.type === "auth" ? (
             <AuthModal
@@ -1152,7 +1161,9 @@ function TopOverlay({
           <p className="truncate text-sm font-semibold text-white">
             {tour.agent}
           </p>
-          <p className="truncate text-xs text-white/58">HB Real Estate</p>
+          <p className="truncate text-xs text-white/58">
+            مشاور من = {tour.agent}
+          </p>
           <div
             className="mt-1 flex max-w-[220px] items-center gap-1.5 rounded-full bg-black/42 px-2 py-1 text-[11px] font-medium text-white/76 backdrop-blur-md"
             title={getViewerTitle(viewer)}
@@ -1352,6 +1363,7 @@ function BottomOverlay({
   onOpenLead,
   onSubmit,
   databaseLiveSessionId,
+  whatsappUrl,
 }: {
   comment: string;
   commentsError: string;
@@ -1362,22 +1374,23 @@ function BottomOverlay({
   onOpenLead: (source: LeadSource) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void | Promise<void>;
   databaseLiveSessionId?: string;
+  whatsappUrl: string;
 }) {
-  async function handleWhatsAppClick() {
+  function handleWhatsAppClick() {
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
     if (!databaseLiveSessionId) return;
 
-    try {
-      await fetch(
-        `/api/live-sessions/${encodeURIComponent(databaseLiveSessionId)}/click`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ type: "whatsapp" }),
-        },
-      );
-    } catch (error) {
+    fetch(
+      `/api/live-sessions/${encodeURIComponent(databaseLiveSessionId)}/click`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "whatsapp" }),
+      },
+    ).catch((error) => {
       console.error("Failed to track WhatsApp click:", error);
-    }
+    });
   }
   return (
     <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/82 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-24">

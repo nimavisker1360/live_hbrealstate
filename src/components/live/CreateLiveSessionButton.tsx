@@ -13,11 +13,13 @@ import {
   Smartphone,
   Plus,
   Radio,
+  UserRoundCheck,
 } from "lucide-react";
 import type { FormEvent, ReactNode } from "react";
 import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import type { HbConsultant } from "@/lib/hb-consultants";
 import { cn } from "@/lib/utils";
 
 type PropertyOption = {
@@ -118,8 +120,10 @@ function getLocalDateTime(date: string, time: string) {
 }
 
 export function CreateLiveSessionButton({
+  consultants,
   properties,
 }: {
+  consultants: HbConsultant[];
   properties: PropertyOption[];
 }) {
   const defaultSchedule = useMemo(() => getDefaultSchedule(), []);
@@ -129,6 +133,9 @@ export function CreateLiveSessionButton({
   const [propertyOptions, setPropertyOptions] = useState(properties);
   const [selectedPropertyId, setSelectedPropertyId] = useState(
     properties[0]?.id ?? "",
+  );
+  const [selectedConsultantId, setSelectedConsultantId] = useState(
+    consultants[0]?.id ?? "",
   );
   const [newPropertyLocation, setNewPropertyLocation] = useState("");
   const [newPropertyTitle, setNewPropertyTitle] = useState("");
@@ -150,6 +157,12 @@ export function CreateLiveSessionButton({
   const selectedProperty = useMemo(
     () => propertyOptions.find((property) => property.id === selectedPropertyId),
     [propertyOptions, selectedPropertyId],
+  );
+  const selectedConsultant = useMemo(
+    () =>
+      consultants.find((consultant) => consultant.id === selectedConsultantId) ??
+      consultants[0],
+    [consultants, selectedConsultantId],
   );
 
   function handlePropertyChange(propertyId: string) {
@@ -278,6 +291,8 @@ export function CreateLiveSessionButton({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          agentId: selectedConsultant?.id,
+          agentName: selectedConsultant?.name,
           propertyId: propertyMode === "existing" ? property.id : undefined,
           propertyLocation: property.location,
           propertyTitle: property.title,
@@ -335,15 +350,63 @@ export function CreateLiveSessionButton({
             <h2 className="mt-2 text-2xl font-semibold text-white">
               Set up a live tour
             </h2>
-            <div className="mt-4 grid gap-2 text-sm text-white/62 sm:grid-cols-3">
-              <StepPill step="1" text="Choose property" />
-              <StepPill step="2" text="Pick time" />
-              <StepPill step="3" text="Create stream" />
+            <p className="mt-2 text-sm font-medium text-white/72">
+              مشاور من ={" "}
+              <span className="text-[#f0cf79]">
+                {selectedConsultant?.name ?? "HB Real Estate"}
+              </span>
+            </p>
+            <div className="mt-4 grid gap-2 text-sm text-white/62 sm:grid-cols-4">
+              <StepPill step="1" text="Choose advisor" />
+              <StepPill step="2" text="Choose property" />
+              <StepPill step="3" text="Pick time" />
+              <StepPill step="4" text="Create stream" />
             </div>
           </div>
 
           <div className="rounded-md border border-white/10 bg-black/18 p-4">
-            <StepLabel number="1" title="Property" />
+            <StepLabel number="1" title="Consultant" />
+            <label className="mt-3 block">
+              <span className="text-sm font-medium text-white/72">
+                Select lead advisor
+              </span>
+              <select
+                className={cn(fieldClassName, "mt-2")}
+                onChange={(event) => setSelectedConsultantId(event.target.value)}
+                value={selectedConsultantId}
+              >
+                {consultants.map((consultant) => (
+                  <option key={consultant.id} value={consultant.id}>
+                    {consultant.name} - {consultant.specialty}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {selectedConsultant ? (
+              <div className="mt-3 flex items-center gap-3 rounded-md border border-[#d6b15f]/22 bg-[#d6b15f]/8 p-3">
+                <img
+                  alt={selectedConsultant.name}
+                  className="size-12 rounded-md object-cover"
+                  src={selectedConsultant.image}
+                />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-white">
+                    {selectedConsultant.name}
+                  </p>
+                  <p className="truncate text-xs text-white/58">
+                    WhatsApp: {selectedConsultant.whatsapp}
+                  </p>
+                </div>
+                <UserRoundCheck
+                  aria-hidden
+                  className="ml-auto size-5 shrink-0 text-[#d6b15f]"
+                />
+              </div>
+            ) : null}
+          </div>
+
+          <div className="rounded-md border border-white/10 bg-black/18 p-4">
+            <StepLabel number="2" title="Property" />
             <div className="mt-3 grid grid-cols-2 rounded-md border border-white/10 bg-black/22 p-1">
               <ModeButton
                 active={propertyMode === "existing"}
@@ -472,7 +535,7 @@ export function CreateLiveSessionButton({
           </div>
 
           <div className="rounded-md border border-white/10 bg-black/18 p-4">
-            <StepLabel number="2" title="Title and time" />
+            <StepLabel number="3" title="Title and time" />
             <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_0.9fr]">
               <label className="block">
                 <span className="text-sm font-medium text-white/72">
@@ -529,7 +592,7 @@ export function CreateLiveSessionButton({
           ) : null}
 
           <div className="rounded-md border border-[#d6b15f]/22 bg-[#d6b15f]/8 p-4">
-            <StepLabel number="3" title="Create stream instructions" />
+            <StepLabel number="4" title="Create stream instructions" />
             <p className="mt-2 text-sm leading-6 text-white/56">
               This creates the Mux stream and gives you the RTMP URL, stream key,
               and live page link.

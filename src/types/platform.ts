@@ -11,6 +11,9 @@ export type Property = {
 };
 
 export type LiveTour = {
+  agentId?: string;
+  agentImage?: string;
+  agentPhone?: string;
   id: string;
   roomId: string;
   propertyId: string;
@@ -19,6 +22,8 @@ export type LiveTour = {
   image: string;
   price: string;
   agent: string;
+  agentSpecialty?: string;
+  agentWhatsapp?: string;
   status: "Live" | "Starting Soon" | "Scheduled" | "Recorded" | "Ended";
   viewers: number;
   startsAt: string;

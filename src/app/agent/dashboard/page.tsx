@@ -10,6 +10,7 @@ import { CreateLiveSessionButton } from "@/components/live/CreateLiveSessionButt
 import { RecordingActions } from "@/components/live/RecordingActions";
 import { SessionDeleteButton } from "@/components/live/SessionDeleteButton";
 import { Card } from "@/components/ui/Card";
+import { HB_CONSULTANTS } from "@/lib/hb-consultants";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
@@ -245,6 +246,7 @@ export default async function AgentDashboardPage() {
         </div>
 
         <CreateLiveSessionButton
+          consultants={HB_CONSULTANTS}
           properties={propertyOptions}
         />
 
