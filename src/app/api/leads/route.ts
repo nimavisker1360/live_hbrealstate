@@ -4,6 +4,7 @@ import { ensureMockContext } from "@/lib/db-defaults";
 import { prisma } from "@/lib/prisma";
 import { leadPayloadSchema } from "@/lib/schemas";
 import { getCurrentSession } from "@/lib/auth";
+import { sendLeadNotificationEmail } from "@/lib/lead-email";
 
 export async function GET(request: Request) {
   try {
@@ -81,6 +82,8 @@ export async function POST(request: Request) {
         liveSession: { select: { id: true, roomId: true, title: true } },
       },
     });
+
+    await sendLeadNotificationEmail(lead);
 
     return Response.json({ data: lead }, { status: 201 });
   } catch (error) {
