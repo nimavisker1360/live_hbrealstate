@@ -796,7 +796,7 @@ export function LiveRoomScreen({
       setSavedLeadCount((count) => count + 1);
       form.reset();
       setSuccessMessage(
-        "Lead saved. The HB team will follow up soon.",
+        "Thanks, your request has been received. The HB team will contact you shortly.",
       );
     } catch (error) {
       setErrorMessage(
@@ -837,7 +837,7 @@ export function LiveRoomScreen({
       setSavedOfferCount((count) => count + 1);
       form.reset();
       setSuccessMessage(
-        "Offer saved to PostgreSQL. An agent can review it next.",
+        "Thanks, your offer has been received. An agent will review it shortly.",
       );
     } catch (error) {
       setErrorMessage(
