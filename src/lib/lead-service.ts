@@ -34,7 +34,11 @@ export async function createLeadAndSendEmail(input: unknown) {
     },
   });
 
-  await sendLeadNotificationEmail(lead);
+  try {
+    await sendLeadNotificationEmail(lead);
+  } catch (emailError) {
+    console.error("Lead notification email failed:", emailError);
+  }
 
   return lead;
 }

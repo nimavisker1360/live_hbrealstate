@@ -796,7 +796,7 @@ export function LiveRoomScreen({
       setSavedLeadCount((count) => count + 1);
       form.reset();
       setSuccessMessage(
-        "Lead saved and emailed to the HB team. They will follow up soon.",
+        "Lead saved. The HB team will follow up soon.",
       );
     } catch (error) {
       setErrorMessage(
