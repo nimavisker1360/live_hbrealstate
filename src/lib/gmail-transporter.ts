@@ -59,7 +59,7 @@ export function createPasswordEmailTransporter() {
     service: "gmail",
     auth: {
       user: getPasswordEmailSender(),
-      pass: readEnv("EMAIL_PASS"),
+      pass: readEnv("EMAIL_PASS").replace(/\s+/g, ""),
     },
   });
 }
