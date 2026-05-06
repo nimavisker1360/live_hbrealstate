@@ -1,7 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api";
-import { isMissingLiveSessionSegmentTable } from "@/lib/live-recordings";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -34,33 +33,29 @@ export async function DELETE(
     }
 
     const { liveSessionId } = await params;
-    await prisma.liveSessionSegment.updateMany({
-      where: { liveSessionId },
-      data: {
-        playbackId: null,
-        readyAt: null,
-        status: "deleted",
-      },
-    }).catch((error) => {
-      if (isMissingLiveSessionSegmentTable(error)) {
-        return null;
-      }
+    const liveSession = await prisma.$transaction(async (tx) => {
+      await tx.liveSessionSegment.updateMany({
+        where: { liveSessionId },
+        data: {
+          playbackId: null,
+          readyAt: null,
+          status: "deleted",
+        },
+      });
 
-      throw error;
-    });
-
-    const liveSession = await prisma.liveSession.update({
-      where: { id: liveSessionId },
-      data: {
-        muxAssetId: null,
-        recordingPlaybackId: null,
-        recordingReadyAt: null,
-        recordingStatus: "deleted",
-      },
-      select: {
-        id: true,
-        roomId: true,
-      },
+      return tx.liveSession.update({
+        where: { id: liveSessionId },
+        data: {
+          muxAssetId: null,
+          recordingPlaybackId: null,
+          recordingReadyAt: null,
+          recordingStatus: "deleted",
+        },
+        select: {
+          id: true,
+          roomId: true,
+        },
+      });
     });
 
     revalidatePath("/agent/dashboard");
