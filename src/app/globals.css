@@ -41,3 +41,23 @@ html {
     transform: translate(-50%, -50%) translate(var(--heart-x, 0), -150px) scale(1.2) rotate(14deg);
   }
 }
+
+@keyframes live-comment-toast {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  12%,
+  70% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+.live-comment-toast {
+  animation: live-comment-toast 5s ease forwards;
+}

@@ -15,6 +15,7 @@ import {
   Heart,
   MapPin,
   MessageCircle,
+  Play,
   Radio,
   Send,
   Share2,
@@ -50,6 +51,7 @@ type LiveComment = {
   message: string;
   clientEventId?: string;
   createdAt?: string;
+  expiresAt?: number;
   liveSessionId?: string;
   status?: "pending" | "failed";
 };
@@ -214,6 +216,7 @@ function formatIsoDate(value: Date) {
 }
 
 const LIKE_COOLDOWN_MS = 2_000;
+const COMMENT_VISIBLE_MS = 5_000;
 const MAX_HLS_RECOVERY_ATTEMPTS = 8;
 
 class ApiRequestError<T = unknown> extends Error {
@@ -319,9 +322,11 @@ function mergeComment(
   incoming: LiveComment,
   clientEventId?: string,
 ) {
+  const expiresAt = incoming.expiresAt ?? Date.now() + COMMENT_VISIBLE_MS;
   const nextComment = {
     ...incoming,
     clientEventId,
+    expiresAt,
   };
   const existingIndex = current.findIndex(
     (item) =>
@@ -386,7 +391,6 @@ export function LiveRoomScreen({
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [commentsError, setCommentsError] = useState("");
-  const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [isLoadingLikes, setIsLoadingLikes] = useState(true);
   const [likeError, setLikeError] = useState("");
   const [isSavingComment, setIsSavingComment] = useState(false);
@@ -532,30 +536,24 @@ export function LiveRoomScreen({
     async function loadComments() {
       if (!databaseLiveSessionId) {
         setCommentsError("Live session is not ready yet.");
-        setIsLoadingComments(false);
         return;
       }
 
-      setIsLoadingComments(true);
       setCommentsError("");
 
       try {
-        const data = await getJson<LiveComment[]>(
+        await getJson<LiveComment[]>(
           `/api/comments?liveSessionId=${encodeURIComponent(databaseLiveSessionId)}`,
         );
 
         if (!ignore) {
-          setComments(data ?? []);
+          setComments([]);
         }
       } catch (error) {
         if (!ignore) {
           setCommentsError(
             error instanceof Error ? error.message : "Could not load comments.",
           );
-        }
-      } finally {
-        if (!ignore) {
-          setIsLoadingComments(false);
         }
       }
     }
@@ -566,6 +564,20 @@ export function LiveRoomScreen({
       ignore = true;
     };
   }, [databaseLiveSessionId]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      const now = Date.now();
+
+      setComments((current) =>
+        current.filter(
+          (item) => item.status === "pending" || (item.expiresAt ?? 0) > now,
+        ),
+      );
+    }, 500);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
@@ -639,6 +651,7 @@ export function LiveRoomScreen({
           {
             id: event.comment.id,
             author: event.comment.author,
+            expiresAt: Date.now() + COMMENT_VISIBLE_MS,
             message: event.comment.message,
             createdAt: event.comment.createdAt,
             liveSessionId: event.comment.liveSessionId,
@@ -789,6 +802,7 @@ export function LiveRoomScreen({
         id: optimisticId,
         author: "You",
         clientEventId: optimisticId,
+        expiresAt: Date.now() + COMMENT_VISIBLE_MS,
         message: trimmed,
         status: "pending",
       },
@@ -813,6 +827,7 @@ export function LiveRoomScreen({
                 author: savedComment?.author ?? "You",
                 clientEventId: optimisticId,
                 createdAt: savedComment?.createdAt,
+                expiresAt: Date.now() + COMMENT_VISIBLE_MS,
                 liveSessionId: savedComment?.liveSessionId,
                 message: savedComment?.message ?? trimmed,
               }
@@ -991,7 +1006,6 @@ export function LiveRoomScreen({
             comment={comment}
             commentsError={commentsError}
             comments={comments}
-            commentsLoading={isLoadingComments}
             databaseLiveSessionId={databaseLiveSessionId}
             isSavingComment={isSavingComment}
             onCommentChange={setComment}
@@ -1068,12 +1082,20 @@ function LiveVideoSurface({
   const recoveryAttemptsRef = useRef(0);
   const [failedHlsUrl, setFailedHlsUrl] = useState<string | null>(null);
   const [readyHlsUrl, setReadyHlsUrl] = useState<string | null>(null);
+  const [playingRecordingUrl, setPlayingRecordingUrl] = useState<string | null>(
+    null,
+  );
   const shouldPlay =
     (status === "LIVE" || status === "ENDED") && Boolean(playbackId);
   const hlsUrl = playbackId ? getHlsUrl(playbackId) : null;
   const playerError = Boolean(hlsUrl && failedHlsUrl === hlsUrl);
   const videoReady = Boolean(hlsUrl && readyHlsUrl === hlsUrl);
   const showOfflineState = !shouldPlay || playerError;
+  const showRecordingPlayButton =
+    status === "ENDED" &&
+    shouldPlay &&
+    !showOfflineState &&
+    playingRecordingUrl !== hlsUrl;
 
   useEffect(() => {
     recoveryAttemptsRef.current = 0;
@@ -1089,7 +1111,10 @@ function LiveVideoSurface({
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = hlsUrl;
       video.load();
-      void video.play().catch(() => undefined);
+
+      if (status === "LIVE") {
+        void video.play().catch(() => undefined);
+      }
 
       return () => {
         video.removeAttribute("src");
@@ -1158,14 +1183,31 @@ function LiveVideoSurface({
     };
   }, [hlsUrl, shouldPlay, status]);
 
-  function resetEndedPlayback() {
+  function playRecording() {
     const video = videoRef.current;
 
-    if (!video || !video.ended || !Number.isFinite(video.duration)) {
+    if (!video) {
       return;
     }
 
-    video.currentTime = 0;
+    if (Number.isFinite(video.duration)) {
+      video.currentTime = 0;
+    }
+
+    setPlayingRecordingUrl(hlsUrl);
+    void video.play().catch(() => setPlayingRecordingUrl(null));
+  }
+
+  function handleRecordingEnded() {
+    const video = videoRef.current;
+
+    if (video && Number.isFinite(video.duration)) {
+      video.currentTime = 0;
+    }
+
+    if (status === "ENDED") {
+      setPlayingRecordingUrl(null);
+    }
   }
 
   return (
@@ -1196,19 +1238,36 @@ function LiveVideoSurface({
       {shouldPlay && !playerError ? (
         <video
           aria-label={title}
-          autoPlay
+          autoPlay={status === "LIVE"}
           className="absolute inset-0 h-full w-full object-cover"
           controls
           key={hlsUrl}
-          onEnded={resetEndedPlayback}
+          onEnded={handleRecordingEnded}
           onError={() => setFailedHlsUrl(hlsUrl)}
-          onPlay={resetEndedPlayback}
+          onPlay={() => {
+            if (status === "ENDED") {
+              setPlayingRecordingUrl(hlsUrl);
+            }
+          }}
           onPlaying={() => setReadyHlsUrl(hlsUrl)}
           poster={image}
           playsInline
           preload="auto"
           ref={videoRef}
         />
+      ) : null}
+
+      {showRecordingPlayButton ? (
+        <div className="absolute inset-0 z-10 flex items-center justify-center px-8 text-center">
+          <button
+            className="flex size-16 items-center justify-center rounded-full border border-white/18 bg-black/52 text-white shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl transition hover:scale-105 hover:bg-white/16 focus:outline-none focus:ring-2 focus:ring-[#d6b15f] focus:ring-offset-2 focus:ring-offset-black"
+            aria-label="Play recording"
+            onClick={playRecording}
+            type="button"
+          >
+            <Play aria-hidden className="ml-1 size-8" fill="currentColor" />
+          </button>
+        </div>
       ) : null}
 
       {showOfflineState ? (
@@ -1274,7 +1333,7 @@ function TopOverlay({
             {tour.agent}
           </p>
           <p className="truncate text-xs text-white/58">
-            مشاور من = {tour.agent}
+            My consultant = {tour.agent}
           </p>
           <div
             className="mt-1 flex max-w-[220px] items-center gap-1.5 rounded-full bg-black/42 px-2 py-1 text-[11px] font-medium text-white/76 backdrop-blur-md"
@@ -1324,25 +1383,25 @@ function PropertyOverlay({
   tour: LiveTour;
 }) {
   return (
-    <div className="absolute left-4 right-20 top-24 z-10 sm:right-24">
-      <div className="rounded-lg border border-white/12 bg-black/38 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.36)] backdrop-blur-xl">
-        <p className="line-clamp-1 text-lg font-semibold text-white">
+    <div className="absolute left-4 top-24 z-10 w-[min(260px,calc(100%-6rem))]">
+      <div className="rounded-lg border border-white/12 bg-black/34 p-2.5 shadow-[0_16px_44px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+        <p className="line-clamp-1 text-sm font-semibold text-white">
           {property?.title ?? tour.title}
         </p>
-        <p className="mt-1 flex items-center gap-1.5 text-sm text-white/70">
-          <MapPin aria-hidden className="size-4 text-[#d6b15f]" />
+        <p className="mt-1 flex items-center gap-1 text-xs text-white/68">
+          <MapPin aria-hidden className="size-3.5 shrink-0 text-[#d6b15f]" />
           {property?.location ?? tour.location}
         </p>
-        <p className="mt-3 text-2xl font-bold text-[#f0cf79]">
+        <p className="mt-2 text-lg font-bold leading-tight text-[#f0cf79]">
           {property?.price ?? tour.price}
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full border border-[#d6b15f]/40 bg-[#d6b15f]/14 px-2.5 py-1 text-xs font-medium text-[#f0cf79]">
-            <ShieldCheck aria-hidden className="size-3.5" />
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          <span className="inline-flex items-center gap-1 rounded-full border border-[#d6b15f]/40 bg-[#d6b15f]/14 px-2 py-0.5 text-[10px] font-medium text-[#f0cf79]">
+            <ShieldCheck aria-hidden className="size-3" />
             Citizenship eligible
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-white/14 bg-white/10 px-2.5 py-1 text-xs font-medium text-white/82">
-            <Sparkles aria-hidden className="size-3.5 text-[#d6b15f]" />
+          <span className="inline-flex items-center gap-1 rounded-full border border-white/14 bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/82">
+            <Sparkles aria-hidden className="size-3 text-[#d6b15f]" />
             Installment available
           </span>
         </div>
@@ -1469,7 +1528,6 @@ function BottomOverlay({
   comment,
   commentsError,
   comments,
-  commentsLoading,
   isSavingComment,
   onCommentChange,
   onOpenLead,
@@ -1480,7 +1538,6 @@ function BottomOverlay({
   comment: string;
   commentsError: string;
   comments: LiveComment[];
-  commentsLoading: boolean;
   isSavingComment: boolean;
   onCommentChange: (value: string) => void;
   onOpenLead: (source: LeadSource) => void;
@@ -1506,21 +1563,11 @@ function BottomOverlay({
   }
   return (
     <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/82 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-24">
-      <div className="mb-4 max-h-40 space-y-2 overflow-hidden pr-16">
-        {commentsLoading ? (
-          <div className="w-fit rounded-2xl bg-black/38 px-3 py-2 text-sm text-white/58 backdrop-blur-md">
-            Loading comments...
-          </div>
-        ) : null}
-        {!commentsLoading && comments.length === 0 ? (
-          <div className="w-fit rounded-2xl bg-black/38 px-3 py-2 text-sm text-white/58 backdrop-blur-md">
-            No comments yet.
-          </div>
-        ) : null}
-        {comments.slice(-5).map((item) => (
+      <div className="pointer-events-none mb-4 flex max-h-40 flex-col-reverse gap-2 overflow-hidden pr-16">
+        {comments.slice(-5).reverse().map((item) => (
           <div
             className={cn(
-              "w-fit max-w-[86%] rounded-2xl bg-black/38 px-3 py-2 text-sm leading-5 text-white shadow-[0_10px_30px_rgba(0,0,0,0.22)] backdrop-blur-md",
+              "live-comment-toast w-fit max-w-[86%] rounded-2xl bg-black/38 px-3 py-2 text-sm leading-5 text-white shadow-[0_10px_30px_rgba(0,0,0,0.22)] backdrop-blur-md",
               item.status === "pending" && "opacity-70",
               item.status === "failed" && "border border-red-400/35",
             )}
