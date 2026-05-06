@@ -1,6 +1,7 @@
 import {
   BadgeDollarSign,
   CalendarClock,
+  ChevronDown,
   Eye,
   Heart,
   MessageCircle,
@@ -41,9 +42,12 @@ type EngagementRow = {
   lastActivity: Date;
   latestSessionTitle: string;
   latestComment: string | null;
+  commentEvents: EngagementComment[];
+  likeEvents: EngagementLike[];
 };
 
 type EngagementInput = {
+  id: string;
   key: string;
   name: string;
   email?: string | null;
@@ -51,6 +55,19 @@ type EngagementInput = {
   sessionTitle: string;
   kind: "like" | "comment";
   comment?: string | null;
+  at: Date;
+};
+
+type EngagementComment = {
+  id: string;
+  message: string;
+  sessionTitle: string;
+  at: Date;
+};
+
+type EngagementLike = {
+  id: string;
+  sessionTitle: string;
   at: Date;
 };
 
@@ -155,10 +172,35 @@ function canDeleteRecording(session: {
   );
 }
 
+function normalizeEngagementName(value: string) {
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
 function mergeEngagement(
   rows: Map<string, EngagementRow>,
   input: EngagementInput,
 ) {
+  const commentEvent =
+    input.kind === "comment"
+      ? [
+          {
+            id: input.id,
+            message: input.comment ?? "",
+            sessionTitle: input.sessionTitle,
+            at: input.at,
+          },
+        ]
+      : [];
+  const likeEvent =
+    input.kind === "like"
+      ? [
+          {
+            id: input.id,
+            sessionTitle: input.sessionTitle,
+            at: input.at,
+          },
+        ]
+      : [];
   const existing = rows.get(input.key);
 
   if (!existing) {
@@ -172,14 +214,18 @@ function mergeEngagement(
       lastActivity: input.at,
       latestSessionTitle: input.sessionTitle,
       latestComment: input.comment ?? null,
+      commentEvents: commentEvent,
+      likeEvents: likeEvent,
     });
     return;
   }
 
   if (input.kind === "like") {
     existing.likes += 1;
+    existing.likeEvents.push(...likeEvent);
   } else {
     existing.comments += 1;
+    existing.commentEvents.push(...commentEvent);
   }
 
   if (input.identified) {
@@ -324,12 +370,35 @@ export default async function AgentDashboardPage() {
   );
 
   const engagementRows = new Map<string, EngagementRow>();
+  const knownUserKeyByName = new Map<string, string>();
+
+  for (const like of recentLikes) {
+    if (like.userId && like.user?.name) {
+      knownUserKeyByName.set(
+        normalizeEngagementName(like.user.name),
+        `user:${like.userId}`,
+      );
+    }
+  }
 
   for (const comment of recentComments) {
+    if (comment.userId && comment.user?.name) {
+      knownUserKeyByName.set(
+        normalizeEngagementName(comment.user.name),
+        `user:${comment.userId}`,
+      );
+    }
+  }
+
+  for (const comment of recentComments) {
+    const normalizedAuthor = normalizeEngagementName(comment.author);
+
     mergeEngagement(engagementRows, {
+      id: comment.id,
       key: comment.userId
         ? `user:${comment.userId}`
-        : `comment-author:${comment.author.toLowerCase()}`,
+        : knownUserKeyByName.get(normalizedAuthor) ??
+          `comment-author:${normalizedAuthor}`,
       name: comment.user?.name ?? comment.author,
       email: comment.user?.email,
       identified: Boolean(comment.userId),
@@ -342,6 +411,7 @@ export default async function AgentDashboardPage() {
 
   for (const like of recentLikes) {
     mergeEngagement(engagementRows, {
+      id: like.id,
       key: like.userId
         ? `user:${like.userId}`
         : like.visitorId
@@ -357,8 +427,16 @@ export default async function AgentDashboardPage() {
   }
 
   const engagementSummary = Array.from(engagementRows.values())
-    .sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime())
-    .slice(0, 10);
+    .map((row) => ({
+      ...row,
+      commentEvents: row.commentEvents.sort(
+        (a, b) => b.at.getTime() - a.at.getTime(),
+      ),
+      likeEvents: row.likeEvents.sort(
+        (a, b) => b.at.getTime() - a.at.getTime(),
+      ),
+    }))
+    .sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime());
 
   const overviewCards = [
     {
@@ -579,59 +657,111 @@ export default async function AgentDashboardPage() {
         <Card className="mt-6 p-5">
           <SectionHeader
             eyebrow="Engagement"
-            title="Likes and comments by person"
+            title={`Buyer engagement (${engagementSummary.length})`}
           />
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[920px] text-left text-sm">
-              <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
-                <tr>
-                  <th className="pb-3 pr-4 font-semibold">Person</th>
-                  <th className="pb-3 pr-4 font-semibold">Latest session</th>
-                  <th className="pb-3 pr-4 text-right font-semibold">Likes</th>
-                  <th className="pb-3 pr-4 text-right font-semibold">
-                    Comments
-                  </th>
-                  <th className="pb-3 pr-4 font-semibold">Latest comment</th>
-                  <th className="pb-3 font-semibold">Last activity</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {engagementSummary.length > 0 ? (
-                  engagementSummary.map((row) => (
-                    <tr key={row.key}>
-                      <td className="py-4 pr-4">
-                        <p className="font-medium text-white">{row.name}</p>
-                        <p className="mt-1 text-xs text-white/48">
-                          {row.email ??
-                            (row.identified ? "Signed-in buyer" : "Guest name")}
-                        </p>
-                      </td>
-                      <td className="py-4 pr-4 text-white/72">
+          <div className="max-h-[560px] space-y-3 overflow-y-auto pr-1">
+            {engagementSummary.length > 0 ? (
+              engagementSummary.map((row) => (
+                <details
+                  className="group rounded-md border border-white/10 bg-black/20"
+                  key={row.key}
+                >
+                  <summary className="grid cursor-pointer list-none gap-3 px-4 py-3 text-sm marker:hidden sm:grid-cols-[minmax(180px,1.2fr)_minmax(140px,1fr)_auto_auto_auto] sm:items-center [&::-webkit-details-marker]:hidden">
+                    <div>
+                      <p className="font-medium text-white">{row.name}</p>
+                      <p className="mt-1 text-xs text-white/48">
+                        {row.email ??
+                          (row.identified ? "Signed-in buyer" : "Guest name")}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.14em] text-white/36">
+                        Latest session
+                      </p>
+                      <p className="mt-1 truncate text-white/70">
                         {row.latestSessionTitle}
-                      </td>
-                      <td className="py-4 pr-4 text-right text-white/72">
-                        {row.likes}
-                      </td>
-                      <td className="py-4 pr-4 text-right text-white/72">
-                        {row.comments}
-                      </td>
-                      <td className="max-w-[320px] truncate py-4 pr-4 text-white/62">
-                        {row.latestComment ?? "No comment yet"}
-                      </td>
-                      <td className="py-4 text-white/62">
-                        {formatDateTime(row.lastActivity)}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="py-6 text-sm text-white/52" colSpan={6}>
-                      No likes or comments yet.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                      </p>
+                    </div>
+                    <div className="flex gap-2 sm:justify-end">
+                      <span className="inline-flex h-7 items-center rounded-full border border-red-300/20 bg-red-400/10 px-2.5 text-xs font-semibold text-red-100">
+                        {row.likes} likes
+                      </span>
+                      <span className="inline-flex h-7 items-center rounded-full border border-[#d6b15f]/25 bg-[#d6b15f]/10 px-2.5 text-xs font-semibold text-[#f0cf79]">
+                        {row.comments} comments
+                      </span>
+                    </div>
+                    <p className="text-white/52 sm:text-right">
+                      {formatDateTime(row.lastActivity)}
+                    </p>
+                    <ChevronDown
+                      aria-hidden
+                      className="size-4 text-white/42 transition group-open:rotate-180 sm:justify-self-end"
+                    />
+                  </summary>
+
+                  <div className="grid gap-4 border-t border-white/10 px-4 py-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/38">
+                        Comments
+                      </p>
+                      <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-1">
+                        {row.commentEvents.length > 0 ? (
+                          row.commentEvents.map((comment) => (
+                            <div
+                              className="rounded-md border border-white/10 bg-white/[0.03] p-3"
+                              key={comment.id}
+                            >
+                              <p className="text-sm leading-6 text-white/76">
+                                {comment.message}
+                              </p>
+                              <p className="mt-2 text-xs text-white/42">
+                                {comment.sessionTitle} ·{" "}
+                                {formatDateTime(comment.at)}
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="rounded-md border border-white/10 bg-white/[0.03] p-3 text-sm text-white/46">
+                            No comments yet.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/38">
+                        Likes
+                      </p>
+                      <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-1">
+                        {row.likeEvents.length > 0 ? (
+                          row.likeEvents.map((like) => (
+                            <div
+                              className="flex items-center justify-between gap-4 rounded-md border border-white/10 bg-white/[0.03] p-3 text-sm"
+                              key={like.id}
+                            >
+                              <span className="text-white/76">
+                                {like.sessionTitle}
+                              </span>
+                              <span className="shrink-0 text-xs text-white/42">
+                                {formatDateTime(like.at)}
+                              </span>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="rounded-md border border-white/10 bg-white/[0.03] p-3 text-sm text-white/46">
+                            No likes yet.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))
+            ) : (
+              <div className="rounded-md border border-white/10 bg-black/20 p-4 text-sm text-white/52">
+                No likes or comments yet.
+              </div>
+            )}
           </div>
         </Card>
 
