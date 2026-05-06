@@ -118,32 +118,3 @@ export const liveSessionPayloadSchema = z.object({
   startsAt: z.string().datetime().optional(),
   streamProvider: z.literal("mux").default("mux"),
 });
-
-const ALLOWED_MIME_TYPES = ["video/mp4", "video/quicktime", "video/webm"] as const;
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 * 1024;
-const MIN_CHUNK_SIZE_BYTES = 5 * 1024 * 1024;
-const MAX_CHUNK_SIZE_BYTES = 100 * 1024 * 1024;
-
-export const uploadInitSchema = z.object({
-  streamId: nonEmptyString.optional(),
-  propertyId: nonEmptyString.optional(),
-  fileName: nonEmptyString.max(255),
-  fileSize: z.number().int().positive().max(MAX_FILE_SIZE_BYTES, {
-    message: `File size must not exceed ${MAX_FILE_SIZE_BYTES / 1024 / 1024 / 1024} GB.`,
-  }),
-  mimeType: z.enum(ALLOWED_MIME_TYPES, {
-    errorMap: () => ({
-      message: "File type must be video/mp4, video/quicktime, or video/webm.",
-    }),
-  }),
-  totalChunks: z.number().int().min(1).max(10000),
-  chunkSize: z
-    .number()
-    .int()
-    .min(MIN_CHUNK_SIZE_BYTES, {
-      message: "Chunk size must be at least 5 MB.",
-    })
-    .max(MAX_CHUNK_SIZE_BYTES, {
-      message: "Chunk size must not exceed 100 MB.",
-    }),
-});
