@@ -58,9 +58,7 @@ export const ModelName = {
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
-  LikeEvent: 'LikeEvent',
-  LiveRecording: 'LiveRecording',
-  UploadSession: 'UploadSession'
+  LikeEvent: 'LikeEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -213,50 +211,6 @@ export const LikeEventScalarFieldEnum = {
 } as const
 
 export type LikeEventScalarFieldEnum = (typeof LikeEventScalarFieldEnum)[keyof typeof LikeEventScalarFieldEnum]
-
-
-export const LiveRecordingScalarFieldEnum = {
-  id: 'id',
-  streamId: 'streamId',
-  userId: 'userId',
-  propertyId: 'propertyId',
-  title: 'title',
-  status: 'status',
-  sourceType: 'sourceType',
-  fileName: 'fileName',
-  fileSize: 'fileSize',
-  mimeType: 'mimeType',
-  storageProvider: 'storageProvider',
-  storageUrl: 'storageUrl',
-  muxAssetId: 'muxAssetId',
-  playbackId: 'playbackId',
-  uploadProgress: 'uploadProgress',
-  retryCount: 'retryCount',
-  errorMessage: 'errorMessage',
-  uploadedAt: 'uploadedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type LiveRecordingScalarFieldEnum = (typeof LiveRecordingScalarFieldEnum)[keyof typeof LiveRecordingScalarFieldEnum]
-
-
-export const UploadSessionScalarFieldEnum = {
-  id: 'id',
-  recordingId: 'recordingId',
-  userId: 'userId',
-  uploadId: 'uploadId',
-  status: 'status',
-  totalChunks: 'totalChunks',
-  uploadedChunks: 'uploadedChunks',
-  chunkSize: 'chunkSize',
-  fileSize: 'fileSize',
-  expiresAt: 'expiresAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type UploadSessionScalarFieldEnum = (typeof UploadSessionScalarFieldEnum)[keyof typeof UploadSessionScalarFieldEnum]
 
 
 export const SortOrder = {

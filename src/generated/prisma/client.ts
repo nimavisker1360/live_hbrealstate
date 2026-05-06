@@ -81,13 +81,3 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type LikeEvent = Prisma.LikeEventModel
-/**
- * Model LiveRecording
- * 
- */
-export type LiveRecording = Prisma.LiveRecordingModel
-/**
- * Model UploadSession
- * 
- */
-export type UploadSession = Prisma.UploadSessionModel

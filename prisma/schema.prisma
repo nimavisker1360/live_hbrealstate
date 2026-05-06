@@ -46,28 +46,6 @@ enum OfferStatus {
   REJECTED
 }
 
-enum LiveRecordingStatus {
-  LOCAL_PENDING
-  UPLOADING
-  UPLOADED
-  FAILED
-  PROCESSING
-  READY
-}
-
-enum RecordingSourceType {
-  LIVE_RECORDING
-  MANUAL_UPLOAD
-}
-
-enum UploadSessionStatus {
-  PENDING
-  ACTIVE
-  COMPLETED
-  EXPIRED
-  CANCELLED
-}
-
 model User {
   id         String      @id @default(cuid())
   auth0Id    String?     @unique
@@ -147,7 +125,6 @@ model LiveSession {
   offers         Offer[]
   comments       Comment[]
   likeEvents     LikeEvent[]
-  liveRecordings LiveRecording[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
@@ -240,52 +217,3 @@ model LikeEvent {
   @@index([userId])
 }
 
-model LiveRecording {
-  id              String               @id @default(cuid())
-  streamId        String?
-  liveSession     LiveSession?         @relation(fields: [streamId], references: [id], onDelete: SetNull)
-  userId          String?
-  propertyId      String?
-  title           String
-  status          LiveRecordingStatus  @default(LOCAL_PENDING)
-  sourceType      RecordingSourceType  @default(LIVE_RECORDING)
-  fileName        String
-  fileSize        BigInt
-  mimeType        String
-  storageProvider String?
-  storageUrl      String?
-  muxAssetId      String?
-  playbackId      String?
-  uploadProgress  Int                  @default(0)
-  retryCount      Int                  @default(0)
-  errorMessage    String?
-  uploadedAt      DateTime?
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
-  uploadSessions  UploadSession[]
-
-  @@index([userId])
-  @@index([streamId])
-  @@index([status])
-  @@index([muxAssetId])
-  @@index([userId, fileName, fileSize])
-}
-
-model UploadSession {
-  id             String              @id @default(cuid())
-  recordingId    String
-  recording      LiveRecording       @relation(fields: [recordingId], references: [id], onDelete: Cascade)
-  userId         String?
-  uploadId       String              @unique
-  status         UploadSessionStatus @default(ACTIVE)
-  totalChunks    Int
-  uploadedChunks Int                 @default(0)
-  chunkSize      Int
-  fileSize       BigInt
-  expiresAt      DateTime
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-
-  @@index([recordingId])
-  @@index([userId])
-}

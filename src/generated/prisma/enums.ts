@@ -64,34 +64,3 @@ export const OfferStatus = {
 } as const
 
 export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus]
-
-
-export const LiveRecordingStatus = {
-  LOCAL_PENDING: 'LOCAL_PENDING',
-  UPLOADING: 'UPLOADING',
-  UPLOADED: 'UPLOADED',
-  FAILED: 'FAILED',
-  PROCESSING: 'PROCESSING',
-  READY: 'READY'
-} as const
-
-export type LiveRecordingStatus = (typeof LiveRecordingStatus)[keyof typeof LiveRecordingStatus]
-
-
-export const RecordingSourceType = {
-  LIVE_RECORDING: 'LIVE_RECORDING',
-  MANUAL_UPLOAD: 'MANUAL_UPLOAD'
-} as const
-
-export type RecordingSourceType = (typeof RecordingSourceType)[keyof typeof RecordingSourceType]
-
-
-export const UploadSessionStatus = {
-  PENDING: 'PENDING',
-  ACTIVE: 'ACTIVE',
-  COMPLETED: 'COMPLETED',
-  EXPIRED: 'EXPIRED',
-  CANCELLED: 'CANCELLED'
-} as const
-
-export type UploadSessionStatus = (typeof UploadSessionStatus)[keyof typeof UploadSessionStatus]
