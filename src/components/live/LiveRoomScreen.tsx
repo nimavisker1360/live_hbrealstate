@@ -9,6 +9,7 @@ import type { PresenceChannel } from "pusher-js";
 import {
   BadgeDollarSign,
   CalendarCheck,
+  Check,
   ChevronLeft,
   ChevronRight,
   FileText,
@@ -112,6 +113,7 @@ type AuthMeResponse = {
 type LiveViewer = ClientAuthSession | SyncedLiveUser;
 
 type StreamStatus = "SCHEDULED" | "LIVE" | "ENDED";
+type ShareStatus = "idle" | "sharing" | "shared" | "copied" | "failed";
 
 type LiveStreamState = {
   playbackId?: string | null;
@@ -299,6 +301,40 @@ function getLoginUrl() {
   return loginUrl.toString();
 }
 
+function getShareUrl(roomId: string) {
+  if (typeof window === "undefined") {
+    return `/live/${roomId}`;
+  }
+
+  return new URL(`/live/${roomId}`, window.location.origin).toString();
+}
+
+async function copyTextToClipboard(value: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.left = "-9999px";
+  textarea.style.position = "fixed";
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    const copied = document.execCommand("copy");
+
+    if (!copied) {
+      throw new Error("Copy command failed.");
+    }
+  } finally {
+    textarea.remove();
+  }
+}
+
 function getSessionLabel(session: ClientAuthSession) {
   return session.name ?? session.email ?? session.phone ?? session.sub;
 }
@@ -398,8 +434,10 @@ export function LiveRoomScreen({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedLeadCount, setSavedLeadCount] = useState(0);
   const [savedOfferCount, setSavedOfferCount] = useState(0);
+  const [shareStatus, setShareStatus] = useState<ShareStatus>("idle");
   const lastLikeAtRef = useRef(0);
   const pendingLikeEventIdsRef = useRef(new Set<string>());
+  const shareStatusTimeoutRef = useRef<number | null>(null);
   const [streamState, setStreamState] = useState<LiveStreamState>(() => ({
     playbackId: stream?.playbackId ?? null,
     provider: stream?.provider ?? null,
@@ -408,6 +446,19 @@ export function LiveRoomScreen({
   }));
   const streamStatus = streamState.status;
   const playbackId = streamState.playbackId ?? null;
+
+  const setTemporaryShareStatus = useCallback((status: ShareStatus) => {
+    setShareStatus(status);
+
+    if (shareStatusTimeoutRef.current) {
+      window.clearTimeout(shareStatusTimeoutRef.current);
+    }
+
+    shareStatusTimeoutRef.current = window.setTimeout(() => {
+      setShareStatus("idle");
+      shareStatusTimeoutRef.current = null;
+    }, 2200);
+  }, []);
 
   const spawnHeart = useCallback(() => {
     const baseId = Date.now() + Math.random();
@@ -426,6 +477,14 @@ export function LiveRoomScreen({
         current.filter((heart) => heart.id !== baseId && heart.id !== baseId + 0.5)
       );
     }, 1200);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (shareStatusTimeoutRef.current) {
+        window.clearTimeout(shareStatusTimeoutRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -868,6 +927,46 @@ export function LiveRoomScreen({
     setErrorMessage("");
   }
 
+  async function shareLiveRoom() {
+    if (shareStatus === "sharing") {
+      return;
+    }
+
+    const propertyTitle = property?.title ?? tour.title;
+    const propertyLocation = property?.location ?? tour.location;
+    const shareUrl = getShareUrl(tour.roomId);
+    const shareData = {
+      title: `${propertyTitle} | HB Live`,
+      text: `Watch ${propertyTitle} in ${propertyLocation} on HB Live.`,
+      url: shareUrl,
+    };
+
+    setShareStatus("sharing");
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setTemporaryShareStatus("shared");
+        return;
+      }
+
+      await copyTextToClipboard(shareUrl);
+      setTemporaryShareStatus("copied");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setShareStatus("idle");
+        return;
+      }
+
+      try {
+        await copyTextToClipboard(shareUrl);
+        setTemporaryShareStatus("copied");
+      } catch {
+        setTemporaryShareStatus("failed");
+      }
+    }
+  }
+
   async function submitLead(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -1000,6 +1099,8 @@ export function LiveRoomScreen({
             liked={liked}
             onLike={addHeart}
             onMakeOffer={openOfferModal}
+            onShare={shareLiveRoom}
+            shareStatus={shareStatus}
           />
           <HeartLayer hearts={hearts} />
           <BottomOverlay
@@ -1418,6 +1519,8 @@ function RightRail({
   liked,
   onLike,
   onMakeOffer,
+  onShare,
+  shareStatus,
 }: {
   disableLike: boolean;
   likeCount: number;
@@ -1426,7 +1529,20 @@ function RightRail({
   liked: boolean;
   onLike: () => void;
   onMakeOffer: () => void;
+  onShare: () => void;
+  shareStatus: ShareStatus;
 }) {
+  const shareLabel =
+    shareStatus === "sharing"
+      ? "..."
+      : shareStatus === "shared"
+        ? "Shared"
+        : shareStatus === "copied"
+          ? "Copied"
+          : shareStatus === "failed"
+            ? "Retry"
+            : "Share";
+
   return (
     <div className="absolute right-3 top-1/2 z-20 flex -translate-y-1/2 flex-col items-center gap-4">
       <FloatingAction
@@ -1448,8 +1564,16 @@ function RightRail({
         </p>
       ) : null}
       <FloatingAction
-        icon={<Share2 aria-hidden className="size-6" />}
-        label="Share"
+        disabled={shareStatus === "sharing"}
+        icon={
+          shareStatus === "shared" || shareStatus === "copied" ? (
+            <Check aria-hidden className="size-6" />
+          ) : (
+            <Share2 aria-hidden className="size-6" />
+          )
+        }
+        label={shareLabel}
+        onClick={onShare}
       />
       <FloatingAction
         featured

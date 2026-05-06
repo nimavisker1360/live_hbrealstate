@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import { LiveRoomScreen } from "@/components/live/LiveRoomScreen";
 import { getConsultantByAgent } from "@/lib/hb-consultants";
-import { getLiveSessionPreviewImage } from "@/lib/live-media";
+import { getLiveSessionPreviewImage, isInlineImageSrc } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
 import type { LiveTour, Property } from "@/types/platform";
 
@@ -62,16 +64,70 @@ function formatStartsAt(startsAt: Date | null) {
   }).format(startsAt);
 }
 
-export default async function LiveRoomPage({ params }: RoomPageProps) {
-  const { roomId } = await params;
-
-  const liveSession = await prisma.liveSession.findUnique({
+const getLiveSession = cache((roomId: string) =>
+  prisma.liveSession.findUnique({
     where: { roomId },
     include: {
       agent: { select: { id: true, name: true } },
       property: true,
     },
+  }),
+);
+
+export async function generateMetadata({
+  params,
+}: RoomPageProps): Promise<Metadata> {
+  const { roomId } = await params;
+  const liveSession = await getLiveSession(roomId);
+
+  if (!liveSession) {
+    return {
+      title: "Live room not found | HB Live",
+    };
+  }
+
+  const previewImage = getLiveSessionPreviewImage({
+    propertyImage: liveSession.property.image,
+    recordingPlaybackId: liveSession.recordingPlaybackId,
+    recordingStatus: liveSession.recordingStatus,
+    status: liveSession.status,
   });
+  const title = `${liveSession.property.title} | HB Live`;
+  const description = `Watch ${liveSession.property.title} in ${liveSession.property.location} with ${liveSession.agent.name}.`;
+  const images = isInlineImageSrc(previewImage)
+    ? undefined
+    : [
+        {
+          alt: liveSession.property.title,
+          url: previewImage,
+        },
+      ];
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/live/${roomId}`,
+    },
+    openGraph: {
+      title,
+      description,
+      images,
+      type: "website",
+    },
+    twitter: {
+      card: images ? "summary_large_image" : "summary",
+      description,
+      images,
+      title,
+    },
+  };
+}
+
+export default async function LiveRoomPage({ params }: RoomPageProps) {
+  const { roomId } = await params;
+
+  const liveSession = await getLiveSession(roomId);
 
   if (!liveSession) {
     notFound();
