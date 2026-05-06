@@ -125,7 +125,6 @@ model LiveSession {
   offers         Offer[]
   comments       Comment[]
   likeEvents     LikeEvent[]
-  segments       LiveSessionSegment[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
@@ -135,23 +134,6 @@ model LiveSession {
   @@index([muxAssetId])
   @@index([playbackId])
   @@index([recordingPlaybackId])
-}
-
-model LiveSessionSegment {
-  id            String      @id @default(cuid())
-  liveSessionId String
-  liveSession   LiveSession @relation(fields: [liveSessionId], references: [id], onDelete: Cascade)
-  muxAssetId    String      @unique
-  playbackId    String?
-  status        String?
-  sequence      Int
-  readyAt       DateTime?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  @@unique([liveSessionId, sequence])
-  @@index([liveSessionId])
-  @@index([playbackId])
 }
 
 model Lead {

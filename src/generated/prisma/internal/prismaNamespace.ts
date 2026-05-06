@@ -388,7 +388,6 @@ export const ModelName = {
   Agent: 'Agent',
   Property: 'Property',
   LiveSession: 'LiveSession',
-  LiveSessionSegment: 'LiveSessionSegment',
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
@@ -408,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agent" | "property" | "liveSession" | "liveSessionSegment" | "lead" | "offer" | "comment" | "likeEvent"
+    modelProps: "user" | "agent" | "property" | "liveSession" | "lead" | "offer" | "comment" | "likeEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -705,80 +704,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LiveSessionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LiveSessionCountAggregateOutputType> | number
-        }
-      }
-    }
-    LiveSessionSegment: {
-      payload: Prisma.$LiveSessionSegmentPayload<ExtArgs>
-      fields: Prisma.LiveSessionSegmentFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.LiveSessionSegmentFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.LiveSessionSegmentFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>
-        }
-        findFirst: {
-          args: Prisma.LiveSessionSegmentFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.LiveSessionSegmentFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>
-        }
-        findMany: {
-          args: Prisma.LiveSessionSegmentFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>[]
-        }
-        create: {
-          args: Prisma.LiveSessionSegmentCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>
-        }
-        createMany: {
-          args: Prisma.LiveSessionSegmentCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.LiveSessionSegmentCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>[]
-        }
-        delete: {
-          args: Prisma.LiveSessionSegmentDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>
-        }
-        update: {
-          args: Prisma.LiveSessionSegmentUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>
-        }
-        deleteMany: {
-          args: Prisma.LiveSessionSegmentDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.LiveSessionSegmentUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.LiveSessionSegmentUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>[]
-        }
-        upsert: {
-          args: Prisma.LiveSessionSegmentUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveSessionSegmentPayload>
-        }
-        aggregate: {
-          args: Prisma.LiveSessionSegmentAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateLiveSessionSegment>
-        }
-        groupBy: {
-          args: Prisma.LiveSessionSegmentGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.LiveSessionSegmentGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.LiveSessionSegmentCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.LiveSessionSegmentCountAggregateOutputType> | number
         }
       }
     }
@@ -1190,21 +1115,6 @@ export const LiveSessionScalarFieldEnum = {
 export type LiveSessionScalarFieldEnum = (typeof LiveSessionScalarFieldEnum)[keyof typeof LiveSessionScalarFieldEnum]
 
 
-export const LiveSessionSegmentScalarFieldEnum = {
-  id: 'id',
-  liveSessionId: 'liveSessionId',
-  muxAssetId: 'muxAssetId',
-  playbackId: 'playbackId',
-  status: 'status',
-  sequence: 'sequence',
-  readyAt: 'readyAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type LiveSessionSegmentScalarFieldEnum = (typeof LiveSessionSegmentScalarFieldEnum)[keyof typeof LiveSessionSegmentScalarFieldEnum]
-
-
 export const LeadScalarFieldEnum = {
   id: 'id',
   agentId: 'agentId',
@@ -1565,7 +1475,6 @@ export type GlobalOmitConfig = {
   agent?: Prisma.AgentOmit
   property?: Prisma.PropertyOmit
   liveSession?: Prisma.LiveSessionOmit
-  liveSessionSegment?: Prisma.LiveSessionSegmentOmit
   lead?: Prisma.LeadOmit
   offer?: Prisma.OfferOmit
   comment?: Prisma.CommentOmit

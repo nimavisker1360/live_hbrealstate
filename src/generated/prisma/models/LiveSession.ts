@@ -354,7 +354,6 @@ export type LiveSessionWhereInput = {
   offers?: Prisma.OfferListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   likeEvents?: Prisma.LikeEventListRelationFilter
-  segments?: Prisma.LiveSessionSegmentListRelationFilter
 }
 
 export type LiveSessionOrderByWithRelationInput = {
@@ -385,7 +384,6 @@ export type LiveSessionOrderByWithRelationInput = {
   offers?: Prisma.OfferOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
   likeEvents?: Prisma.LikeEventOrderByRelationAggregateInput
-  segments?: Prisma.LiveSessionSegmentOrderByRelationAggregateInput
 }
 
 export type LiveSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -419,7 +417,6 @@ export type LiveSessionWhereUniqueInput = Prisma.AtLeast<{
   offers?: Prisma.OfferListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   likeEvents?: Prisma.LikeEventListRelationFilter
-  segments?: Prisma.LiveSessionSegmentListRelationFilter
 }, "id" | "roomId">
 
 export type LiveSessionOrderByWithAggregationInput = {
@@ -504,7 +501,6 @@ export type LiveSessionCreateInput = {
   offers?: Prisma.OfferCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUncheckedCreateInput = {
@@ -533,7 +529,6 @@ export type LiveSessionUncheckedCreateInput = {
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentUncheckedCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUpdateInput = {
@@ -562,7 +557,6 @@ export type LiveSessionUpdateInput = {
   offers?: Prisma.OfferUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateInput = {
@@ -591,7 +585,6 @@ export type LiveSessionUncheckedUpdateInput = {
   offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUncheckedUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionCreateManyInput = {
@@ -756,14 +749,14 @@ export type LiveSessionSumOrderByAggregateInput = {
   whatsappClicks?: Prisma.SortOrder
 }
 
-export type LiveSessionScalarRelationFilter = {
-  is?: Prisma.LiveSessionWhereInput
-  isNot?: Prisma.LiveSessionWhereInput
-}
-
 export type LiveSessionNullableScalarRelationFilter = {
   is?: Prisma.LiveSessionWhereInput | null
   isNot?: Prisma.LiveSessionWhereInput | null
+}
+
+export type LiveSessionScalarRelationFilter = {
+  is?: Prisma.LiveSessionWhereInput
+  isNot?: Prisma.LiveSessionWhereInput
 }
 
 export type LiveSessionCreateNestedManyWithoutAgentInput = {
@@ -862,20 +855,6 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type LiveSessionCreateNestedOneWithoutSegmentsInput = {
-  create?: Prisma.XOR<Prisma.LiveSessionCreateWithoutSegmentsInput, Prisma.LiveSessionUncheckedCreateWithoutSegmentsInput>
-  connectOrCreate?: Prisma.LiveSessionCreateOrConnectWithoutSegmentsInput
-  connect?: Prisma.LiveSessionWhereUniqueInput
-}
-
-export type LiveSessionUpdateOneRequiredWithoutSegmentsNestedInput = {
-  create?: Prisma.XOR<Prisma.LiveSessionCreateWithoutSegmentsInput, Prisma.LiveSessionUncheckedCreateWithoutSegmentsInput>
-  connectOrCreate?: Prisma.LiveSessionCreateOrConnectWithoutSegmentsInput
-  upsert?: Prisma.LiveSessionUpsertWithoutSegmentsInput
-  connect?: Prisma.LiveSessionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.LiveSessionUpdateToOneWithWhereWithoutSegmentsInput, Prisma.LiveSessionUpdateWithoutSegmentsInput>, Prisma.LiveSessionUncheckedUpdateWithoutSegmentsInput>
-}
-
 export type LiveSessionCreateNestedOneWithoutLeadsInput = {
   create?: Prisma.XOR<Prisma.LiveSessionCreateWithoutLeadsInput, Prisma.LiveSessionUncheckedCreateWithoutLeadsInput>
   connectOrCreate?: Prisma.LiveSessionCreateOrConnectWithoutLeadsInput
@@ -961,7 +940,6 @@ export type LiveSessionCreateWithoutAgentInput = {
   offers?: Prisma.OfferCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUncheckedCreateWithoutAgentInput = {
@@ -989,7 +967,6 @@ export type LiveSessionUncheckedCreateWithoutAgentInput = {
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentUncheckedCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionCreateOrConnectWithoutAgentInput = {
@@ -1070,7 +1047,6 @@ export type LiveSessionCreateWithoutPropertyInput = {
   offers?: Prisma.OfferCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUncheckedCreateWithoutPropertyInput = {
@@ -1098,7 +1074,6 @@ export type LiveSessionUncheckedCreateWithoutPropertyInput = {
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentUncheckedCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionCreateOrConnectWithoutPropertyInput = {
@@ -1127,134 +1102,6 @@ export type LiveSessionUpdateManyWithWhereWithoutPropertyInput = {
   data: Prisma.XOR<Prisma.LiveSessionUpdateManyMutationInput, Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyInput>
 }
 
-export type LiveSessionCreateWithoutSegmentsInput = {
-  id?: string
-  roomId: string
-  title: string
-  streamProvider?: string | null
-  muxLiveStreamId?: string | null
-  muxAssetId?: string | null
-  streamKey?: string | null
-  playbackId?: string | null
-  recordingPlaybackId?: string | null
-  recordingStatus?: string | null
-  recordingReadyAt?: Date | string | null
-  rtmpUrl?: string | null
-  status?: $Enums.LiveSessionStatus
-  viewers?: number
-  whatsappClicks?: number
-  startsAt?: Date | string | null
-  endedAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
-  agent: Prisma.AgentCreateNestedOneWithoutLiveSessionsInput
-  leads?: Prisma.LeadCreateNestedManyWithoutLiveSessionInput
-  offers?: Prisma.OfferCreateNestedManyWithoutLiveSessionInput
-  comments?: Prisma.CommentCreateNestedManyWithoutLiveSessionInput
-  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutLiveSessionInput
-}
-
-export type LiveSessionUncheckedCreateWithoutSegmentsInput = {
-  id?: string
-  roomId: string
-  propertyId: string
-  agentId: string
-  title: string
-  streamProvider?: string | null
-  muxLiveStreamId?: string | null
-  muxAssetId?: string | null
-  streamKey?: string | null
-  playbackId?: string | null
-  recordingPlaybackId?: string | null
-  recordingStatus?: string | null
-  recordingReadyAt?: Date | string | null
-  rtmpUrl?: string | null
-  status?: $Enums.LiveSessionStatus
-  viewers?: number
-  whatsappClicks?: number
-  startsAt?: Date | string | null
-  endedAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
-  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutLiveSessionInput
-  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutLiveSessionInput
-}
-
-export type LiveSessionCreateOrConnectWithoutSegmentsInput = {
-  where: Prisma.LiveSessionWhereUniqueInput
-  create: Prisma.XOR<Prisma.LiveSessionCreateWithoutSegmentsInput, Prisma.LiveSessionUncheckedCreateWithoutSegmentsInput>
-}
-
-export type LiveSessionUpsertWithoutSegmentsInput = {
-  update: Prisma.XOR<Prisma.LiveSessionUpdateWithoutSegmentsInput, Prisma.LiveSessionUncheckedUpdateWithoutSegmentsInput>
-  create: Prisma.XOR<Prisma.LiveSessionCreateWithoutSegmentsInput, Prisma.LiveSessionUncheckedCreateWithoutSegmentsInput>
-  where?: Prisma.LiveSessionWhereInput
-}
-
-export type LiveSessionUpdateToOneWithWhereWithoutSegmentsInput = {
-  where?: Prisma.LiveSessionWhereInput
-  data: Prisma.XOR<Prisma.LiveSessionUpdateWithoutSegmentsInput, Prisma.LiveSessionUncheckedUpdateWithoutSegmentsInput>
-}
-
-export type LiveSessionUpdateWithoutSegmentsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
-  viewers?: Prisma.IntFieldUpdateOperationsInput | number
-  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
-  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
-  agent?: Prisma.AgentUpdateOneRequiredWithoutLiveSessionsNestedInput
-  leads?: Prisma.LeadUpdateManyWithoutLiveSessionNestedInput
-  offers?: Prisma.OfferUpdateManyWithoutLiveSessionNestedInput
-  comments?: Prisma.CommentUpdateManyWithoutLiveSessionNestedInput
-  likeEvents?: Prisma.LikeEventUpdateManyWithoutLiveSessionNestedInput
-}
-
-export type LiveSessionUncheckedUpdateWithoutSegmentsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
-  agentId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  streamProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  muxLiveStreamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  muxAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  streamKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playbackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  recordingPlaybackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  recordingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  recordingReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rtmpUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumLiveSessionStatusFieldUpdateOperationsInput | $Enums.LiveSessionStatus
-  viewers?: Prisma.IntFieldUpdateOperationsInput | number
-  whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
-  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
-  offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutLiveSessionNestedInput
-  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutLiveSessionNestedInput
-}
-
 export type LiveSessionCreateWithoutLeadsInput = {
   id?: string
   roomId: string
@@ -1280,7 +1127,6 @@ export type LiveSessionCreateWithoutLeadsInput = {
   offers?: Prisma.OfferCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUncheckedCreateWithoutLeadsInput = {
@@ -1308,7 +1154,6 @@ export type LiveSessionUncheckedCreateWithoutLeadsInput = {
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentUncheckedCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionCreateOrConnectWithoutLeadsInput = {
@@ -1352,7 +1197,6 @@ export type LiveSessionUpdateWithoutLeadsInput = {
   offers?: Prisma.OfferUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateWithoutLeadsInput = {
@@ -1380,7 +1224,6 @@ export type LiveSessionUncheckedUpdateWithoutLeadsInput = {
   offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUncheckedUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionCreateWithoutOffersInput = {
@@ -1408,7 +1251,6 @@ export type LiveSessionCreateWithoutOffersInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUncheckedCreateWithoutOffersInput = {
@@ -1436,7 +1278,6 @@ export type LiveSessionUncheckedCreateWithoutOffersInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentUncheckedCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionCreateOrConnectWithoutOffersInput = {
@@ -1480,7 +1321,6 @@ export type LiveSessionUpdateWithoutOffersInput = {
   leads?: Prisma.LeadUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateWithoutOffersInput = {
@@ -1508,7 +1348,6 @@ export type LiveSessionUncheckedUpdateWithoutOffersInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUncheckedUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionCreateWithoutCommentsInput = {
@@ -1536,7 +1375,6 @@ export type LiveSessionCreateWithoutCommentsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutLiveSessionInput
   offers?: Prisma.OfferCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUncheckedCreateWithoutCommentsInput = {
@@ -1564,7 +1402,6 @@ export type LiveSessionUncheckedCreateWithoutCommentsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentUncheckedCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionCreateOrConnectWithoutCommentsInput = {
@@ -1608,7 +1445,6 @@ export type LiveSessionUpdateWithoutCommentsInput = {
   leads?: Prisma.LeadUpdateManyWithoutLiveSessionNestedInput
   offers?: Prisma.OfferUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateWithoutCommentsInput = {
@@ -1636,7 +1472,6 @@ export type LiveSessionUncheckedUpdateWithoutCommentsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUncheckedUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionCreateWithoutLikeEventsInput = {
@@ -1664,7 +1499,6 @@ export type LiveSessionCreateWithoutLikeEventsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutLiveSessionInput
   offers?: Prisma.OfferCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionUncheckedCreateWithoutLikeEventsInput = {
@@ -1692,7 +1526,6 @@ export type LiveSessionUncheckedCreateWithoutLikeEventsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutLiveSessionInput
-  segments?: Prisma.LiveSessionSegmentUncheckedCreateNestedManyWithoutLiveSessionInput
 }
 
 export type LiveSessionCreateOrConnectWithoutLikeEventsInput = {
@@ -1736,7 +1569,6 @@ export type LiveSessionUpdateWithoutLikeEventsInput = {
   leads?: Prisma.LeadUpdateManyWithoutLiveSessionNestedInput
   offers?: Prisma.OfferUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateWithoutLikeEventsInput = {
@@ -1764,7 +1596,6 @@ export type LiveSessionUncheckedUpdateWithoutLikeEventsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUncheckedUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionCreateManyAgentInput = {
@@ -1815,7 +1646,6 @@ export type LiveSessionUpdateWithoutAgentInput = {
   offers?: Prisma.OfferUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateWithoutAgentInput = {
@@ -1843,7 +1673,6 @@ export type LiveSessionUncheckedUpdateWithoutAgentInput = {
   offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUncheckedUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateManyWithoutAgentInput = {
@@ -1917,7 +1746,6 @@ export type LiveSessionUpdateWithoutPropertyInput = {
   offers?: Prisma.OfferUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateWithoutPropertyInput = {
@@ -1945,7 +1773,6 @@ export type LiveSessionUncheckedUpdateWithoutPropertyInput = {
   offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutLiveSessionNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutLiveSessionNestedInput
-  segments?: Prisma.LiveSessionSegmentUncheckedUpdateManyWithoutLiveSessionNestedInput
 }
 
 export type LiveSessionUncheckedUpdateManyWithoutPropertyInput = {
@@ -1981,7 +1808,6 @@ export type LiveSessionCountOutputType = {
   offers: number
   comments: number
   likeEvents: number
-  segments: number
 }
 
 export type LiveSessionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1989,7 +1815,6 @@ export type LiveSessionCountOutputTypeSelect<ExtArgs extends runtime.Types.Exten
   offers?: boolean | LiveSessionCountOutputTypeCountOffersArgs
   comments?: boolean | LiveSessionCountOutputTypeCountCommentsArgs
   likeEvents?: boolean | LiveSessionCountOutputTypeCountLikeEventsArgs
-  segments?: boolean | LiveSessionCountOutputTypeCountSegmentsArgs
 }
 
 /**
@@ -2030,13 +1855,6 @@ export type LiveSessionCountOutputTypeCountLikeEventsArgs<ExtArgs extends runtim
   where?: Prisma.LikeEventWhereInput
 }
 
-/**
- * LiveSessionCountOutputType without action
- */
-export type LiveSessionCountOutputTypeCountSegmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.LiveSessionSegmentWhereInput
-}
-
 
 export type LiveSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2066,7 +1884,6 @@ export type LiveSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   offers?: boolean | Prisma.LiveSession$offersArgs<ExtArgs>
   comments?: boolean | Prisma.LiveSession$commentsArgs<ExtArgs>
   likeEvents?: boolean | Prisma.LiveSession$likeEventsArgs<ExtArgs>
-  segments?: boolean | Prisma.LiveSession$segmentsArgs<ExtArgs>
   _count?: boolean | Prisma.LiveSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["liveSession"]>
 
@@ -2154,7 +1971,6 @@ export type LiveSessionInclude<ExtArgs extends runtime.Types.Extensions.Internal
   offers?: boolean | Prisma.LiveSession$offersArgs<ExtArgs>
   comments?: boolean | Prisma.LiveSession$commentsArgs<ExtArgs>
   likeEvents?: boolean | Prisma.LiveSession$likeEventsArgs<ExtArgs>
-  segments?: boolean | Prisma.LiveSession$segmentsArgs<ExtArgs>
   _count?: boolean | Prisma.LiveSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LiveSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2175,7 +1991,6 @@ export type $LiveSessionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     offers: Prisma.$OfferPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
     likeEvents: Prisma.$LikeEventPayload<ExtArgs>[]
-    segments: Prisma.$LiveSessionSegmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2599,7 +2414,6 @@ export interface Prisma__LiveSessionClient<T, Null = never, ExtArgs extends runt
   offers<T extends Prisma.LiveSession$offersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LiveSession$offersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.LiveSession$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LiveSession$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likeEvents<T extends Prisma.LiveSession$likeEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LiveSession$likeEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikeEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  segments<T extends Prisma.LiveSession$segmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LiveSession$segmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LiveSessionSegmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3144,30 +2958,6 @@ export type LiveSession$likeEventsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.LikeEventScalarFieldEnum | Prisma.LikeEventScalarFieldEnum[]
-}
-
-/**
- * LiveSession.segments
- */
-export type LiveSession$segmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the LiveSessionSegment
-   */
-  select?: Prisma.LiveSessionSegmentSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the LiveSessionSegment
-   */
-  omit?: Prisma.LiveSessionSegmentOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.LiveSessionSegmentInclude<ExtArgs> | null
-  where?: Prisma.LiveSessionSegmentWhereInput
-  orderBy?: Prisma.LiveSessionSegmentOrderByWithRelationInput | Prisma.LiveSessionSegmentOrderByWithRelationInput[]
-  cursor?: Prisma.LiveSessionSegmentWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.LiveSessionSegmentScalarFieldEnum | Prisma.LiveSessionSegmentScalarFieldEnum[]
 }
 
 /**

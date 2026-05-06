@@ -1,6 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { handleApiError, jsonError } from "@/lib/api";
-import { upsertLiveSessionRecordingSegment } from "@/lib/live-recordings";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -73,9 +72,14 @@ function getSessionStatus(eventType?: string, muxStatus?: string) {
   if (
     eventType === "video.live_stream.disabled" ||
     eventType === "video.live_stream.deleted" ||
+    eventType === "video.live_stream.idle" ||
     muxStatus === "disabled"
   ) {
     return "ENDED" as const;
+  }
+
+  if (muxStatus === "idle") {
+    return "SCHEDULED" as const;
   }
 
   return null;
@@ -120,7 +124,7 @@ export async function POST(request: Request) {
       return Response.json({ data: { ignored: true } });
     }
 
-    const liveSessions = await prisma.liveSession.findMany({
+    await prisma.liveSession.updateMany({
       where: {
         NOT: {
           recordingStatus: "deleted",
@@ -135,39 +139,21 @@ export async function POST(request: Request) {
             : []),
         ],
       },
-      select: {
-        id: true,
+      data: {
+        ...(status ? { status } : {}),
+        ...(status ? { endedAt: status === "ENDED" ? new Date() : null } : {}),
+        ...(muxAssetId ? { muxAssetId } : {}),
+        ...(recordingPlaybackId
+          ? {
+              recordingPlaybackId,
+              recordingReadyAt: new Date(),
+              recordingStatus: event.data?.status ?? "ready",
+            }
+          : muxAssetId
+            ? { recordingStatus: event.data?.status ?? "preparing" }
+            : {}),
       },
     });
-
-    for (const liveSession of liveSessions) {
-      if (muxAssetId) {
-        await upsertLiveSessionRecordingSegment({
-          liveSessionId: liveSession.id,
-          muxAssetId,
-          playbackId: recordingPlaybackId,
-          status: event.data?.status ?? (recordingPlaybackId ? "ready" : "preparing"),
-        });
-      }
-
-      await prisma.liveSession.update({
-        where: { id: liveSession.id },
-        data: {
-          ...(status ? { status } : {}),
-          ...(status ? { endedAt: status === "ENDED" ? new Date() : null } : {}),
-          ...(muxAssetId ? { muxAssetId } : {}),
-          ...(recordingPlaybackId
-            ? {
-                recordingPlaybackId,
-                recordingReadyAt: new Date(),
-                recordingStatus: event.data?.status ?? "ready",
-              }
-            : muxAssetId
-              ? { recordingStatus: event.data?.status ?? "preparing" }
-              : {}),
-        },
-      });
-    }
 
     return Response.json({ data: { ok: true } });
   } catch (error) {

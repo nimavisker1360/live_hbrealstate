@@ -55,7 +55,6 @@ export const ModelName = {
   Agent: 'Agent',
   Property: 'Property',
   LiveSession: 'LiveSession',
-  LiveSessionSegment: 'LiveSessionSegment',
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
@@ -149,21 +148,6 @@ export const LiveSessionScalarFieldEnum = {
 } as const
 
 export type LiveSessionScalarFieldEnum = (typeof LiveSessionScalarFieldEnum)[keyof typeof LiveSessionScalarFieldEnum]
-
-
-export const LiveSessionSegmentScalarFieldEnum = {
-  id: 'id',
-  liveSessionId: 'liveSessionId',
-  muxAssetId: 'muxAssetId',
-  playbackId: 'playbackId',
-  status: 'status',
-  sequence: 'sequence',
-  readyAt: 'readyAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type LiveSessionSegmentScalarFieldEnum = (typeof LiveSessionSegmentScalarFieldEnum)[keyof typeof LiveSessionSegmentScalarFieldEnum]
 
 
 export const LeadScalarFieldEnum = {

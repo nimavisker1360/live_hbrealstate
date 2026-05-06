@@ -1,5 +1,3 @@
-import { LIVE_RECONNECT_WINDOW_SECONDS } from "@/lib/live-streaming";
-
 type MuxPlaybackId = {
   id: string;
   policy: "public" | "signed" | "drm";
@@ -89,7 +87,6 @@ export async function createMuxLiveStream() {
     body: JSON.stringify({
       playback_policies: ["public"],
       latency_mode: "low",
-      reconnect_window: LIVE_RECONNECT_WINDOW_SECONDS,
       new_asset_settings: {
         playback_policies: ["public"],
       },

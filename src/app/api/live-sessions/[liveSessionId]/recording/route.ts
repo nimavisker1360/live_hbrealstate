@@ -33,29 +33,18 @@ export async function DELETE(
     }
 
     const { liveSessionId } = await params;
-    const liveSession = await prisma.$transaction(async (tx) => {
-      await tx.liveSessionSegment.updateMany({
-        where: { liveSessionId },
-        data: {
-          playbackId: null,
-          readyAt: null,
-          status: "deleted",
-        },
-      });
-
-      return tx.liveSession.update({
-        where: { id: liveSessionId },
-        data: {
-          muxAssetId: null,
-          recordingPlaybackId: null,
-          recordingReadyAt: null,
-          recordingStatus: "deleted",
-        },
-        select: {
-          id: true,
-          roomId: true,
-        },
-      });
+    const liveSession = await prisma.liveSession.update({
+      where: { id: liveSessionId },
+      data: {
+        muxAssetId: null,
+        recordingPlaybackId: null,
+        recordingReadyAt: null,
+        recordingStatus: "deleted",
+      },
+      select: {
+        id: true,
+        roomId: true,
+      },
     });
 
     revalidatePath("/agent/dashboard");
