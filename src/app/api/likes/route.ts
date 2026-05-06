@@ -1,5 +1,6 @@
 import { getStringParam, handleApiError, jsonError } from "@/lib/api";
-import { getCurrentSession, type AuthSession } from "@/lib/auth";
+import { getCurrentSession } from "@/lib/auth";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { prisma } from "@/lib/prisma";
 import {
   PUSHER_EVENTS,
@@ -30,25 +31,6 @@ async function findLiveSession(liveSessionId?: string, roomId?: string) {
   }
 
   return null;
-}
-
-async function ensureUser(session: AuthSession) {
-  await prisma.user.upsert({
-    where: { id: session.sub },
-    update: {
-      email: session.email,
-      name: session.name ?? session.email ?? "HB buyer",
-      phone: session.phone,
-      role: session.role,
-    },
-    create: {
-      id: session.sub,
-      email: session.email,
-      name: session.name ?? session.email ?? "HB buyer",
-      phone: session.phone,
-      role: session.role,
-    },
-  });
 }
 
 function getCooldownKey(liveSessionId: string, userId: string) {
@@ -90,11 +72,13 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = await getCurrentSession().catch(() => null);
+    const rawSession = await getCurrentSession().catch(() => null);
 
-    if (!session) {
+    if (!rawSession) {
       return jsonError("Authentication required.", 401);
     }
+
+    const session = await getSessionBackedByDatabase(rawSession);
 
     const payload = likePayloadSchema.parse(await request.json());
     const liveSession = await findLiveSession(
@@ -159,8 +143,6 @@ export async function POST(request: Request) {
         { status: 429 },
       );
     }
-
-    await ensureUser(session);
 
     await prisma.likeEvent.create({
       data: {

@@ -92,8 +92,14 @@ export async function syncExternalAuthUser(user: LiveAuthUser) {
 
 export async function getSessionBackedByDatabase(session: AuthSession) {
   const { prisma } = await import("@/lib/prisma");
-  const existingUser = await prisma.user.findUnique({
-    where: { id: session.sub },
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { id: session.sub },
+        { auth0Id: session.sub },
+        ...(session.email ? [{ email: session.email }] : []),
+      ],
+    },
     select: userSelect,
   });
   const user = existingUser ?? (await syncAuthUser(session));

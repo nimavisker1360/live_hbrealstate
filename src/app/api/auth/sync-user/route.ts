@@ -1,5 +1,11 @@
+import { NextResponse } from "next/server";
 import { handleApiError, jsonError } from "@/lib/api";
-import { verifyLiveAuthToken } from "@/lib/auth";
+import {
+  AUTH_COOKIE_NAME,
+  createSessionToken,
+  sessionCookieOptions,
+  verifyLiveAuthToken,
+} from "@/lib/auth";
 import { syncExternalAuthUser } from "@/lib/auth-users";
 
 export const runtime = "nodejs";
@@ -25,8 +31,17 @@ export async function POST(request: Request) {
     }
 
     const user = await syncExternalAuthUser(authUser);
+    const sessionToken = await createSessionToken({
+      sub: user.id,
+      name: user.name,
+      email: user.email ?? undefined,
+      role: "BUYER",
+    });
+    const response = NextResponse.json(user);
 
-    return Response.json(user);
+    response.cookies.set(AUTH_COOKIE_NAME, sessionToken, sessionCookieOptions);
+
+    return response;
   } catch (error) {
     return handleApiError(error);
   }

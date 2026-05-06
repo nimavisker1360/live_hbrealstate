@@ -696,11 +696,11 @@ export function LiveRoomScreen({
   }, [databaseLiveSessionId, spawnHeart, visitorId]);
 
   async function addHeart() {
-    if (session === undefined || isSavingLike) {
+    if (isCheckingViewer || isSavingLike) {
       return;
     }
 
-    if (!session) {
+    if (!viewerUser) {
       setActiveModal({ type: "auth" });
       return;
     }
@@ -978,7 +978,7 @@ export function LiveRoomScreen({
           <PropertyOverlay property={property} tour={tour} />
           <LiveActivityFeed activities={activities} />
           <RightRail
-            disableLike={session === undefined || isSavingLike}
+            disableLike={isCheckingViewer || isSavingLike}
             likeCount={likeCount}
             likeError={likeError}
             likesLoading={isLoadingLikes}
@@ -1103,9 +1103,10 @@ function LiveVideoSurface({
       return () => window.clearTimeout(timeoutId);
     }
 
+    const isLivePlayback = status === "LIVE";
     const hls = new Hls({
-      liveDurationInfinity: true,
-      lowLatencyMode: true,
+      liveDurationInfinity: isLivePlayback,
+      lowLatencyMode: isLivePlayback,
       fragLoadingTimeOut: 30000,
       fragLoadingMaxRetry: 6,
       fragLoadingRetryDelay: 1000,
@@ -1155,7 +1156,17 @@ function LiveVideoSurface({
     return () => {
       hls.destroy();
     };
-  }, [hlsUrl, shouldPlay]);
+  }, [hlsUrl, shouldPlay, status]);
+
+  function resetEndedPlayback() {
+    const video = videoRef.current;
+
+    if (!video || !video.ended || !Number.isFinite(video.duration)) {
+      return;
+    }
+
+    video.currentTime = 0;
+  }
 
   return (
     <div className="absolute inset-0 bg-black">
@@ -1189,7 +1200,9 @@ function LiveVideoSurface({
           className="absolute inset-0 h-full w-full object-cover"
           controls
           key={hlsUrl}
+          onEnded={resetEndedPlayback}
           onError={() => setFailedHlsUrl(hlsUrl)}
+          onPlay={resetEndedPlayback}
           onPlaying={() => setReadyHlsUrl(hlsUrl)}
           poster={image}
           playsInline
