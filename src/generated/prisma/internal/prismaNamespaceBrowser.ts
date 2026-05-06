@@ -193,6 +193,7 @@ export const CommentScalarFieldEnum = {
   liveSessionId: 'liveSessionId',
   propertyId: 'propertyId',
   agentId: 'agentId',
+  userId: 'userId',
   author: 'author',
   message: 'message',
   createdAt: 'createdAt'

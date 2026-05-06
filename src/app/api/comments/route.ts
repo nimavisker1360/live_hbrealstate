@@ -10,6 +10,7 @@ import {
 import { triggerRealtimeEvent } from "@/lib/pusher-server";
 import { commentPayloadSchema } from "@/lib/schemas";
 import { getCurrentSession } from "@/lib/auth";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
 
 export const runtime = "nodejs";
 
@@ -43,7 +44,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = await getCurrentSession().catch(() => null);
+    const rawSession = await getCurrentSession().catch(() => null);
+    const session = rawSession
+      ? await getSessionBackedByDatabase(rawSession)
+      : null;
     const payload = commentPayloadSchema.parse(await request.json());
     const context = payload.liveSessionId
       ? await prisma.liveSession.findUnique({
@@ -83,6 +87,7 @@ export async function POST(request: Request) {
         agentId: agent?.id,
         propertyId: property.id,
         liveSessionId: liveSession.id,
+        userId: session?.sub,
         author: session?.name ?? payload.author,
         message: payload.message,
       },

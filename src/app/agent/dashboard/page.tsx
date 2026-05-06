@@ -2,6 +2,7 @@ import {
   BadgeDollarSign,
   CalendarClock,
   Eye,
+  Heart,
   MessageCircle,
   UsersRound,
 } from "lucide-react";
@@ -28,6 +29,29 @@ const statusStyles: Record<string, string> = {
   recorded: "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
   scheduled: "border-violet-300/30 bg-violet-400/10 text-violet-100",
   "under review": "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
+};
+
+type EngagementRow = {
+  key: string;
+  name: string;
+  email: string | null;
+  identified: boolean;
+  likes: number;
+  comments: number;
+  lastActivity: Date;
+  latestSessionTitle: string;
+  latestComment: string | null;
+};
+
+type EngagementInput = {
+  key: string;
+  name: string;
+  email?: string | null;
+  identified: boolean;
+  sessionTitle: string;
+  kind: "like" | "comment";
+  comment?: string | null;
+  at: Date;
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -67,6 +91,17 @@ function formatDate(value: Date | null) {
 
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
+  }).format(value);
+}
+
+function formatDateTime(value: Date | null) {
+  if (!value) {
+    return "No activity";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
   }).format(value);
 }
 
@@ -120,68 +155,154 @@ function canDeleteRecording(session: {
   );
 }
 
+function mergeEngagement(
+  rows: Map<string, EngagementRow>,
+  input: EngagementInput,
+) {
+  const existing = rows.get(input.key);
+
+  if (!existing) {
+    rows.set(input.key, {
+      key: input.key,
+      name: input.name,
+      email: input.email ?? null,
+      identified: input.identified,
+      likes: input.kind === "like" ? 1 : 0,
+      comments: input.kind === "comment" ? 1 : 0,
+      lastActivity: input.at,
+      latestSessionTitle: input.sessionTitle,
+      latestComment: input.comment ?? null,
+    });
+    return;
+  }
+
+  if (input.kind === "like") {
+    existing.likes += 1;
+  } else {
+    existing.comments += 1;
+  }
+
+  if (input.identified) {
+    existing.identified = true;
+  }
+
+  if (!existing.email && input.email) {
+    existing.email = input.email;
+  }
+
+  if (input.at > existing.lastActivity) {
+    existing.lastActivity = input.at;
+    existing.latestSessionTitle = input.sessionTitle;
+    existing.latestComment = input.comment ?? existing.latestComment;
+  }
+}
+
 export default async function AgentDashboardPage() {
-  const [databaseProperties, databaseLiveSessions, allLeads, allOffers] =
-    await Promise.all([
-      prisma.property.findMany({
-        include: {
-          _count: {
-            select: {
-              leads: true,
-              liveSessions: true,
-            },
-          },
-          liveSessions: {
-            orderBy: { createdAt: "desc" },
-            select: {
-              startsAt: true,
-              status: true,
-            },
-            take: 1,
+  const [
+    databaseProperties,
+    databaseLiveSessions,
+    allLeads,
+    allOffers,
+    recentComments,
+    recentLikes,
+  ] = await Promise.all([
+    prisma.property.findMany({
+      include: {
+        _count: {
+          select: {
+            leads: true,
+            liveSessions: true,
           },
         },
-        orderBy: { updatedAt: "desc" },
-        take: 6,
-      }),
-      prisma.liveSession.findMany({
-        include: {
-          _count: {
-            select: {
-              leads: true,
-            },
+        liveSessions: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            startsAt: true,
+            status: true,
           },
-          property: {
-            select: {
-              title: true,
-            },
+          take: 1,
+        },
+      },
+      orderBy: { updatedAt: "desc" },
+      take: 6,
+    }),
+    prisma.liveSession.findMany({
+      include: {
+        _count: {
+          select: {
+            comments: true,
+            leads: true,
+            likeEvents: true,
           },
         },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      }),
-      prisma.lead.findMany({
-        include: {
-          liveSession: {
-            select: {
-              title: true,
-            },
+        property: {
+          select: {
+            title: true,
           },
         },
-        orderBy: { createdAt: "desc" },
-        take: 6,
-      }),
-      prisma.offer.findMany({
-        include: {
-          property: {
-            select: {
-              title: true,
-            },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
+    prisma.lead.findMany({
+      include: {
+        liveSession: {
+          select: {
+            title: true,
           },
         },
-        orderBy: { createdAt: "desc" },
-        take: 6,
-      }),
-    ]);
+      },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    }),
+    prisma.offer.findMany({
+      include: {
+        property: {
+          select: {
+            title: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    }),
+    prisma.comment.findMany({
+      include: {
+        liveSession: {
+          select: {
+            roomId: true,
+            title: true,
+          },
+        },
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    }),
+    prisma.likeEvent.findMany({
+      include: {
+        liveSession: {
+          select: {
+            roomId: true,
+            title: true,
+          },
+        },
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 200,
+    }),
+  ]);
 
   const totalViews = databaseLiveSessions.reduce(
     (sum, session) => sum + session.viewers,
@@ -193,6 +314,51 @@ export default async function AgentDashboardPage() {
     (sum, session) => sum + session.whatsappClicks,
     0,
   );
+  const totalLikes = databaseLiveSessions.reduce(
+    (sum, session) => sum + session._count.likeEvents,
+    0,
+  );
+  const totalComments = databaseLiveSessions.reduce(
+    (sum, session) => sum + session._count.comments,
+    0,
+  );
+
+  const engagementRows = new Map<string, EngagementRow>();
+
+  for (const comment of recentComments) {
+    mergeEngagement(engagementRows, {
+      key: comment.userId
+        ? `user:${comment.userId}`
+        : `comment-author:${comment.author.toLowerCase()}`,
+      name: comment.user?.name ?? comment.author,
+      email: comment.user?.email,
+      identified: Boolean(comment.userId),
+      sessionTitle: comment.liveSession.title,
+      kind: "comment",
+      comment: comment.message,
+      at: comment.createdAt,
+    });
+  }
+
+  for (const like of recentLikes) {
+    mergeEngagement(engagementRows, {
+      key: like.userId
+        ? `user:${like.userId}`
+        : like.visitorId
+          ? `visitor:${like.visitorId}`
+          : `like:${like.id}`,
+      name: like.user?.name ?? like.user?.email ?? "Unknown viewer",
+      email: like.user?.email,
+      identified: Boolean(like.userId),
+      sessionTitle: like.liveSession.title,
+      kind: "like",
+      at: like.createdAt,
+    });
+  }
+
+  const engagementSummary = Array.from(engagementRows.values())
+    .sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime())
+    .slice(0, 10);
 
   const overviewCards = [
     {
@@ -218,6 +384,12 @@ export default async function AgentDashboardPage() {
       value: totalWhatsappClicks.toLocaleString(),
       detail: "High-intent interactions",
       icon: MessageCircle,
+    },
+    {
+      label: "Live engagement",
+      value: (totalLikes + totalComments).toLocaleString(),
+      detail: `${totalLikes.toLocaleString()} likes, ${totalComments.toLocaleString()} comments`,
+      icon: Heart,
     },
   ];
   const propertyOptions = databaseProperties.map((property) => ({
@@ -252,7 +424,7 @@ export default async function AgentDashboardPage() {
 
         <section
           aria-label="Overview"
-          className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+          className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
         >
           {overviewCards.map((card) => {
             const Icon = card.icon;
@@ -280,7 +452,7 @@ export default async function AgentDashboardPage() {
           <Card className="p-5">
             <SectionHeader eyebrow="Live sessions" title="Session performance" />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[900px] text-left text-sm">
+              <table className="w-full min-w-[1040px] text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
                     <th className="pb-3 pr-4 font-semibold">Title</th>
@@ -290,6 +462,12 @@ export default async function AgentDashboardPage() {
                     </th>
                     <th className="pb-3 pr-4 text-right font-semibold">
                       Leads
+                    </th>
+                    <th className="pb-3 pr-4 text-right font-semibold">
+                      Likes
+                    </th>
+                    <th className="pb-3 pr-4 text-right font-semibold">
+                      Comments
                     </th>
                     <th className="pb-3 pr-4 font-semibold">Date</th>
                     <th className="pb-3 pr-4 font-semibold">Recording</th>
@@ -321,6 +499,12 @@ export default async function AgentDashboardPage() {
                       <td className="py-4 pr-4 text-right text-white/72">
                         {session._count.leads}
                       </td>
+                      <td className="py-4 pr-4 text-right text-white/72">
+                        {session._count.likeEvents}
+                      </td>
+                      <td className="py-4 pr-4 text-right text-white/72">
+                        {session._count.comments}
+                      </td>
                       <td className="py-4 pr-4 text-white/62">
                         {formatDate(session.startsAt ?? session.createdAt)}
                       </td>
@@ -339,7 +523,7 @@ export default async function AgentDashboardPage() {
                   ))}
                   {databaseLiveSessions.length === 0 ? (
                     <tr>
-                      <td className="py-6 text-sm text-white/52" colSpan={7}>
+                      <td className="py-6 text-sm text-white/52" colSpan={9}>
                         No live sessions yet.
                       </td>
                     </tr>
@@ -391,6 +575,65 @@ export default async function AgentDashboardPage() {
             </div>
           </Card>
         </div>
+
+        <Card className="mt-6 p-5">
+          <SectionHeader
+            eyebrow="Engagement"
+            title="Likes and comments by person"
+          />
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[920px] text-left text-sm">
+              <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
+                <tr>
+                  <th className="pb-3 pr-4 font-semibold">Person</th>
+                  <th className="pb-3 pr-4 font-semibold">Latest session</th>
+                  <th className="pb-3 pr-4 text-right font-semibold">Likes</th>
+                  <th className="pb-3 pr-4 text-right font-semibold">
+                    Comments
+                  </th>
+                  <th className="pb-3 pr-4 font-semibold">Latest comment</th>
+                  <th className="pb-3 font-semibold">Last activity</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {engagementSummary.length > 0 ? (
+                  engagementSummary.map((row) => (
+                    <tr key={row.key}>
+                      <td className="py-4 pr-4">
+                        <p className="font-medium text-white">{row.name}</p>
+                        <p className="mt-1 text-xs text-white/48">
+                          {row.email ??
+                            (row.identified ? "Signed-in buyer" : "Guest name")}
+                        </p>
+                      </td>
+                      <td className="py-4 pr-4 text-white/72">
+                        {row.latestSessionTitle}
+                      </td>
+                      <td className="py-4 pr-4 text-right text-white/72">
+                        {row.likes}
+                      </td>
+                      <td className="py-4 pr-4 text-right text-white/72">
+                        {row.comments}
+                      </td>
+                      <td className="max-w-[320px] truncate py-4 pr-4 text-white/62">
+                        {row.latestComment ?? "No comment yet"}
+                      </td>
+                      <td className="py-4 text-white/62">
+                        {formatDateTime(row.lastActivity)}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td className="py-6 text-sm text-white/52" colSpan={6}>
+                      No likes or comments yet.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
 
         <div className="mt-6 grid gap-6 xl:grid-cols-2">
           <Card className="p-5">

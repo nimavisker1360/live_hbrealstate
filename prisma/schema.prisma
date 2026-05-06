@@ -55,6 +55,7 @@ model User {
   picture    String?
   role       UserRole    @default(BUYER)
   agent      Agent?
+  comments   Comment[]
   likeEvents LikeEvent[]
   lastSeenAt DateTime?
   createdAt  DateTime    @default(now())
@@ -189,13 +190,17 @@ model Comment {
   property      Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   agentId       String?
   agent         Agent?      @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  userId        String?
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   author        String
   message       String
   createdAt     DateTime    @default(now())
 
   @@index([liveSessionId])
+  @@index([liveSessionId, userId, createdAt])
   @@index([propertyId])
   @@index([agentId])
+  @@index([userId])
 }
 
 model LikeEvent {
