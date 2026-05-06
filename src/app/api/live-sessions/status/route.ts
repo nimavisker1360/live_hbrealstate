@@ -1,5 +1,6 @@
 import { getStringParam, handleApiError, jsonError } from "@/lib/api";
 import {
+  getLiveSessionRecordingSegments,
   getVisibleRecordingPlaybackIds,
   upsertLiveSessionRecordingSegment,
 } from "@/lib/live-recordings";
@@ -45,13 +46,6 @@ export async function GET(request: Request) {
         endedAt: true,
         startsAt: true,
         status: true,
-        segments: {
-          orderBy: { sequence: "asc" },
-          select: {
-            playbackId: true,
-            status: true,
-          },
-        },
       },
     });
 
@@ -66,7 +60,9 @@ export async function GET(request: Request) {
     let muxAssetId = liveSession.muxAssetId;
     let endedAt = liveSession.endedAt;
     const recordingDeleted = liveSession.recordingStatus === "deleted";
-    let recordingSegments = liveSession.segments;
+    let recordingSegments = recordingDeleted
+      ? []
+      : await getLiveSessionRecordingSegments(liveSession.id);
 
     if (liveSession.muxLiveStreamId) {
       const muxLiveStream = await getMuxLiveStream(liveSession.muxLiveStreamId);
@@ -128,14 +124,7 @@ export async function GET(request: Request) {
           }
         }
 
-        recordingSegments = await prisma.liveSessionSegment.findMany({
-          where: { liveSessionId: liveSession.id },
-          orderBy: { sequence: "asc" },
-          select: {
-            playbackId: true,
-            status: true,
-          },
-        });
+        recordingSegments = await getLiveSessionRecordingSegments(liveSession.id);
       } else if (recordingDeleted) {
         muxAssetId = null;
         recordingPlaybackId = null;

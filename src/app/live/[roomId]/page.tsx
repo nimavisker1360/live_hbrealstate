@@ -3,7 +3,10 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { LiveRoomScreen } from "@/components/live/LiveRoomScreen";
 import { getConsultantByAgent } from "@/lib/hb-consultants";
-import { getVisibleRecordingPlaybackIds } from "@/lib/live-recordings";
+import {
+  getLiveSessionRecordingSegments,
+  getVisibleRecordingPlaybackIds,
+} from "@/lib/live-recordings";
 import { getLiveSessionPreviewImage, isInlineImageSrc } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
 import type { LiveTour, Property } from "@/types/platform";
@@ -71,13 +74,6 @@ const getLiveSession = cache((roomId: string) =>
     include: {
       agent: { select: { id: true, name: true } },
       property: true,
-      segments: {
-        orderBy: { sequence: "asc" },
-        select: {
-          playbackId: true,
-          status: true,
-        },
-      },
     },
   }),
 );
@@ -198,7 +194,7 @@ export default async function LiveRoomPage({ params }: RoomPageProps) {
     liveSession.recordingStatus === "deleted"
       ? []
       : getVisibleRecordingPlaybackIds(
-          liveSession.segments,
+          await getLiveSessionRecordingSegments(liveSession.id),
           liveSession.recordingPlaybackId,
         );
   const streamStatus =
