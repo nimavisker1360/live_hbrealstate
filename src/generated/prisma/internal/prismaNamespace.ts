@@ -391,7 +391,9 @@ export const ModelName = {
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
-  LikeEvent: 'LikeEvent'
+  LikeEvent: 'LikeEvent',
+  LiveRecording: 'LiveRecording',
+  UploadSession: 'UploadSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agent" | "property" | "liveSession" | "lead" | "offer" | "comment" | "likeEvent"
+    modelProps: "user" | "agent" | "property" | "liveSession" | "lead" | "offer" | "comment" | "likeEvent" | "liveRecording" | "uploadSession"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1003,6 +1005,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LiveRecording: {
+      payload: Prisma.$LiveRecordingPayload<ExtArgs>
+      fields: Prisma.LiveRecordingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LiveRecordingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LiveRecordingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        findFirst: {
+          args: Prisma.LiveRecordingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LiveRecordingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        findMany: {
+          args: Prisma.LiveRecordingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>[]
+        }
+        create: {
+          args: Prisma.LiveRecordingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        createMany: {
+          args: Prisma.LiveRecordingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LiveRecordingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>[]
+        }
+        delete: {
+          args: Prisma.LiveRecordingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        update: {
+          args: Prisma.LiveRecordingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        deleteMany: {
+          args: Prisma.LiveRecordingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LiveRecordingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LiveRecordingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>[]
+        }
+        upsert: {
+          args: Prisma.LiveRecordingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        aggregate: {
+          args: Prisma.LiveRecordingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLiveRecording>
+        }
+        groupBy: {
+          args: Prisma.LiveRecordingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LiveRecordingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LiveRecordingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LiveRecordingCountAggregateOutputType> | number
+        }
+      }
+    }
+    UploadSession: {
+      payload: Prisma.$UploadSessionPayload<ExtArgs>
+      fields: Prisma.UploadSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UploadSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UploadSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.UploadSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UploadSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        findMany: {
+          args: Prisma.UploadSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        create: {
+          args: Prisma.UploadSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        createMany: {
+          args: Prisma.UploadSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UploadSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.UploadSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        update: {
+          args: Prisma.UploadSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.UploadSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UploadSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UploadSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.UploadSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.UploadSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUploadSession>
+        }
+        groupBy: {
+          args: Prisma.UploadSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UploadSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadSessionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1178,6 +1328,50 @@ export const LikeEventScalarFieldEnum = {
 export type LikeEventScalarFieldEnum = (typeof LikeEventScalarFieldEnum)[keyof typeof LikeEventScalarFieldEnum]
 
 
+export const LiveRecordingScalarFieldEnum = {
+  id: 'id',
+  streamId: 'streamId',
+  userId: 'userId',
+  propertyId: 'propertyId',
+  title: 'title',
+  status: 'status',
+  sourceType: 'sourceType',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  storageProvider: 'storageProvider',
+  storageUrl: 'storageUrl',
+  muxAssetId: 'muxAssetId',
+  playbackId: 'playbackId',
+  uploadProgress: 'uploadProgress',
+  retryCount: 'retryCount',
+  errorMessage: 'errorMessage',
+  uploadedAt: 'uploadedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LiveRecordingScalarFieldEnum = (typeof LiveRecordingScalarFieldEnum)[keyof typeof LiveRecordingScalarFieldEnum]
+
+
+export const UploadSessionScalarFieldEnum = {
+  id: 'id',
+  recordingId: 'recordingId',
+  userId: 'userId',
+  uploadId: 'uploadId',
+  status: 'status',
+  totalChunks: 'totalChunks',
+  uploadedChunks: 'uploadedChunks',
+  chunkSize: 'chunkSize',
+  fileSize: 'fileSize',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UploadSessionScalarFieldEnum = (typeof UploadSessionScalarFieldEnum)[keyof typeof UploadSessionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1349,6 +1543,62 @@ export type ListEnumOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'LiveRecordingStatus'
+ */
+export type EnumLiveRecordingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveRecordingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LiveRecordingStatus[]'
+ */
+export type ListEnumLiveRecordingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveRecordingStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RecordingSourceType'
+ */
+export type EnumRecordingSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecordingSourceType'>
+    
+
+
+/**
+ * Reference to a field of type 'RecordingSourceType[]'
+ */
+export type ListEnumRecordingSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecordingSourceType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UploadSessionStatus'
+ */
+export type EnumUploadSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'UploadSessionStatus[]'
+ */
+export type ListEnumUploadSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadSessionStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1479,6 +1729,8 @@ export type GlobalOmitConfig = {
   offer?: Prisma.OfferOmit
   comment?: Prisma.CommentOmit
   likeEvent?: Prisma.LikeEventOmit
+  liveRecording?: Prisma.LiveRecordingOmit
+  uploadSession?: Prisma.UploadSessionOmit
 }
 
 /* Types for Logging */

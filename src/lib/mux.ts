@@ -191,3 +191,47 @@ export async function getMuxAsset(muxAssetId: string) {
     status: body.data.status ?? null,
   };
 }
+
+export async function createMuxAssetFromFile(filePath: string) {
+  const { createReadStream, statSync } = await import("fs");
+  const { basename } = await import("path");
+
+  const fileStats = statSync(filePath);
+  const fileName = basename(filePath);
+  const fileStream = createReadStream(filePath);
+
+  const formData = new FormData();
+  formData.append("file", fileStream as unknown as Blob, fileName);
+  formData.append("playback_policy", "public");
+
+  const response = await fetch("https://api.mux.com/video/v1/assets", {
+    method: "POST",
+    headers: {
+      Authorization: getMuxAuthHeader(),
+    },
+    body: formData as unknown as BodyInit,
+  });
+
+  const body = (await response.json().catch(() => ({}))) as MuxApiResponse<
+    MuxAssetData
+  >;
+
+  if (!response.ok || !body.data) {
+    throw new MuxApiError(
+      mapMuxError(body, response.status),
+      response.status,
+      body.error,
+    );
+  }
+
+  const playbackId =
+    body.data.playback_ids?.find((item) => item.policy === "public")?.id ??
+    body.data.playback_ids?.[0]?.id ??
+    null;
+
+  return {
+    muxAssetId: body.data.id,
+    playbackId,
+    status: body.data.status ?? "processing",
+  };
+}
