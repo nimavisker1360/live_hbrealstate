@@ -118,6 +118,7 @@ type ShareStatus = "idle" | "sharing" | "shared" | "copied" | "failed";
 type LiveStreamState = {
   playbackId?: string | null;
   provider?: string | null;
+  recordingPlaybackIds?: string[];
   startsAt?: string | null;
   status: StreamStatus;
 };
@@ -125,6 +126,7 @@ type LiveStreamState = {
 type StreamStatusResponse = {
   id: string;
   playbackId: string | null;
+  recordingPlaybackIds?: string[];
   recordingPlaybackId: string | null;
   recordingStatus: string | null;
   roomId: string;
@@ -441,11 +443,13 @@ export function LiveRoomScreen({
   const [streamState, setStreamState] = useState<LiveStreamState>(() => ({
     playbackId: stream?.playbackId ?? null,
     provider: stream?.provider ?? null,
+    recordingPlaybackIds: stream?.recordingPlaybackIds ?? [],
     startsAt: stream?.startsAt ?? null,
     status: stream?.status ?? (tour.status === "Live" ? "LIVE" : "SCHEDULED"),
   }));
   const streamStatus = streamState.status;
   const playbackId = streamState.playbackId ?? null;
+  const recordingPlaybackIds = streamState.recordingPlaybackIds ?? [];
 
   const setTemporaryShareStatus = useCallback((status: ShareStatus) => {
     setShareStatus(status);
@@ -514,6 +518,7 @@ export function LiveRoomScreen({
               data.status === "ENDED" && data.recordingPlaybackId
                 ? data.recordingPlaybackId
                 : data.playbackId,
+            recordingPlaybackIds: data.recordingPlaybackIds ?? [],
             startsAt: data.startsAt,
             status: data.status,
           }));
@@ -1073,6 +1078,7 @@ export function LiveRoomScreen({
           <LiveVideoSurface
             image={tour.image}
             playbackId={playbackId}
+            recordingPlaybackIds={recordingPlaybackIds}
             startsAt={streamState.startsAt ?? null}
             status={streamStatus}
             title={tour.title}
@@ -1148,12 +1154,20 @@ function getOfflineTitle(status: StreamStatus) {
     return "Live session ended";
   }
 
+  if (status === "LIVE") {
+    return "Waiting for stream";
+  }
+
   return "Stream offline";
 }
 
 function getOfflineDetail(status: StreamStatus, startsAt?: string | null) {
   if (status === "ENDED") {
     return "The agent has closed this room.";
+  }
+
+  if (status === "LIVE") {
+    return "The agent connection dropped. This room will resume automatically.";
   }
 
   if (!startsAt) {
@@ -1169,26 +1183,38 @@ function getOfflineDetail(status: StreamStatus, startsAt?: string | null) {
 function LiveVideoSurface({
   image,
   playbackId,
+  recordingPlaybackIds = [],
   startsAt,
   status,
   title,
 }: {
   image: string;
   playbackId?: string | null;
+  recordingPlaybackIds?: string[];
   startsAt?: string | null;
   status: StreamStatus;
   title: string;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const recoveryAttemptsRef = useRef(0);
+  const [recordingIndex, setRecordingIndex] = useState(0);
+  const [autoPlayRecording, setAutoPlayRecording] = useState(false);
   const [failedHlsUrl, setFailedHlsUrl] = useState<string | null>(null);
   const [readyHlsUrl, setReadyHlsUrl] = useState<string | null>(null);
   const [playingRecordingUrl, setPlayingRecordingUrl] = useState<string | null>(
     null,
   );
+  const safeRecordingIndex =
+    recordingPlaybackIds.length > 0
+      ? Math.min(recordingIndex, recordingPlaybackIds.length - 1)
+      : 0;
+  const activePlaybackId =
+    status === "ENDED" && recordingPlaybackIds.length > 0
+      ? recordingPlaybackIds[safeRecordingIndex]
+      : playbackId;
   const shouldPlay =
-    (status === "LIVE" || status === "ENDED") && Boolean(playbackId);
-  const hlsUrl = playbackId ? getHlsUrl(playbackId) : null;
+    (status === "LIVE" || status === "ENDED") && Boolean(activePlaybackId);
+  const hlsUrl = activePlaybackId ? getHlsUrl(activePlaybackId) : null;
   const playerError = Boolean(hlsUrl && failedHlsUrl === hlsUrl);
   const videoReady = Boolean(hlsUrl && readyHlsUrl === hlsUrl);
   const showOfflineState = !shouldPlay || playerError;
@@ -1197,6 +1223,8 @@ function LiveVideoSurface({
     shouldPlay &&
     !showOfflineState &&
     playingRecordingUrl !== hlsUrl;
+  const hasNextRecording =
+    status === "ENDED" && safeRecordingIndex < recordingPlaybackIds.length - 1;
 
   useEffect(() => {
     recoveryAttemptsRef.current = 0;
@@ -1213,7 +1241,7 @@ function LiveVideoSurface({
       video.src = hlsUrl;
       video.load();
 
-      if (status === "LIVE") {
+      if (status === "LIVE" || autoPlayRecording) {
         void video.play().catch(() => undefined);
       }
 
@@ -1254,6 +1282,16 @@ function LiveVideoSurface({
 
     hls.loadSource(hlsUrl);
     hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      if (status === "LIVE" || autoPlayRecording) {
+        void video.play().catch(() => {
+          if (status === "ENDED") {
+            setAutoPlayRecording(false);
+            setPlayingRecordingUrl(null);
+          }
+        });
+      }
+    });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       if (!data.fatal) {
         return;
@@ -1282,7 +1320,7 @@ function LiveVideoSurface({
     return () => {
       hls.destroy();
     };
-  }, [hlsUrl, shouldPlay, status]);
+  }, [autoPlayRecording, hlsUrl, shouldPlay, status]);
 
   function playRecording() {
     const video = videoRef.current;
@@ -1296,6 +1334,7 @@ function LiveVideoSurface({
     }
 
     setPlayingRecordingUrl(hlsUrl);
+    setAutoPlayRecording(false);
     void video.play().catch(() => setPlayingRecordingUrl(null));
   }
 
@@ -1306,8 +1345,17 @@ function LiveVideoSurface({
       video.currentTime = 0;
     }
 
-    if (status === "ENDED") {
+    if (hasNextRecording) {
+      setAutoPlayRecording(true);
       setPlayingRecordingUrl(null);
+      setRecordingIndex(safeRecordingIndex + 1);
+      return;
+    }
+
+    if (status === "ENDED") {
+      setAutoPlayRecording(false);
+      setPlayingRecordingUrl(null);
+      setRecordingIndex(0);
     }
   }
 
@@ -1339,7 +1387,7 @@ function LiveVideoSurface({
       {shouldPlay && !playerError ? (
         <video
           aria-label={title}
-          autoPlay={status === "LIVE"}
+          autoPlay={status === "LIVE" || autoPlayRecording}
           className="absolute inset-0 h-full w-full object-cover"
           controls
           key={hlsUrl}
@@ -1348,6 +1396,7 @@ function LiveVideoSurface({
           onPlay={() => {
             if (status === "ENDED") {
               setPlayingRecordingUrl(hlsUrl);
+              setAutoPlayRecording(false);
             }
           }}
           onPlaying={() => setReadyHlsUrl(hlsUrl)}

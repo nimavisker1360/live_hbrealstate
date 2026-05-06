@@ -1,11 +1,15 @@
 import { getStringParam, handleApiError, jsonError } from "@/lib/api";
+import {
+  getVisibleRecordingPlaybackIds,
+  upsertLiveSessionRecordingSegment,
+} from "@/lib/live-recordings";
+import { LIVE_RECONNECT_WINDOW_MS } from "@/lib/live-streaming";
 import { getMuxAsset, getMuxLiveStream } from "@/lib/mux";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
 type DatabaseStreamStatus = "SCHEDULED" | "LIVE" | "ENDED";
-const STREAM_IDLE_GRACE_MS = 45_000;
 
 function mapMuxStatus(status?: string | null): DatabaseStreamStatus | null {
   if (status === "active") {
@@ -41,6 +45,13 @@ export async function GET(request: Request) {
         endedAt: true,
         startsAt: true,
         status: true,
+        segments: {
+          orderBy: { sequence: "asc" },
+          select: {
+            playbackId: true,
+            status: true,
+          },
+        },
       },
     });
 
@@ -55,11 +66,15 @@ export async function GET(request: Request) {
     let muxAssetId = liveSession.muxAssetId;
     let endedAt = liveSession.endedAt;
     const recordingDeleted = liveSession.recordingStatus === "deleted";
+    let recordingSegments = liveSession.segments;
 
     if (liveSession.muxLiveStreamId) {
       const muxLiveStream = await getMuxLiveStream(liveSession.muxLiveStreamId);
-      const latestAssetId =
-        muxLiveStream.recentAssetIds.at(-1) ?? muxLiveStream.activeAssetId;
+      const assetIds = [
+        ...muxLiveStream.recentAssetIds,
+        ...(muxLiveStream.activeAssetId ? [muxLiveStream.activeAssetId] : []),
+      ].filter((assetId, index, all) => all.indexOf(assetId) === index);
+      const latestAssetId = assetIds.at(-1);
       const muxStatus = mapMuxStatus(muxLiveStream.status);
 
       playbackId = muxLiveStream.playbackId ?? playbackId;
@@ -79,19 +94,48 @@ export async function GET(request: Request) {
           const idleMs = Date.now() - idleDetectedAt.getTime();
 
           endedAt = idleDetectedAt;
-          status = idleMs >= STREAM_IDLE_GRACE_MS ? "ENDED" : "LIVE";
+          status = idleMs >= LIVE_RECONNECT_WINDOW_MS ? "ENDED" : "LIVE";
         } else {
-          status = latestAssetId ? "ENDED" : "SCHEDULED";
-          endedAt = status === "ENDED" ? (endedAt ?? new Date()) : null;
+          const idleDetectedAt = latestAssetId ? (endedAt ?? new Date()) : null;
+          const idleMs = idleDetectedAt
+            ? Date.now() - idleDetectedAt.getTime()
+            : 0;
+
+          status = latestAssetId
+            ? idleMs >= LIVE_RECONNECT_WINDOW_MS
+              ? "ENDED"
+              : "LIVE"
+            : "SCHEDULED";
+          endedAt = idleDetectedAt;
         }
       }
 
-      if (latestAssetId && !recordingDeleted) {
-        const muxAsset = await getMuxAsset(latestAssetId).catch(() => null);
+      if (assetIds.length > 0 && !recordingDeleted) {
+        for (const assetId of assetIds) {
+          const muxAsset = await getMuxAsset(assetId).catch(() => null);
 
-        muxAssetId = muxAsset?.muxAssetId ?? latestAssetId;
-        recordingPlaybackId = muxAsset?.playbackId ?? recordingPlaybackId;
-        recordingStatus = muxAsset?.status ?? recordingStatus ?? "preparing";
+          await upsertLiveSessionRecordingSegment({
+            liveSessionId: liveSession.id,
+            muxAssetId: muxAsset?.muxAssetId ?? assetId,
+            playbackId: muxAsset?.playbackId,
+            status: muxAsset?.status ?? "preparing",
+          });
+
+          if (assetId === latestAssetId) {
+            muxAssetId = muxAsset?.muxAssetId ?? assetId;
+            recordingPlaybackId = muxAsset?.playbackId ?? recordingPlaybackId;
+            recordingStatus = muxAsset?.status ?? recordingStatus ?? "preparing";
+          }
+        }
+
+        recordingSegments = await prisma.liveSessionSegment.findMany({
+          where: { liveSessionId: liveSession.id },
+          orderBy: { sequence: "asc" },
+          select: {
+            playbackId: true,
+            status: true,
+          },
+        });
       } else if (recordingDeleted) {
         muxAssetId = null;
         recordingPlaybackId = null;
@@ -125,6 +169,9 @@ export async function GET(request: Request) {
       data: {
         id: liveSession.id,
         playbackId,
+        recordingPlaybackIds: recordingDeleted
+          ? []
+          : getVisibleRecordingPlaybackIds(recordingSegments, recordingPlaybackId),
         recordingPlaybackId,
         recordingStatus,
         roomId: liveSession.roomId,

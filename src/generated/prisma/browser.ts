@@ -38,6 +38,11 @@ export type Property = Prisma.PropertyModel
  */
 export type LiveSession = Prisma.LiveSessionModel
 /**
+ * Model LiveSessionSegment
+ * 
+ */
+export type LiveSessionSegment = Prisma.LiveSessionSegmentModel
+/**
  * Model Lead
  * 
  */
