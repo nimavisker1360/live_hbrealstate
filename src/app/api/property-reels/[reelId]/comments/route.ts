@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { AuthSession } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api";
 import { getCurrentSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -41,6 +42,23 @@ async function loadReel(reelId: string) {
     where: { id: reelId },
     select: { id: true, commentCount: true },
   });
+}
+
+async function resolveSessionUserId(session: AuthSession | null) {
+  if (!session?.sub && !session?.email) return null;
+
+  const email = session.email?.trim().toLowerCase();
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        ...(session.sub ? [{ id: session.sub }, { auth0Id: session.sub }] : []),
+        ...(email ? [{ email }] : []),
+      ],
+    },
+    select: { id: true },
+  });
+
+  return user?.id ?? null;
 }
 
 export async function GET(
@@ -106,9 +124,10 @@ export async function POST(
 
     const body = commentBodySchema.parse(await request.json());
     const session = await getCurrentSession().catch(() => null);
-    const visitor = session?.sub ? null : await ensureVisitorId();
+    const userId = await resolveSessionUserId(session);
+    const visitor = userId ? null : await ensureVisitorId();
 
-    const identity = session?.sub ?? visitor?.visitorId;
+    const identity = userId ?? visitor?.visitorId;
     if (!identity) {
       return jsonError("Could not establish identity.", 500);
     }
@@ -148,8 +167,8 @@ export async function POST(
       const comment = await tx.videoTourComment.create({
         data: {
           videoTourId: reel.id,
-          userId: session?.sub ?? null,
-          visitorId: session?.sub ? null : visitor!.visitorId,
+          userId,
+          visitorId: userId ? null : visitor!.visitorId,
           author,
           message: body.message,
         },

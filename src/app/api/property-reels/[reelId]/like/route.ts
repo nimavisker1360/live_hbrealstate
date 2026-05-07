@@ -1,4 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
+import type { AuthSession } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api";
 import { getCurrentSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -28,6 +29,23 @@ async function readReel(reelId: string) {
   });
 }
 
+async function resolveSessionUserId(session: AuthSession | null) {
+  if (!session?.sub && !session?.email) return null;
+
+  const email = session.email?.trim().toLowerCase();
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        ...(session.sub ? [{ id: session.sub }, { auth0Id: session.sub }] : []),
+        ...(email ? [{ email }] : []),
+      ],
+    },
+    select: { id: true },
+  });
+
+  return user?.id ?? null;
+}
+
 function jsonWithCookie(
   body: unknown,
   init: ResponseInit,
@@ -46,12 +64,13 @@ export async function GET(
     if (!reel) return jsonError("Reel not found.", 404);
 
     const session = await getCurrentSession().catch(() => null);
+    const userId = await resolveSessionUserId(session);
     let liked = false;
 
-    if (session?.sub) {
+    if (userId) {
       const existing = await prisma.videoTourLike.findUnique({
         where: {
-          videoTourId_userId: { videoTourId: reel.id, userId: session.sub },
+          videoTourId_userId: { videoTourId: reel.id, userId },
         },
         select: { id: true },
       });
@@ -87,9 +106,10 @@ export async function POST(
     if (!reel) return jsonError("Reel not found.", 404);
 
     const session = await getCurrentSession().catch(() => null);
-    const visitor = session?.sub ? null : await ensureVisitorId();
+    const userId = await resolveSessionUserId(session);
+    const visitor = userId ? null : await ensureVisitorId();
 
-    const identity = session?.sub ?? visitor?.visitorId;
+    const identity = userId ?? visitor?.visitorId;
     if (!identity) {
       return jsonError("Could not establish identity.", 500);
     }
@@ -111,8 +131,8 @@ export async function POST(
     pruneCooldown(now);
 
     const result = await prisma.$transaction(async (tx) => {
-      const where = session?.sub
-        ? { videoTourId_userId: { videoTourId: reel.id, userId: session.sub } }
+      const where = userId
+        ? { videoTourId_userId: { videoTourId: reel.id, userId } }
         : {
             videoTourId_visitorId: {
               videoTourId: reel.id,
@@ -146,8 +166,8 @@ export async function POST(
         await tx.videoTourLike.create({
           data: {
             videoTourId: reel.id,
-            userId: session?.sub ?? null,
-            visitorId: session?.sub ? null : visitor!.visitorId,
+            userId,
+            visitorId: userId ? null : visitor!.visitorId,
           },
         });
       } catch (error) {
