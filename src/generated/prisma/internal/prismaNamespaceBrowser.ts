@@ -55,6 +55,9 @@ export const ModelName = {
   Agent: 'Agent',
   Property: 'Property',
   LiveSession: 'LiveSession',
+  LiveRecording: 'LiveRecording',
+  UploadSession: 'UploadSession',
+  UploadChunk: 'UploadChunk',
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
@@ -148,6 +151,66 @@ export const LiveSessionScalarFieldEnum = {
 } as const
 
 export type LiveSessionScalarFieldEnum = (typeof LiveSessionScalarFieldEnum)[keyof typeof LiveSessionScalarFieldEnum]
+
+
+export const LiveRecordingScalarFieldEnum = {
+  id: 'id',
+  streamId: 'streamId',
+  userId: 'userId',
+  propertyId: 'propertyId',
+  title: 'title',
+  status: 'status',
+  sourceType: 'sourceType',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  storageProvider: 'storageProvider',
+  storageUrl: 'storageUrl',
+  muxAssetId: 'muxAssetId',
+  playbackId: 'playbackId',
+  uploadProgress: 'uploadProgress',
+  retryCount: 'retryCount',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type LiveRecordingScalarFieldEnum = (typeof LiveRecordingScalarFieldEnum)[keyof typeof LiveRecordingScalarFieldEnum]
+
+
+export const UploadSessionScalarFieldEnum = {
+  id: 'id',
+  recordingId: 'recordingId',
+  userId: 'userId',
+  uploadId: 'uploadId',
+  status: 'status',
+  totalChunks: 'totalChunks',
+  uploadedChunks: 'uploadedChunks',
+  chunkSize: 'chunkSize',
+  fileSize: 'fileSize',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UploadSessionScalarFieldEnum = (typeof UploadSessionScalarFieldEnum)[keyof typeof UploadSessionScalarFieldEnum]
+
+
+export const UploadChunkScalarFieldEnum = {
+  id: 'id',
+  uploadSessionId: 'uploadSessionId',
+  userId: 'userId',
+  chunkIndex: 'chunkIndex',
+  fileSize: 'fileSize',
+  storageProvider: 'storageProvider',
+  storageUrl: 'storageUrl',
+  pathname: 'pathname',
+  contentType: 'contentType',
+  createdAt: 'createdAt'
+} as const
+
+export type UploadChunkScalarFieldEnum = (typeof UploadChunkScalarFieldEnum)[keyof typeof UploadChunkScalarFieldEnum]
 
 
 export const LeadScalarFieldEnum = {

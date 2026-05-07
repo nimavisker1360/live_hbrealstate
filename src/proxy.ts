@@ -11,6 +11,7 @@ const PAGE_ACCESS: Array<{
 }> = [
   { prefix: "/admin", roles: ["OWNER"] },
   { prefix: "/agent", roles: ["OWNER", "AGENT"] },
+  { prefix: "/dashboard", roles: ["OWNER", "AGENT"] },
 ];
 
 const API_ACCESS: Array<{
@@ -101,6 +102,7 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/agent/:path*",
+    "/dashboard/:path*",
     "/api/leads/:path*",
     "/api/offers/:path*",
   ],

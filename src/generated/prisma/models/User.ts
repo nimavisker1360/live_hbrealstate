@@ -225,6 +225,9 @@ export type UserWhereInput = {
   agent?: Prisma.XOR<Prisma.AgentNullableScalarRelationFilter, Prisma.AgentWhereInput> | null
   comments?: Prisma.CommentListRelationFilter
   likeEvents?: Prisma.LikeEventListRelationFilter
+  liveRecordings?: Prisma.LiveRecordingListRelationFilter
+  uploadChunks?: Prisma.UploadChunkListRelationFilter
+  uploadSessions?: Prisma.UploadSessionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -241,6 +244,9 @@ export type UserOrderByWithRelationInput = {
   agent?: Prisma.AgentOrderByWithRelationInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
   likeEvents?: Prisma.LikeEventOrderByRelationAggregateInput
+  liveRecordings?: Prisma.LiveRecordingOrderByRelationAggregateInput
+  uploadChunks?: Prisma.UploadChunkOrderByRelationAggregateInput
+  uploadSessions?: Prisma.UploadSessionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -260,6 +266,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   agent?: Prisma.XOR<Prisma.AgentNullableScalarRelationFilter, Prisma.AgentWhereInput> | null
   comments?: Prisma.CommentListRelationFilter
   likeEvents?: Prisma.LikeEventListRelationFilter
+  liveRecordings?: Prisma.LiveRecordingListRelationFilter
+  uploadChunks?: Prisma.UploadChunkListRelationFilter
+  uploadSessions?: Prisma.UploadSessionListRelationFilter
 }, "id" | "auth0Id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -308,6 +317,9 @@ export type UserCreateInput = {
   agent?: Prisma.AgentCreateNestedOneWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -324,6 +336,9 @@ export type UserUncheckedCreateInput = {
   agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -340,6 +355,9 @@ export type UserUpdateInput = {
   agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -356,6 +374,9 @@ export type UserUncheckedUpdateInput = {
   agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -441,6 +462,11 @@ export type UserNullableScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput | null
 }
 
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -475,6 +501,48 @@ export type UserUpdateOneWithoutAgentNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAgentInput, Prisma.UserUpdateWithoutAgentInput>, Prisma.UserUncheckedUpdateWithoutAgentInput>
+}
+
+export type UserCreateNestedOneWithoutLiveRecordingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLiveRecordingsInput, Prisma.UserUncheckedCreateWithoutLiveRecordingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLiveRecordingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLiveRecordingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLiveRecordingsInput, Prisma.UserUncheckedCreateWithoutLiveRecordingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLiveRecordingsInput
+  upsert?: Prisma.UserUpsertWithoutLiveRecordingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLiveRecordingsInput, Prisma.UserUpdateWithoutLiveRecordingsInput>, Prisma.UserUncheckedUpdateWithoutLiveRecordingsInput>
+}
+
+export type UserCreateNestedOneWithoutUploadSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadSessionsInput, Prisma.UserUncheckedCreateWithoutUploadSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUploadSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadSessionsInput, Prisma.UserUncheckedCreateWithoutUploadSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadSessionsInput
+  upsert?: Prisma.UserUpsertWithoutUploadSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadSessionsInput, Prisma.UserUpdateWithoutUploadSessionsInput>, Prisma.UserUncheckedUpdateWithoutUploadSessionsInput>
+}
+
+export type UserCreateNestedOneWithoutUploadChunksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadChunksInput, Prisma.UserUncheckedCreateWithoutUploadChunksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadChunksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUploadChunksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadChunksInput, Prisma.UserUncheckedCreateWithoutUploadChunksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadChunksInput
+  upsert?: Prisma.UserUpsertWithoutUploadChunksInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadChunksInput, Prisma.UserUpdateWithoutUploadChunksInput>, Prisma.UserUncheckedUpdateWithoutUploadChunksInput>
 }
 
 export type UserCreateNestedOneWithoutCommentsInput = {
@@ -522,6 +590,9 @@ export type UserCreateWithoutAgentInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAgentInput = {
@@ -537,6 +608,9 @@ export type UserUncheckedCreateWithoutAgentInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAgentInput = {
@@ -568,6 +642,9 @@ export type UserUpdateWithoutAgentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAgentInput = {
@@ -583,6 +660,273 @@ export type UserUncheckedUpdateWithoutAgentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLiveRecordingsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLiveRecordingsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLiveRecordingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLiveRecordingsInput, Prisma.UserUncheckedCreateWithoutLiveRecordingsInput>
+}
+
+export type UserUpsertWithoutLiveRecordingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLiveRecordingsInput, Prisma.UserUncheckedUpdateWithoutLiveRecordingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLiveRecordingsInput, Prisma.UserUncheckedCreateWithoutLiveRecordingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLiveRecordingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLiveRecordingsInput, Prisma.UserUncheckedUpdateWithoutLiveRecordingsInput>
+}
+
+export type UserUpdateWithoutLiveRecordingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLiveRecordingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutUploadSessionsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUploadSessionsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutUploadSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadSessionsInput, Prisma.UserUncheckedCreateWithoutUploadSessionsInput>
+}
+
+export type UserUpsertWithoutUploadSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadSessionsInput, Prisma.UserUncheckedUpdateWithoutUploadSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadSessionsInput, Prisma.UserUncheckedCreateWithoutUploadSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadSessionsInput, Prisma.UserUncheckedUpdateWithoutUploadSessionsInput>
+}
+
+export type UserUpdateWithoutUploadSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutUploadChunksInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUploadChunksInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutUploadChunksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadChunksInput, Prisma.UserUncheckedCreateWithoutUploadChunksInput>
+}
+
+export type UserUpsertWithoutUploadChunksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadChunksInput, Prisma.UserUncheckedUpdateWithoutUploadChunksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadChunksInput, Prisma.UserUncheckedCreateWithoutUploadChunksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadChunksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadChunksInput, Prisma.UserUncheckedUpdateWithoutUploadChunksInput>
+}
+
+export type UserUpdateWithoutUploadChunksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadChunksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -598,6 +942,9 @@ export type UserCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   agent?: Prisma.AgentCreateNestedOneWithoutUserInput
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -613,6 +960,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -644,6 +994,9 @@ export type UserUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
   likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -659,6 +1012,9 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLikeEventsInput = {
@@ -674,6 +1030,9 @@ export type UserCreateWithoutLikeEventsInput = {
   updatedAt?: Date | string
   agent?: Prisma.AgentCreateNestedOneWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLikeEventsInput = {
@@ -689,6 +1048,9 @@ export type UserUncheckedCreateWithoutLikeEventsInput = {
   updatedAt?: Date | string
   agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLikeEventsInput = {
@@ -720,6 +1082,9 @@ export type UserUpdateWithoutLikeEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikeEventsInput = {
@@ -735,6 +1100,9 @@ export type UserUncheckedUpdateWithoutLikeEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -745,11 +1113,17 @@ export type UserUncheckedUpdateWithoutLikeEventsInput = {
 export type UserCountOutputType = {
   comments: number
   likeEvents: number
+  liveRecordings: number
+  uploadChunks: number
+  uploadSessions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   likeEvents?: boolean | UserCountOutputTypeCountLikeEventsArgs
+  liveRecordings?: boolean | UserCountOutputTypeCountLiveRecordingsArgs
+  uploadChunks?: boolean | UserCountOutputTypeCountUploadChunksArgs
+  uploadSessions?: boolean | UserCountOutputTypeCountUploadSessionsArgs
 }
 
 /**
@@ -776,6 +1150,27 @@ export type UserCountOutputTypeCountLikeEventsArgs<ExtArgs extends runtime.Types
   where?: Prisma.LikeEventWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLiveRecordingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LiveRecordingWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UploadChunkWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UploadSessionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -791,6 +1186,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   agent?: boolean | Prisma.User$agentArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   likeEvents?: boolean | Prisma.User$likeEventsArgs<ExtArgs>
+  liveRecordings?: boolean | Prisma.User$liveRecordingsArgs<ExtArgs>
+  uploadChunks?: boolean | Prisma.User$uploadChunksArgs<ExtArgs>
+  uploadSessions?: boolean | Prisma.User$uploadSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -838,6 +1236,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   agent?: boolean | Prisma.User$agentArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   likeEvents?: boolean | Prisma.User$likeEventsArgs<ExtArgs>
+  liveRecordings?: boolean | Prisma.User$liveRecordingsArgs<ExtArgs>
+  uploadChunks?: boolean | Prisma.User$uploadChunksArgs<ExtArgs>
+  uploadSessions?: boolean | Prisma.User$uploadSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -849,6 +1250,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     agent: Prisma.$AgentPayload<ExtArgs> | null
     comments: Prisma.$CommentPayload<ExtArgs>[]
     likeEvents: Prisma.$LikeEventPayload<ExtArgs>[]
+    liveRecordings: Prisma.$LiveRecordingPayload<ExtArgs>[]
+    uploadChunks: Prisma.$UploadChunkPayload<ExtArgs>[]
+    uploadSessions: Prisma.$UploadSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1258,6 +1662,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   agent<T extends Prisma.User$agentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$agentArgs<ExtArgs>>): Prisma.Prisma__AgentClient<runtime.Types.Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likeEvents<T extends Prisma.User$likeEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likeEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikeEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  liveRecordings<T extends Prisma.User$liveRecordingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$liveRecordingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LiveRecordingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadChunks<T extends Prisma.User$uploadChunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadChunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UploadChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadSessions<T extends Prisma.User$uploadSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UploadSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1754,6 +2161,78 @@ export type User$likeEventsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.LikeEventScalarFieldEnum | Prisma.LikeEventScalarFieldEnum[]
+}
+
+/**
+ * User.liveRecordings
+ */
+export type User$liveRecordingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LiveRecording
+   */
+  select?: Prisma.LiveRecordingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LiveRecording
+   */
+  omit?: Prisma.LiveRecordingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LiveRecordingInclude<ExtArgs> | null
+  where?: Prisma.LiveRecordingWhereInput
+  orderBy?: Prisma.LiveRecordingOrderByWithRelationInput | Prisma.LiveRecordingOrderByWithRelationInput[]
+  cursor?: Prisma.LiveRecordingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LiveRecordingScalarFieldEnum | Prisma.LiveRecordingScalarFieldEnum[]
+}
+
+/**
+ * User.uploadChunks
+ */
+export type User$uploadChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UploadChunk
+   */
+  select?: Prisma.UploadChunkSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UploadChunk
+   */
+  omit?: Prisma.UploadChunkOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UploadChunkInclude<ExtArgs> | null
+  where?: Prisma.UploadChunkWhereInput
+  orderBy?: Prisma.UploadChunkOrderByWithRelationInput | Prisma.UploadChunkOrderByWithRelationInput[]
+  cursor?: Prisma.UploadChunkWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UploadChunkScalarFieldEnum | Prisma.UploadChunkScalarFieldEnum[]
+}
+
+/**
+ * User.uploadSessions
+ */
+export type User$uploadSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UploadSession
+   */
+  select?: Prisma.UploadSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UploadSession
+   */
+  omit?: Prisma.UploadSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UploadSessionInclude<ExtArgs> | null
+  where?: Prisma.UploadSessionWhereInput
+  orderBy?: Prisma.UploadSessionOrderByWithRelationInput | Prisma.UploadSessionOrderByWithRelationInput[]
+  cursor?: Prisma.UploadSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UploadSessionScalarFieldEnum | Prisma.UploadSessionScalarFieldEnum[]
 }
 
 /**

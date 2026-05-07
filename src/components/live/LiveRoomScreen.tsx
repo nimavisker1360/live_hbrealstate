@@ -1,8 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Hls from "hls.js";
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PresenceChannel } from "pusher-js";
@@ -16,7 +13,6 @@ import {
   Heart,
   MapPin,
   MessageCircle,
-  Play,
   Radio,
   Send,
   Share2,
@@ -24,7 +20,6 @@ import {
   Sparkles,
   User,
   Users,
-  WifiOff,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -41,10 +36,10 @@ import {
   readStoredLiveUser,
   type SyncedLiveUser,
 } from "@/lib/live-auth-client";
-import { isInlineImageSrc } from "@/lib/live-media";
 import { cn } from "@/lib/utils";
 import type { LiveTour, Property } from "@/types/platform";
 import { LiveActivityFeed } from "./LiveActivityFeed";
+import { LiveMuxPlayerSurface } from "./LiveMuxPlayerSurface";
 
 type LiveComment = {
   id: string;
@@ -219,7 +214,6 @@ function formatIsoDate(value: Date) {
 
 const LIKE_COOLDOWN_MS = 2_000;
 const COMMENT_VISIBLE_MS = 5_000;
-const MAX_HLS_RECOVERY_ATTEMPTS = 8;
 
 class ApiRequestError<T = unknown> extends Error {
   data?: T;
@@ -1070,8 +1064,9 @@ export function LiveRoomScreen({
     <div className="min-h-svh overflow-hidden bg-black text-white">
       <div className="mx-auto min-h-svh max-w-[520px] bg-black lg:max-w-none">
         <section className="relative min-h-svh lg:mx-auto lg:max-w-[520px] lg:overflow-hidden lg:border-x lg:border-white/10">
-          <LiveVideoSurface
+          <LiveMuxPlayerSurface
             image={tour.image}
+            key={`${playbackId ?? "no-playback"}-${streamStatus}`}
             playbackId={playbackId}
             startsAt={streamState.startsAt ?? null}
             status={streamStatus}
@@ -1135,257 +1130,6 @@ export function LiveRoomScreen({
           ) : null}
         </section>
       </div>
-    </div>
-  );
-}
-
-function getHlsUrl(playbackId: string) {
-  return `https://stream.mux.com/${playbackId}.m3u8`;
-}
-
-function getOfflineTitle(status: StreamStatus) {
-  if (status === "ENDED") {
-    return "Live session ended";
-  }
-
-  return "Stream offline";
-}
-
-function getOfflineDetail(status: StreamStatus, startsAt?: string | null) {
-  if (status === "ENDED") {
-    return "The agent has closed this room.";
-  }
-
-  if (!startsAt) {
-    return "The agent has not started broadcasting yet.";
-  }
-
-  return `Scheduled for ${new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(startsAt))}`;
-}
-
-function LiveVideoSurface({
-  image,
-  playbackId,
-  startsAt,
-  status,
-  title,
-}: {
-  image: string;
-  playbackId?: string | null;
-  startsAt?: string | null;
-  status: StreamStatus;
-  title: string;
-}) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const recoveryAttemptsRef = useRef(0);
-  const [failedHlsUrl, setFailedHlsUrl] = useState<string | null>(null);
-  const [readyHlsUrl, setReadyHlsUrl] = useState<string | null>(null);
-  const [playingRecordingUrl, setPlayingRecordingUrl] = useState<string | null>(
-    null,
-  );
-  const shouldPlay =
-    (status === "LIVE" || status === "ENDED") && Boolean(playbackId);
-  const hlsUrl = playbackId ? getHlsUrl(playbackId) : null;
-  const playerError = Boolean(hlsUrl && failedHlsUrl === hlsUrl);
-  const videoReady = Boolean(hlsUrl && readyHlsUrl === hlsUrl);
-  const showOfflineState = !shouldPlay || playerError;
-  const showRecordingPlayButton =
-    status === "ENDED" &&
-    shouldPlay &&
-    !showOfflineState &&
-    playingRecordingUrl !== hlsUrl;
-
-  useEffect(() => {
-    recoveryAttemptsRef.current = 0;
-  }, [hlsUrl, status]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-
-    if (!video || !hlsUrl || !shouldPlay) {
-      return;
-    }
-
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = hlsUrl;
-      video.load();
-
-      if (status === "LIVE") {
-        void video.play().catch(() => undefined);
-      }
-
-      return () => {
-        video.removeAttribute("src");
-        video.load();
-      };
-    }
-
-    if (!Hls.isSupported()) {
-      const timeoutId = window.setTimeout(() => setFailedHlsUrl(hlsUrl), 0);
-
-      return () => window.clearTimeout(timeoutId);
-    }
-
-    const isLivePlayback = status === "LIVE";
-    const hls = new Hls({
-      liveDurationInfinity: isLivePlayback,
-      lowLatencyMode: isLivePlayback,
-      fragLoadingTimeOut: 30000,
-      fragLoadingMaxRetry: 6,
-      fragLoadingRetryDelay: 1000,
-      fragLoadingMaxRetryTimeout: 12000,
-      levelLoadingTimeOut: 30000,
-      levelLoadingMaxRetry: 6,
-      levelLoadingRetryDelay: 1000,
-      levelLoadingMaxRetryTimeout: 12000,
-      manifestLoadingTimeOut: 20000,
-      manifestLoadingMaxRetry: 8,
-      manifestLoadingRetryDelay: 1000,
-      manifestLoadingMaxRetryTimeout: 15000,
-      maxMaxBufferLength: 30,
-      maxBufferLength: 12,
-      maxBufferSize: 60 * 1000 * 1000,
-      backBufferLength: 30,
-      testBandwidth: true,
-    });
-
-    hls.loadSource(hlsUrl);
-    hls.attachMedia(video);
-    hls.on(Hls.Events.ERROR, (_event, data) => {
-      if (!data.fatal) {
-        return;
-      }
-
-      recoveryAttemptsRef.current += 1;
-
-      if (recoveryAttemptsRef.current > MAX_HLS_RECOVERY_ATTEMPTS) {
-        setFailedHlsUrl(hlsUrl);
-        return;
-      }
-
-      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-        window.setTimeout(() => hls.startLoad(), recoveryAttemptsRef.current * 750);
-        return;
-      }
-
-      if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-        hls.recoverMediaError();
-        return;
-      }
-
-      setFailedHlsUrl(hlsUrl);
-    });
-
-    return () => {
-      hls.destroy();
-    };
-  }, [hlsUrl, shouldPlay, status]);
-
-  function playRecording() {
-    const video = videoRef.current;
-
-    if (!video) {
-      return;
-    }
-
-    if (Number.isFinite(video.duration)) {
-      video.currentTime = 0;
-    }
-
-    setPlayingRecordingUrl(hlsUrl);
-    void video.play().catch(() => setPlayingRecordingUrl(null));
-  }
-
-  function handleRecordingEnded() {
-    const video = videoRef.current;
-
-    if (video && Number.isFinite(video.duration)) {
-      video.currentTime = 0;
-    }
-
-    if (status === "ENDED") {
-      setPlayingRecordingUrl(null);
-    }
-  }
-
-  return (
-    <div className="absolute inset-0 bg-black">
-        {isInlineImageSrc(image) ? (
-          <img
-            alt={title}
-            className={cn(
-              "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",
-              videoReady && !showOfflineState && "opacity-0",
-            )}
-            src={image}
-          />
-        ) : (
-          <Image
-            alt={title}
-            className={cn(
-              "object-cover transition-opacity duration-500",
-              videoReady && !showOfflineState && "opacity-0",
-            )}
-            fill
-            priority
-            sizes="(min-width: 1024px) 520px, 100vw"
-            src={image}
-          />
-        )}
-
-      {shouldPlay && !playerError ? (
-        <video
-          aria-label={title}
-          autoPlay={status === "LIVE"}
-          className="absolute inset-0 h-full w-full object-cover"
-          controls
-          key={hlsUrl}
-          onEnded={handleRecordingEnded}
-          onError={() => setFailedHlsUrl(hlsUrl)}
-          onPlay={() => {
-            if (status === "ENDED") {
-              setPlayingRecordingUrl(hlsUrl);
-            }
-          }}
-          onPlaying={() => setReadyHlsUrl(hlsUrl)}
-          poster={image}
-          playsInline
-          preload="auto"
-          ref={videoRef}
-        />
-      ) : null}
-
-      {showRecordingPlayButton ? (
-        <div className="absolute inset-0 z-10 flex items-center justify-center px-8 text-center">
-          <button
-            className="flex size-16 items-center justify-center rounded-full border border-white/18 bg-black/52 text-white shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl transition hover:scale-105 hover:bg-white/16 focus:outline-none focus:ring-2 focus:ring-[#d6b15f] focus:ring-offset-2 focus:ring-offset-black"
-            aria-label="Play recording"
-            onClick={playRecording}
-            type="button"
-          >
-            <Play aria-hidden className="ml-1 size-8" fill="currentColor" />
-          </button>
-        </div>
-      ) : null}
-
-      {showOfflineState ? (
-        <div className="absolute inset-0 z-10 flex items-center justify-center px-8 text-center">
-          <div className="rounded-lg border border-white/12 bg-black/46 px-5 py-4 shadow-[0_20px_70px_rgba(0,0,0,0.36)] backdrop-blur-xl">
-            <div className="mx-auto mb-3 flex size-11 items-center justify-center rounded-full border border-white/14 bg-white/10 text-[#f0cf79]">
-              <WifiOff aria-hidden className="size-5" />
-            </div>
-            <p className="text-base font-semibold text-white">
-              {getOfflineTitle(status)}
-            </p>
-            <p className="mt-1 max-w-56 text-sm leading-5 text-white/64">
-              {getOfflineDetail(status, startsAt)}
-            </p>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }

@@ -46,20 +46,45 @@ enum OfferStatus {
   REJECTED
 }
 
+enum LiveRecordingStatus {
+  LOCAL_PENDING
+  UPLOADING
+  UPLOADED
+  FAILED
+  PROCESSING
+  READY
+}
+
+enum RecordingSourceType {
+  LIVE_RECORDING
+  MANUAL_UPLOAD
+}
+
+enum UploadSessionStatus {
+  PENDING
+  UPLOADING
+  COMPLETED
+  FAILED
+  EXPIRED
+}
+
 model User {
-  id         String      @id @default(cuid())
-  auth0Id    String?     @unique
-  name       String
-  email      String?     @unique
-  phone      String?
-  picture    String?
-  role       UserRole    @default(BUYER)
-  agent      Agent?
-  comments   Comment[]
-  likeEvents LikeEvent[]
-  lastSeenAt DateTime?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id             String          @id @default(cuid())
+  auth0Id        String?         @unique
+  name           String
+  email          String?         @unique
+  phone          String?
+  picture        String?
+  role           UserRole        @default(BUYER)
+  agent          Agent?
+  comments       Comment[]
+  likeEvents     LikeEvent[]
+  liveRecordings LiveRecording[]
+  uploadChunks   UploadChunk[]
+  uploadSessions UploadSession[]
+  lastSeenAt     DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model Agent {
@@ -80,53 +105,55 @@ model Agent {
 }
 
 model Property {
-  id           String        @id @default(cuid())
-  agentId      String
-  agent        Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  title        String
-  location     String
-  price        Decimal?      @db.Decimal(14, 2)
-  currency     String        @default("USD")
-  image        String?
-  description  String?
-  liveSessions LiveSession[]
-  leads        Lead[]
-  offers       Offer[]
-  comments     Comment[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id             String          @id @default(cuid())
+  agentId        String
+  agent          Agent           @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  title          String
+  location       String
+  price          Decimal?        @db.Decimal(14, 2)
+  currency       String          @default("USD")
+  image          String?
+  description    String?
+  liveSessions   LiveSession[]
+  liveRecordings LiveRecording[]
+  leads          Lead[]
+  offers         Offer[]
+  comments       Comment[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@index([agentId])
 }
 
 model LiveSession {
-  id             String            @id @default(cuid())
-  roomId         String            @unique
-  propertyId     String
-  property       Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  agentId        String
-  agent          Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  title          String
-  streamProvider String?           @default("mux")
-  muxLiveStreamId String?
-  muxAssetId     String?
-  streamKey      String?
-  playbackId     String?
+  id                  String            @id @default(cuid())
+  roomId              String            @unique
+  propertyId          String
+  property            Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  agentId             String
+  agent               Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  title               String
+  streamProvider      String?           @default("mux")
+  muxLiveStreamId     String?
+  muxAssetId          String?
+  streamKey           String?
+  playbackId          String?
   recordingPlaybackId String?
-  recordingStatus String?
-  recordingReadyAt DateTime?
-  rtmpUrl        String?
-  status         LiveSessionStatus @default(SCHEDULED)
-  viewers        Int               @default(0)
-  whatsappClicks Int               @default(0)
-  startsAt       DateTime?
-  endedAt        DateTime?
-  leads          Lead[]
-  offers         Offer[]
-  comments       Comment[]
-  likeEvents     LikeEvent[]
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  recordingStatus     String?
+  recordingReadyAt    DateTime?
+  rtmpUrl             String?
+  status              LiveSessionStatus @default(SCHEDULED)
+  viewers             Int               @default(0)
+  whatsappClicks      Int               @default(0)
+  startsAt            DateTime?
+  endedAt             DateTime?
+  leads               Lead[]
+  offers              Offer[]
+  comments            Comment[]
+  likeEvents          LikeEvent[]
+  liveRecordings      LiveRecording[]
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 
   @@index([agentId])
   @@index([propertyId])
@@ -134,6 +161,80 @@ model LiveSession {
   @@index([muxAssetId])
   @@index([playbackId])
   @@index([recordingPlaybackId])
+}
+
+model LiveRecording {
+  id              String              @id @default(cuid())
+  streamId        String?
+  stream          LiveSession?        @relation(fields: [streamId], references: [id], onDelete: SetNull)
+  userId          String
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId      String?
+  property        Property?           @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  title           String?
+  status          LiveRecordingStatus @default(LOCAL_PENDING)
+  sourceType      RecordingSourceType @default(LIVE_RECORDING)
+  fileName        String
+  fileSize        BigInt
+  mimeType        String
+  storageProvider String?
+  storageUrl      String?
+  muxAssetId      String?
+  playbackId      String?
+  uploadProgress  Int                 @default(0)
+  retryCount      Int                 @default(0)
+  errorMessage    String?
+  uploadSessions  UploadSession[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  uploadedAt      DateTime?
+
+  @@unique([userId, streamId, fileName, fileSize])
+  @@index([userId])
+  @@index([streamId])
+  @@index([status])
+  @@index([propertyId])
+}
+
+model UploadSession {
+  id             String              @id @default(cuid())
+  recordingId    String
+  recording      LiveRecording       @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  uploadId       String              @unique
+  status         UploadSessionStatus @default(PENDING)
+  totalChunks    Int
+  uploadedChunks Int                 @default(0)
+  chunkSize      Int
+  fileSize       BigInt
+  expiresAt      DateTime
+  chunks         UploadChunk[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([recordingId])
+  @@index([userId])
+  @@index([status])
+}
+
+model UploadChunk {
+  id              String        @id @default(cuid())
+  uploadSessionId String
+  uploadSession   UploadSession @relation(fields: [uploadSessionId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chunkIndex      Int
+  fileSize        Int
+  storageProvider String
+  storageUrl      String
+  pathname        String
+  contentType     String
+  createdAt       DateTime      @default(now())
+
+  @@unique([uploadSessionId, chunkIndex])
+  @@index([uploadSessionId])
+  @@index([userId])
 }
 
 model Lead {
@@ -216,4 +317,3 @@ model LikeEvent {
   @@index([liveSessionId, userId, createdAt])
   @@index([userId])
 }
-

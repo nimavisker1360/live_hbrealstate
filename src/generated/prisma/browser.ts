@@ -38,6 +38,21 @@ export type Property = Prisma.PropertyModel
  */
 export type LiveSession = Prisma.LiveSessionModel
 /**
+ * Model LiveRecording
+ * 
+ */
+export type LiveRecording = Prisma.LiveRecordingModel
+/**
+ * Model UploadSession
+ * 
+ */
+export type UploadSession = Prisma.UploadSessionModel
+/**
+ * Model UploadChunk
+ * 
+ */
+export type UploadChunk = Prisma.UploadChunkModel
+/**
  * Model Lead
  * 
  */

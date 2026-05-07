@@ -388,6 +388,9 @@ export const ModelName = {
   Agent: 'Agent',
   Property: 'Property',
   LiveSession: 'LiveSession',
+  LiveRecording: 'LiveRecording',
+  UploadSession: 'UploadSession',
+  UploadChunk: 'UploadChunk',
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
@@ -407,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agent" | "property" | "liveSession" | "lead" | "offer" | "comment" | "likeEvent"
+    modelProps: "user" | "agent" | "property" | "liveSession" | "liveRecording" | "uploadSession" | "uploadChunk" | "lead" | "offer" | "comment" | "likeEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -704,6 +707,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LiveSessionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LiveSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    LiveRecording: {
+      payload: Prisma.$LiveRecordingPayload<ExtArgs>
+      fields: Prisma.LiveRecordingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LiveRecordingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LiveRecordingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        findFirst: {
+          args: Prisma.LiveRecordingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LiveRecordingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        findMany: {
+          args: Prisma.LiveRecordingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>[]
+        }
+        create: {
+          args: Prisma.LiveRecordingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        createMany: {
+          args: Prisma.LiveRecordingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LiveRecordingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>[]
+        }
+        delete: {
+          args: Prisma.LiveRecordingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        update: {
+          args: Prisma.LiveRecordingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        deleteMany: {
+          args: Prisma.LiveRecordingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LiveRecordingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LiveRecordingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>[]
+        }
+        upsert: {
+          args: Prisma.LiveRecordingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LiveRecordingPayload>
+        }
+        aggregate: {
+          args: Prisma.LiveRecordingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLiveRecording>
+        }
+        groupBy: {
+          args: Prisma.LiveRecordingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LiveRecordingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LiveRecordingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LiveRecordingCountAggregateOutputType> | number
+        }
+      }
+    }
+    UploadSession: {
+      payload: Prisma.$UploadSessionPayload<ExtArgs>
+      fields: Prisma.UploadSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UploadSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UploadSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.UploadSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UploadSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        findMany: {
+          args: Prisma.UploadSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        create: {
+          args: Prisma.UploadSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        createMany: {
+          args: Prisma.UploadSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UploadSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.UploadSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        update: {
+          args: Prisma.UploadSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.UploadSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UploadSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UploadSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.UploadSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.UploadSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUploadSession>
+        }
+        groupBy: {
+          args: Prisma.UploadSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UploadSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    UploadChunk: {
+      payload: Prisma.$UploadChunkPayload<ExtArgs>
+      fields: Prisma.UploadChunkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UploadChunkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UploadChunkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>
+        }
+        findFirst: {
+          args: Prisma.UploadChunkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UploadChunkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>
+        }
+        findMany: {
+          args: Prisma.UploadChunkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>[]
+        }
+        create: {
+          args: Prisma.UploadChunkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>
+        }
+        createMany: {
+          args: Prisma.UploadChunkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UploadChunkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>[]
+        }
+        delete: {
+          args: Prisma.UploadChunkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>
+        }
+        update: {
+          args: Prisma.UploadChunkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>
+        }
+        deleteMany: {
+          args: Prisma.UploadChunkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UploadChunkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UploadChunkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>[]
+        }
+        upsert: {
+          args: Prisma.UploadChunkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadChunkPayload>
+        }
+        aggregate: {
+          args: Prisma.UploadChunkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUploadChunk>
+        }
+        groupBy: {
+          args: Prisma.UploadChunkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadChunkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UploadChunkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadChunkCountAggregateOutputType> | number
         }
       }
     }
@@ -1115,6 +1340,66 @@ export const LiveSessionScalarFieldEnum = {
 export type LiveSessionScalarFieldEnum = (typeof LiveSessionScalarFieldEnum)[keyof typeof LiveSessionScalarFieldEnum]
 
 
+export const LiveRecordingScalarFieldEnum = {
+  id: 'id',
+  streamId: 'streamId',
+  userId: 'userId',
+  propertyId: 'propertyId',
+  title: 'title',
+  status: 'status',
+  sourceType: 'sourceType',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  storageProvider: 'storageProvider',
+  storageUrl: 'storageUrl',
+  muxAssetId: 'muxAssetId',
+  playbackId: 'playbackId',
+  uploadProgress: 'uploadProgress',
+  retryCount: 'retryCount',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type LiveRecordingScalarFieldEnum = (typeof LiveRecordingScalarFieldEnum)[keyof typeof LiveRecordingScalarFieldEnum]
+
+
+export const UploadSessionScalarFieldEnum = {
+  id: 'id',
+  recordingId: 'recordingId',
+  userId: 'userId',
+  uploadId: 'uploadId',
+  status: 'status',
+  totalChunks: 'totalChunks',
+  uploadedChunks: 'uploadedChunks',
+  chunkSize: 'chunkSize',
+  fileSize: 'fileSize',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UploadSessionScalarFieldEnum = (typeof UploadSessionScalarFieldEnum)[keyof typeof UploadSessionScalarFieldEnum]
+
+
+export const UploadChunkScalarFieldEnum = {
+  id: 'id',
+  uploadSessionId: 'uploadSessionId',
+  userId: 'userId',
+  chunkIndex: 'chunkIndex',
+  fileSize: 'fileSize',
+  storageProvider: 'storageProvider',
+  storageUrl: 'storageUrl',
+  pathname: 'pathname',
+  contentType: 'contentType',
+  createdAt: 'createdAt'
+} as const
+
+export type UploadChunkScalarFieldEnum = (typeof UploadChunkScalarFieldEnum)[keyof typeof UploadChunkScalarFieldEnum]
+
+
 export const LeadScalarFieldEnum = {
   id: 'id',
   agentId: 'agentId',
@@ -1321,6 +1606,62 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'LiveRecordingStatus'
+ */
+export type EnumLiveRecordingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveRecordingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LiveRecordingStatus[]'
+ */
+export type ListEnumLiveRecordingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveRecordingStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RecordingSourceType'
+ */
+export type EnumRecordingSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecordingSourceType'>
+    
+
+
+/**
+ * Reference to a field of type 'RecordingSourceType[]'
+ */
+export type ListEnumRecordingSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecordingSourceType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UploadSessionStatus'
+ */
+export type EnumUploadSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'UploadSessionStatus[]'
+ */
+export type ListEnumUploadSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadSessionStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'LeadStatus'
  */
 export type EnumLeadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LeadStatus'>
@@ -1475,6 +1816,9 @@ export type GlobalOmitConfig = {
   agent?: Prisma.AgentOmit
   property?: Prisma.PropertyOmit
   liveSession?: Prisma.LiveSessionOmit
+  liveRecording?: Prisma.LiveRecordingOmit
+  uploadSession?: Prisma.UploadSessionOmit
+  uploadChunk?: Prisma.UploadChunkOmit
   lead?: Prisma.LeadOmit
   offer?: Prisma.OfferOmit
   comment?: Prisma.CommentOmit
