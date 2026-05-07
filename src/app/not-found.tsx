@@ -15,9 +15,9 @@ export default function NotFound() {
         </p>
         <Link
           className="mt-8 inline-flex h-12 items-center justify-center rounded-md bg-[#d6b15f] px-5 text-sm font-semibold text-black transition hover:bg-[#f0cf79]"
-          href="/live"
+          href="/reels"
         >
-          View live tours
+          View property reels
         </Link>
       </div>
     </main>

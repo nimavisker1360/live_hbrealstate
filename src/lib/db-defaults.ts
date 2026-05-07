@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
 
-export const MOCK_AGENT_ID = "agent-hb-live";
-export const MOCK_PROPERTY_ID = "property-hb-live";
-export const MOCK_ROOM_ID = "hb-live-room";
+export const MOCK_AGENT_ID = "agent-hb-reels";
+export const MOCK_PROPERTY_ID = "property-hb-reels";
+export const MOCK_ROOM_ID = "hb-property-reel";
 
 type EnsureContextInput = {
   agentId?: string;
@@ -14,20 +14,20 @@ type EnsureContextInput = {
   propertyImage?: string;
   roomId?: string;
   sessionTitle?: string;
-  status?: "SCHEDULED" | "LIVE" | "ENDED";
+  status?: "ENDED";
 };
 
 export async function ensureMockContext({
   agentId = MOCK_AGENT_ID,
-  agentName = "HB Live Agent",
+  agentName = "HB Real Estate Agent",
   propertyId = MOCK_PROPERTY_ID,
-  propertyTitle = "HB Live Property",
+  propertyTitle = "HB Property Reel",
   propertyLocation = "Istanbul, Turkey",
   propertyDescription,
   propertyImage,
   roomId,
   sessionTitle,
-  status = "LIVE",
+  status = "ENDED",
 }: EnsureContextInput) {
   const agent = await prisma.agent.upsert({
     where: { id: agentId },

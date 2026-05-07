@@ -36,7 +36,6 @@ export async function DELETE(
     const liveSession = await prisma.liveSession.update({
       where: { id: liveSessionId },
       data: {
-        muxAssetId: null,
         recordingPlaybackId: null,
         recordingReadyAt: null,
         recordingStatus: "deleted",

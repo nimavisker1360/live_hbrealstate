@@ -1,4 +1,4 @@
-import { ArrowRight, BadgeCheck, Building2, SignalHigh } from "lucide-react";
+import { ArrowRight, BadgeCheck, Building2, Clapperboard } from "lucide-react";
 import { LiveCard } from "@/components/live/LiveCard";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { CTAButtons } from "@/components/sections/CTAButtons";
@@ -34,10 +34,20 @@ function formatPrice(
 }
 
 export default async function Home() {
-  const [liveSessions, allProperties] = await Promise.all([
+  const [propertyReels, allProperties] = await Promise.all([
     prisma.liveSession.findMany({
-      include: { agent: { select: { name: true } }, property: true },
+      select: {
+        agent: { select: { name: true } },
+        createdAt: true,
+        id: true,
+        property: true,
+        propertyId: true,
+        recordingPlaybackId: true,
+        roomId: true,
+        viewers: true,
+      },
       orderBy: { createdAt: "desc" },
+      where: { recordingPlaybackId: { not: null } },
       take: 6,
     }),
     prisma.property.findMany({
@@ -46,32 +56,32 @@ export default async function Home() {
     }),
   ]);
 
-  const featuredTour = liveSessions[0]
+  const featuredTour = propertyReels[0]
     ? ({
-        agent: liveSessions[0].agent.name,
-        duration: "Live session",
-        id: liveSessions[0].id,
-        image: liveSessions[0].property.image ?? FALLBACK_PROPERTY_IMAGE,
-        location: liveSessions[0].property.location,
+        agent: propertyReels[0].agent.name,
+        duration: "Property reel",
+        id: propertyReels[0].id,
+        image: propertyReels[0].property.image ?? FALLBACK_PROPERTY_IMAGE,
+        location: propertyReels[0].property.location,
         price: formatPrice(
-          liveSessions[0].property.price,
-          liveSessions[0].property.currency,
+          propertyReels[0].property.price,
+          propertyReels[0].property.currency,
         ),
-        propertyId: liveSessions[0].propertyId,
-        roomId: liveSessions[0].roomId,
-        startsAt: liveSessions[0].startsAt
+        propertyId: propertyReels[0].propertyId,
+        roomId: propertyReels[0].roomId,
+        startsAt: propertyReels[0].createdAt
           ? new Intl.DateTimeFormat("en-US", { dateStyle: "short" }).format(
-              new Date(liveSessions[0].startsAt),
+              new Date(propertyReels[0].createdAt),
             )
-          : "Scheduled",
-        status: liveSessions[0].status === "LIVE" ? ("Live" as const) : ("Scheduled" as const),
-        title: liveSessions[0].property.title,
-        viewers: liveSessions[0].viewers,
+          : "New",
+        status: "Available" as const,
+        title: propertyReels[0].property.title,
+        viewers: propertyReels[0].viewers,
       } satisfies LiveTour)
     : null;
 
   const platformMetrics = [
-    { label: "Live tours", value: `${liveSessions.length}`, detail: "Active sessions" },
+    { label: "Property reels", value: `${propertyReels.length}`, detail: "Published videos" },
     { label: "Properties", value: `${allProperties.length}`, detail: "In inventory" },
     { label: "Premium agents", value: "25+", detail: "On platform" },
   ];
@@ -90,15 +100,15 @@ export default async function Home() {
         <div className="relative mx-auto flex min-h-[calc(100svh-73px)] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d6b15f]/35 bg-black/45 px-3 py-1 text-sm text-[#d6b15f] backdrop-blur">
-              <SignalHigh aria-hidden className="size-4" />
-              Live premium property tours
+              <Clapperboard aria-hidden className="size-4" />
+              Premium property video tours
             </div>
             <h1 className="text-5xl font-semibold leading-[1.02] text-white sm:text-6xl lg:text-7xl">
-              HB Live
+              HB Property Reels
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72 sm:text-xl">
-              A web-based live viewing platform for HB Real Estate, built for
-              private launches, remote buyers, and high-touch agent-led tours.
+              A luxury property video tour platform for HB Real Estate, built
+              for mobile-first discovery, buyer intent, and agent follow-up.
             </p>
             <div className="mt-8">
               <CTAButtons />
@@ -127,27 +137,28 @@ export default async function Home() {
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#d6b15f]">
-            Featured room
+            Featured reel
           </p>
           <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
-            Walk buyers through every premium detail in real time.
+            Show buyers every premium detail in a vertical video tour.
           </h2>
           <p className="mt-4 leading-7 text-white/62">
-            HB Live gives agents a polished front door for scheduled tours,
-            buyer questions, property highlights, and follow-up demand.
+            HB Property Reels gives agents a polished front door for uploaded
+            phone videos, buyer questions, property highlights, and follow-up
+            demand.
           </p>
           <div className="mt-7 grid gap-3 text-sm text-white/70">
             <p className="flex items-center gap-3">
               <BadgeCheck aria-hidden className="size-5 text-[#d6b15f]" />
-              Mock live room experience ready for streaming integration.
+              TikTok-style property viewing experience for remote buyers.
             </p>
             <p className="flex items-center gap-3">
               <Building2 aria-hidden className="size-5 text-[#d6b15f]" />
               Property-first design for luxury real estate inventory.
             </p>
           </div>
-          <Button className="mt-8" href="/live" variant="secondary">
-            Browse all live tours
+          <Button className="mt-8" href="/reels" variant="secondary">
+            Browse property reels
             <ArrowRight aria-hidden className="size-4" />
           </Button>
         </div>
@@ -162,11 +173,11 @@ export default async function Home() {
                 Signature listings
               </p>
               <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
-                Curated homes ready for live presentation.
+                Curated homes ready for video discovery.
               </h2>
             </div>
-            <Button href="/live" variant="ghost">
-              Watch live tours
+            <Button href="/reels" variant="ghost">
+              Watch property reels
               <ArrowRight aria-hidden className="size-4" />
             </Button>
           </div>
@@ -198,11 +209,11 @@ export default async function Home() {
               Built for launch
             </p>
             <h2 className="mt-3 text-3xl font-semibold text-white">
-              Initial HB Live structure is ready for product development.
+              HB Property Reels is ready for buyer engagement.
             </h2>
             <p className="mt-3 max-w-2xl text-white/62">
-              App Router pages, typed mock data, reusable UI components, and
-              responsive dark luxury styling are prepared for the next phase.
+              Agents upload property videos from the dashboard, and visitors
+              watch in a polished vertical property reels experience.
             </p>
           </div>
           <CTAButtons />

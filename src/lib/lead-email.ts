@@ -107,7 +107,7 @@ function buildLeadEmailHtml(lead: LeadNotificationInput) {
     },
     { label: "Property ID", value: escapeHtml(lead.property.id) },
     {
-      label: "Live session",
+      label: "Property reel",
       value: lead.liveSession
         ? escapeHtml(`${lead.liveSession.title} | ${lead.liveSession.roomId}`)
         : null,
@@ -120,9 +120,9 @@ function buildLeadEmailHtml(lead: LeadNotificationInput) {
     <div style="font-family: Arial, sans-serif; background: #f8fafc; padding: 24px; color: #111827;">
       <div style="max-width: 680px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden;">
         <div style="padding: 24px 28px; background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);">
-          <h1 style="margin: 0; color: #ffffff; font-size: 24px;">New HB Live Lead</h1>
+          <h1 style="margin: 0; color: #ffffff; font-size: 24px;">New HB Property Reels Lead</h1>
           <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
-            Submitted from the HB Live property room.
+            Submitted from the HB Property Reels viewer.
           </p>
         </div>
         <div style="padding: 28px;">
@@ -145,7 +145,7 @@ function buildLeadEmailText(lead: LeadNotificationInput) {
   const viewingTime = formatViewingTime(lead.viewingAt);
 
   return [
-    "New HB Live Lead",
+    "New HB Property Reels Lead",
     "",
     `Lead ID: ${lead.id}`,
     `Full name: ${lead.fullName}`,
@@ -157,7 +157,7 @@ function buildLeadEmailText(lead: LeadNotificationInput) {
     `Property: ${lead.property.title}`,
     `Property location: ${lead.property.location}`,
     `Property ID: ${lead.property.id}`,
-    `Live session: ${lead.liveSession?.title || "Not provided"}`,
+    `Property reel: ${lead.liveSession?.title || "Not provided"}`,
     `Room ID: ${lead.liveSession?.roomId || "Not provided"}`,
     `Agent: ${lead.agent.name} (${lead.agent.company})`,
     `Submitted at: ${formatTimestamp(lead.createdAt)}`,
@@ -176,7 +176,7 @@ function isOauthAuthError(error: unknown) {
 }
 
 export async function sendLeadNotificationEmail(lead: LeadNotificationInput) {
-  const subject = `New HB Live lead: ${lead.fullName} - ${lead.property.title}`;
+  const subject = `New HB Property Reels lead: ${lead.fullName} - ${lead.property.title}`;
   const mailOptions = {
     to: CONTACT_RECIPIENT,
     subject,

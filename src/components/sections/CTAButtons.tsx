@@ -1,16 +1,16 @@
-import { CalendarCheck, MonitorPlay } from "lucide-react";
+import { Clapperboard, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export function CTAButtons() {
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
-      <Button href="/live" size="lg">
-        <MonitorPlay aria-hidden className="size-5" />
-        View live tours
+      <Button href="/reels" size="lg">
+        <Clapperboard aria-hidden className="size-5" />
+        View property reels
       </Button>
-      <Button href="/live" size="lg" variant="secondary">
-        <CalendarCheck aria-hidden className="size-5" />
-        Upcoming tours
+      <Button href="/agent/dashboard" size="lg" variant="secondary">
+        <UploadCloud aria-hidden className="size-5" />
+        Agent uploads
       </Button>
     </div>
   );

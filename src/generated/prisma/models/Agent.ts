@@ -212,6 +212,9 @@ export type AgentWhereInput = {
   leads?: Prisma.LeadListRelationFilter
   offers?: Prisma.OfferListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  videoTours?: Prisma.VideoTourListRelationFilter
+  videoTourOffers?: Prisma.VideoTourOfferListRelationFilter
+  videoTourComments?: Prisma.VideoTourCommentListRelationFilter
 }
 
 export type AgentOrderByWithRelationInput = {
@@ -229,6 +232,9 @@ export type AgentOrderByWithRelationInput = {
   leads?: Prisma.LeadOrderByRelationAggregateInput
   offers?: Prisma.OfferOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  videoTours?: Prisma.VideoTourOrderByRelationAggregateInput
+  videoTourOffers?: Prisma.VideoTourOfferOrderByRelationAggregateInput
+  videoTourComments?: Prisma.VideoTourCommentOrderByRelationAggregateInput
 }
 
 export type AgentWhereUniqueInput = Prisma.AtLeast<{
@@ -249,6 +255,9 @@ export type AgentWhereUniqueInput = Prisma.AtLeast<{
   leads?: Prisma.LeadListRelationFilter
   offers?: Prisma.OfferListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  videoTours?: Prisma.VideoTourListRelationFilter
+  videoTourOffers?: Prisma.VideoTourOfferListRelationFilter
+  videoTourComments?: Prisma.VideoTourCommentListRelationFilter
 }, "id" | "userId">
 
 export type AgentOrderByWithAggregationInput = {
@@ -293,6 +302,9 @@ export type AgentCreateInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUncheckedCreateInput = {
@@ -309,6 +321,9 @@ export type AgentUncheckedCreateInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUpdateInput = {
@@ -325,6 +340,9 @@ export type AgentUpdateInput = {
   leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentUncheckedUpdateInput = {
@@ -341,6 +359,9 @@ export type AgentUncheckedUpdateInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentCreateManyInput = {
@@ -530,6 +551,50 @@ export type AgentUpdateOneWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AgentUpdateToOneWithWhereWithoutCommentsInput, Prisma.AgentUpdateWithoutCommentsInput>, Prisma.AgentUncheckedUpdateWithoutCommentsInput>
 }
 
+export type AgentCreateNestedOneWithoutVideoToursInput = {
+  create?: Prisma.XOR<Prisma.AgentCreateWithoutVideoToursInput, Prisma.AgentUncheckedCreateWithoutVideoToursInput>
+  connectOrCreate?: Prisma.AgentCreateOrConnectWithoutVideoToursInput
+  connect?: Prisma.AgentWhereUniqueInput
+}
+
+export type AgentUpdateOneRequiredWithoutVideoToursNestedInput = {
+  create?: Prisma.XOR<Prisma.AgentCreateWithoutVideoToursInput, Prisma.AgentUncheckedCreateWithoutVideoToursInput>
+  connectOrCreate?: Prisma.AgentCreateOrConnectWithoutVideoToursInput
+  upsert?: Prisma.AgentUpsertWithoutVideoToursInput
+  connect?: Prisma.AgentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AgentUpdateToOneWithWhereWithoutVideoToursInput, Prisma.AgentUpdateWithoutVideoToursInput>, Prisma.AgentUncheckedUpdateWithoutVideoToursInput>
+}
+
+export type AgentCreateNestedOneWithoutVideoTourCommentsInput = {
+  create?: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourCommentsInput, Prisma.AgentUncheckedCreateWithoutVideoTourCommentsInput>
+  connectOrCreate?: Prisma.AgentCreateOrConnectWithoutVideoTourCommentsInput
+  connect?: Prisma.AgentWhereUniqueInput
+}
+
+export type AgentUpdateOneWithoutVideoTourCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourCommentsInput, Prisma.AgentUncheckedCreateWithoutVideoTourCommentsInput>
+  connectOrCreate?: Prisma.AgentCreateOrConnectWithoutVideoTourCommentsInput
+  upsert?: Prisma.AgentUpsertWithoutVideoTourCommentsInput
+  disconnect?: Prisma.AgentWhereInput | boolean
+  delete?: Prisma.AgentWhereInput | boolean
+  connect?: Prisma.AgentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AgentUpdateToOneWithWhereWithoutVideoTourCommentsInput, Prisma.AgentUpdateWithoutVideoTourCommentsInput>, Prisma.AgentUncheckedUpdateWithoutVideoTourCommentsInput>
+}
+
+export type AgentCreateNestedOneWithoutVideoTourOffersInput = {
+  create?: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourOffersInput, Prisma.AgentUncheckedCreateWithoutVideoTourOffersInput>
+  connectOrCreate?: Prisma.AgentCreateOrConnectWithoutVideoTourOffersInput
+  connect?: Prisma.AgentWhereUniqueInput
+}
+
+export type AgentUpdateOneRequiredWithoutVideoTourOffersNestedInput = {
+  create?: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourOffersInput, Prisma.AgentUncheckedCreateWithoutVideoTourOffersInput>
+  connectOrCreate?: Prisma.AgentCreateOrConnectWithoutVideoTourOffersInput
+  upsert?: Prisma.AgentUpsertWithoutVideoTourOffersInput
+  connect?: Prisma.AgentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AgentUpdateToOneWithWhereWithoutVideoTourOffersInput, Prisma.AgentUpdateWithoutVideoTourOffersInput>, Prisma.AgentUncheckedUpdateWithoutVideoTourOffersInput>
+}
+
 export type AgentCreateWithoutUserInput = {
   id?: string
   name: string
@@ -543,6 +608,9 @@ export type AgentCreateWithoutUserInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUncheckedCreateWithoutUserInput = {
@@ -558,6 +626,9 @@ export type AgentUncheckedCreateWithoutUserInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type AgentCreateOrConnectWithoutUserInput = {
@@ -589,6 +660,9 @@ export type AgentUpdateWithoutUserInput = {
   leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentUncheckedUpdateWithoutUserInput = {
@@ -604,6 +678,9 @@ export type AgentUncheckedUpdateWithoutUserInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentCreateWithoutPropertiesInput = {
@@ -619,6 +696,9 @@ export type AgentCreateWithoutPropertiesInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUncheckedCreateWithoutPropertiesInput = {
@@ -634,6 +714,9 @@ export type AgentUncheckedCreateWithoutPropertiesInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type AgentCreateOrConnectWithoutPropertiesInput = {
@@ -665,6 +748,9 @@ export type AgentUpdateWithoutPropertiesInput = {
   leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentUncheckedUpdateWithoutPropertiesInput = {
@@ -680,6 +766,9 @@ export type AgentUncheckedUpdateWithoutPropertiesInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentCreateWithoutLiveSessionsInput = {
@@ -695,6 +784,9 @@ export type AgentCreateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUncheckedCreateWithoutLiveSessionsInput = {
@@ -710,6 +802,9 @@ export type AgentUncheckedCreateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type AgentCreateOrConnectWithoutLiveSessionsInput = {
@@ -741,6 +836,9 @@ export type AgentUpdateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentUncheckedUpdateWithoutLiveSessionsInput = {
@@ -756,6 +854,9 @@ export type AgentUncheckedUpdateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentCreateWithoutLeadsInput = {
@@ -771,6 +872,9 @@ export type AgentCreateWithoutLeadsInput = {
   liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUncheckedCreateWithoutLeadsInput = {
@@ -786,6 +890,9 @@ export type AgentUncheckedCreateWithoutLeadsInput = {
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type AgentCreateOrConnectWithoutLeadsInput = {
@@ -817,6 +924,9 @@ export type AgentUpdateWithoutLeadsInput = {
   liveSessions?: Prisma.LiveSessionUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentUncheckedUpdateWithoutLeadsInput = {
@@ -832,6 +942,9 @@ export type AgentUncheckedUpdateWithoutLeadsInput = {
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentCreateWithoutOffersInput = {
@@ -847,6 +960,9 @@ export type AgentCreateWithoutOffersInput = {
   liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutAgentInput
   leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUncheckedCreateWithoutOffersInput = {
@@ -862,6 +978,9 @@ export type AgentUncheckedCreateWithoutOffersInput = {
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutAgentInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type AgentCreateOrConnectWithoutOffersInput = {
@@ -893,6 +1012,9 @@ export type AgentUpdateWithoutOffersInput = {
   liveSessions?: Prisma.LiveSessionUpdateManyWithoutAgentNestedInput
   leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentUncheckedUpdateWithoutOffersInput = {
@@ -908,6 +1030,9 @@ export type AgentUncheckedUpdateWithoutOffersInput = {
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutAgentNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentCreateWithoutCommentsInput = {
@@ -923,6 +1048,9 @@ export type AgentCreateWithoutCommentsInput = {
   liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutAgentInput
   leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
 }
 
 export type AgentUncheckedCreateWithoutCommentsInput = {
@@ -938,6 +1066,9 @@ export type AgentUncheckedCreateWithoutCommentsInput = {
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutAgentInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type AgentCreateOrConnectWithoutCommentsInput = {
@@ -969,6 +1100,9 @@ export type AgentUpdateWithoutCommentsInput = {
   liveSessions?: Prisma.LiveSessionUpdateManyWithoutAgentNestedInput
   leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
 }
 
 export type AgentUncheckedUpdateWithoutCommentsInput = {
@@ -984,6 +1118,273 @@ export type AgentUncheckedUpdateWithoutCommentsInput = {
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutAgentNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
+}
+
+export type AgentCreateWithoutVideoToursInput = {
+  id?: string
+  name: string
+  company: string
+  status?: $Enums.AgentStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutAgentInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutAgentInput
+  leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
+  offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
+}
+
+export type AgentUncheckedCreateWithoutVideoToursInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  company: string
+  status?: $Enums.AgentStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutAgentInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
+}
+
+export type AgentCreateOrConnectWithoutVideoToursInput = {
+  where: Prisma.AgentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AgentCreateWithoutVideoToursInput, Prisma.AgentUncheckedCreateWithoutVideoToursInput>
+}
+
+export type AgentUpsertWithoutVideoToursInput = {
+  update: Prisma.XOR<Prisma.AgentUpdateWithoutVideoToursInput, Prisma.AgentUncheckedUpdateWithoutVideoToursInput>
+  create: Prisma.XOR<Prisma.AgentCreateWithoutVideoToursInput, Prisma.AgentUncheckedCreateWithoutVideoToursInput>
+  where?: Prisma.AgentWhereInput
+}
+
+export type AgentUpdateToOneWithWhereWithoutVideoToursInput = {
+  where?: Prisma.AgentWhereInput
+  data: Prisma.XOR<Prisma.AgentUpdateWithoutVideoToursInput, Prisma.AgentUncheckedUpdateWithoutVideoToursInput>
+}
+
+export type AgentUpdateWithoutVideoToursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAgentStatusFieldUpdateOperationsInput | $Enums.AgentStatus
+  subscriptionPlan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutAgentNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  liveSessions?: Prisma.LiveSessionUpdateManyWithoutAgentNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
+}
+
+export type AgentUncheckedUpdateWithoutVideoToursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAgentStatusFieldUpdateOperationsInput | $Enums.AgentStatus
+  subscriptionPlan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutAgentNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
+}
+
+export type AgentCreateWithoutVideoTourCommentsInput = {
+  id?: string
+  name: string
+  company: string
+  status?: $Enums.AgentStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutAgentInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutAgentInput
+  leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
+  offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutAgentInput
+}
+
+export type AgentUncheckedCreateWithoutVideoTourCommentsInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  company: string
+  status?: $Enums.AgentStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutAgentInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutAgentInput
+}
+
+export type AgentCreateOrConnectWithoutVideoTourCommentsInput = {
+  where: Prisma.AgentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourCommentsInput, Prisma.AgentUncheckedCreateWithoutVideoTourCommentsInput>
+}
+
+export type AgentUpsertWithoutVideoTourCommentsInput = {
+  update: Prisma.XOR<Prisma.AgentUpdateWithoutVideoTourCommentsInput, Prisma.AgentUncheckedUpdateWithoutVideoTourCommentsInput>
+  create: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourCommentsInput, Prisma.AgentUncheckedCreateWithoutVideoTourCommentsInput>
+  where?: Prisma.AgentWhereInput
+}
+
+export type AgentUpdateToOneWithWhereWithoutVideoTourCommentsInput = {
+  where?: Prisma.AgentWhereInput
+  data: Prisma.XOR<Prisma.AgentUpdateWithoutVideoTourCommentsInput, Prisma.AgentUncheckedUpdateWithoutVideoTourCommentsInput>
+}
+
+export type AgentUpdateWithoutVideoTourCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAgentStatusFieldUpdateOperationsInput | $Enums.AgentStatus
+  subscriptionPlan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutAgentNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  liveSessions?: Prisma.LiveSessionUpdateManyWithoutAgentNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutAgentNestedInput
+}
+
+export type AgentUncheckedUpdateWithoutVideoTourCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAgentStatusFieldUpdateOperationsInput | $Enums.AgentStatus
+  subscriptionPlan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutAgentNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutAgentNestedInput
+}
+
+export type AgentCreateWithoutVideoTourOffersInput = {
+  id?: string
+  name: string
+  company: string
+  status?: $Enums.AgentStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutAgentInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutAgentInput
+  leads?: Prisma.LeadCreateNestedManyWithoutAgentInput
+  offers?: Prisma.OfferCreateNestedManyWithoutAgentInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutAgentInput
+}
+
+export type AgentUncheckedCreateWithoutVideoTourOffersInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  company: string
+  status?: $Enums.AgentStatus
+  subscriptionPlan?: $Enums.SubscriptionPlan
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutAgentInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutAgentInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutAgentInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAgentInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutAgentInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutAgentInput
+}
+
+export type AgentCreateOrConnectWithoutVideoTourOffersInput = {
+  where: Prisma.AgentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourOffersInput, Prisma.AgentUncheckedCreateWithoutVideoTourOffersInput>
+}
+
+export type AgentUpsertWithoutVideoTourOffersInput = {
+  update: Prisma.XOR<Prisma.AgentUpdateWithoutVideoTourOffersInput, Prisma.AgentUncheckedUpdateWithoutVideoTourOffersInput>
+  create: Prisma.XOR<Prisma.AgentCreateWithoutVideoTourOffersInput, Prisma.AgentUncheckedCreateWithoutVideoTourOffersInput>
+  where?: Prisma.AgentWhereInput
+}
+
+export type AgentUpdateToOneWithWhereWithoutVideoTourOffersInput = {
+  where?: Prisma.AgentWhereInput
+  data: Prisma.XOR<Prisma.AgentUpdateWithoutVideoTourOffersInput, Prisma.AgentUncheckedUpdateWithoutVideoTourOffersInput>
+}
+
+export type AgentUpdateWithoutVideoTourOffersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAgentStatusFieldUpdateOperationsInput | $Enums.AgentStatus
+  subscriptionPlan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutAgentNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  liveSessions?: Prisma.LiveSessionUpdateManyWithoutAgentNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutAgentNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutAgentNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutAgentNestedInput
+}
+
+export type AgentUncheckedUpdateWithoutVideoTourOffersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAgentStatusFieldUpdateOperationsInput | $Enums.AgentStatus
+  subscriptionPlan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutAgentNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutAgentNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutAgentNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAgentNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutAgentNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 
@@ -997,6 +1398,9 @@ export type AgentCountOutputType = {
   leads: number
   offers: number
   comments: number
+  videoTours: number
+  videoTourOffers: number
+  videoTourComments: number
 }
 
 export type AgentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1005,6 +1409,9 @@ export type AgentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   leads?: boolean | AgentCountOutputTypeCountLeadsArgs
   offers?: boolean | AgentCountOutputTypeCountOffersArgs
   comments?: boolean | AgentCountOutputTypeCountCommentsArgs
+  videoTours?: boolean | AgentCountOutputTypeCountVideoToursArgs
+  videoTourOffers?: boolean | AgentCountOutputTypeCountVideoTourOffersArgs
+  videoTourComments?: boolean | AgentCountOutputTypeCountVideoTourCommentsArgs
 }
 
 /**
@@ -1052,6 +1459,27 @@ export type AgentCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.CommentWhereInput
 }
 
+/**
+ * AgentCountOutputType without action
+ */
+export type AgentCountOutputTypeCountVideoToursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourWhereInput
+}
+
+/**
+ * AgentCountOutputType without action
+ */
+export type AgentCountOutputTypeCountVideoTourOffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourOfferWhereInput
+}
+
+/**
+ * AgentCountOutputType without action
+ */
+export type AgentCountOutputTypeCountVideoTourCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourCommentWhereInput
+}
+
 
 export type AgentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1068,6 +1496,9 @@ export type AgentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   leads?: boolean | Prisma.Agent$leadsArgs<ExtArgs>
   offers?: boolean | Prisma.Agent$offersArgs<ExtArgs>
   comments?: boolean | Prisma.Agent$commentsArgs<ExtArgs>
+  videoTours?: boolean | Prisma.Agent$videoToursArgs<ExtArgs>
+  videoTourOffers?: boolean | Prisma.Agent$videoTourOffersArgs<ExtArgs>
+  videoTourComments?: boolean | Prisma.Agent$videoTourCommentsArgs<ExtArgs>
   _count?: boolean | Prisma.AgentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agent"]>
 
@@ -1114,6 +1545,9 @@ export type AgentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   leads?: boolean | Prisma.Agent$leadsArgs<ExtArgs>
   offers?: boolean | Prisma.Agent$offersArgs<ExtArgs>
   comments?: boolean | Prisma.Agent$commentsArgs<ExtArgs>
+  videoTours?: boolean | Prisma.Agent$videoToursArgs<ExtArgs>
+  videoTourOffers?: boolean | Prisma.Agent$videoTourOffersArgs<ExtArgs>
+  videoTourComments?: boolean | Prisma.Agent$videoTourCommentsArgs<ExtArgs>
   _count?: boolean | Prisma.AgentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AgentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1132,6 +1566,9 @@ export type $AgentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     leads: Prisma.$LeadPayload<ExtArgs>[]
     offers: Prisma.$OfferPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    videoTours: Prisma.$VideoTourPayload<ExtArgs>[]
+    videoTourOffers: Prisma.$VideoTourOfferPayload<ExtArgs>[]
+    videoTourComments: Prisma.$VideoTourCommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1542,6 +1979,9 @@ export interface Prisma__AgentClient<T, Null = never, ExtArgs extends runtime.Ty
   leads<T extends Prisma.Agent$leadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agent$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   offers<T extends Prisma.Agent$offersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agent$offersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Agent$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agent$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTours<T extends Prisma.Agent$videoToursArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agent$videoToursArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTourOffers<T extends Prisma.Agent$videoTourOffersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agent$videoTourOffersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTourComments<T extends Prisma.Agent$videoTourCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agent$videoTourCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2116,6 +2556,78 @@ export type Agent$commentsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Agent.videoTours
+ */
+export type Agent$videoToursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTour
+   */
+  select?: Prisma.VideoTourSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTour
+   */
+  omit?: Prisma.VideoTourOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourInclude<ExtArgs> | null
+  where?: Prisma.VideoTourWhereInput
+  orderBy?: Prisma.VideoTourOrderByWithRelationInput | Prisma.VideoTourOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourScalarFieldEnum | Prisma.VideoTourScalarFieldEnum[]
+}
+
+/**
+ * Agent.videoTourOffers
+ */
+export type Agent$videoTourOffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourOffer
+   */
+  select?: Prisma.VideoTourOfferSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourOffer
+   */
+  omit?: Prisma.VideoTourOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourOfferInclude<ExtArgs> | null
+  where?: Prisma.VideoTourOfferWhereInput
+  orderBy?: Prisma.VideoTourOfferOrderByWithRelationInput | Prisma.VideoTourOfferOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourOfferWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourOfferScalarFieldEnum | Prisma.VideoTourOfferScalarFieldEnum[]
+}
+
+/**
+ * Agent.videoTourComments
+ */
+export type Agent$videoTourCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourComment
+   */
+  select?: Prisma.VideoTourCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourComment
+   */
+  omit?: Prisma.VideoTourCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourCommentInclude<ExtArgs> | null
+  where?: Prisma.VideoTourCommentWhereInput
+  orderBy?: Prisma.VideoTourCommentOrderByWithRelationInput | Prisma.VideoTourCommentOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourCommentScalarFieldEnum | Prisma.VideoTourCommentScalarFieldEnum[]
 }
 
 /**

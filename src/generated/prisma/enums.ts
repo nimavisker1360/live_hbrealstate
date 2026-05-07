@@ -38,8 +38,12 @@ export type SubscriptionPlan = (typeof SubscriptionPlan)[keyof typeof Subscripti
 
 export const LiveSessionStatus = {
   SCHEDULED: 'SCHEDULED',
+  STARTING: 'STARTING',
   LIVE: 'LIVE',
-  ENDED: 'ENDED'
+  RECONNECTING: 'RECONNECTING',
+  DISCONNECTED: 'DISCONNECTED',
+  ENDED: 'ENDED',
+  REPLAY_AVAILABLE: 'REPLAY_AVAILABLE'
 } as const
 
 export type LiveSessionStatus = (typeof LiveSessionStatus)[keyof typeof LiveSessionStatus]
@@ -95,3 +99,13 @@ export const UploadSessionStatus = {
 } as const
 
 export type UploadSessionStatus = (typeof UploadSessionStatus)[keyof typeof UploadSessionStatus]
+
+
+export const VideoTourStatus = {
+  DRAFT: 'DRAFT',
+  PROCESSING: 'PROCESSING',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type VideoTourStatus = (typeof VideoTourStatus)[keyof typeof VideoTourStatus]

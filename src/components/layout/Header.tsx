@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MonitorPlay } from "lucide-react";
+import { Clapperboard } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/live", label: "Live tours" },
+  { href: "/reels", label: "Property reels" },
 ];
 
 export function Header() {
@@ -39,11 +39,11 @@ export function Header() {
           </nav>
           <Button
             className="w-full sm:w-auto"
-            href="/"
+            href="/reels"
             size="sm"
           >
-            <MonitorPlay aria-hidden className="size-4" />
-            Watch live
+            <Clapperboard aria-hidden className="size-4" />
+            Watch reels
           </Button>
         </div>
       </div>

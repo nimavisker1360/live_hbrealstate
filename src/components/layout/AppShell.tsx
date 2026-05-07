@@ -9,16 +9,16 @@ import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isLiveRoom = /^\/live\/[^/]+/.test(pathname);
+  const isReelViewer = /^\/reels\/[^/]+/.test(pathname);
 
   return (
     <>
       <AuthTokenSync />
-      {!isLiveRoom ? <Header /> : null}
-      <main className={cn("flex-1", isLiveRoom && "min-h-svh")}>
+      {!isReelViewer ? <Header /> : null}
+      <main className={cn("flex-1", isReelViewer && "min-h-svh")}>
         {children}
       </main>
-      {!isLiveRoom ? <Footer /> : null}
+      {!isReelViewer ? <Footer /> : null}
     </>
   );
 }

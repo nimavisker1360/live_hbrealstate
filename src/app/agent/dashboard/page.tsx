@@ -1,34 +1,31 @@
 import {
   BadgeDollarSign,
-  CalendarClock,
+  Clapperboard,
   ChevronDown,
   Eye,
   Heart,
   MessageCircle,
-  UsersRound,
+  PlayCircle,
+  UploadCloud,
 } from "lucide-react";
 import Link from "next/link";
-import { CreateLiveSessionButton } from "@/components/live/CreateLiveSessionButton";
-import { RecordingActions } from "@/components/live/RecordingActions";
-import { SessionDeleteButton } from "@/components/live/SessionDeleteButton";
 import { Card } from "@/components/ui/Card";
-import { HB_CONSULTANTS } from "@/lib/hb-consultants";
+import { ReelRowActions } from "@/components/property-reels/ReelRowActions";
+import { UploadPropertyReelPanel } from "@/components/property-reels/UploadPropertyReelPanel";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
+  archived: "border-white/15 bg-white/[0.06] text-white/62",
+  draft: "border-violet-300/30 bg-violet-400/10 text-violet-100",
+  processing: "border-sky-300/30 bg-sky-400/10 text-sky-100",
+  published: "border-emerald-400/30 bg-emerald-400/10 text-emerald-100",
   accepted: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  contacted: "border-sky-400/30 bg-sky-400/10 text-sky-200",
   countered: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-  ended: "border-white/15 bg-white/[0.06] text-white/62",
-  live: "border-red-400/35 bg-red-500/12 text-red-100",
-  lost: "border-rose-400/30 bg-rose-400/10 text-rose-200",
-  new: "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
-  qualified: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  recorded: "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
-  scheduled: "border-violet-300/30 bg-violet-400/10 text-violet-100",
+  pending: "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
+  rejected: "border-rose-400/30 bg-rose-400/10 text-rose-200",
   "under review": "border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79]",
 };
 
@@ -40,10 +37,10 @@ type EngagementRow = {
   likes: number;
   comments: number;
   lastActivity: Date;
-  latestSessionTitle: string;
+  latestReelTitle: string;
   latestComment: string | null;
-  commentEvents: EngagementComment[];
-  likeEvents: EngagementLike[];
+  commentEvents: { id: string; message: string; reelTitle: string; at: Date }[];
+  likeEvents: { id: string; reelTitle: string; at: Date }[];
 };
 
 type EngagementInput = {
@@ -52,22 +49,9 @@ type EngagementInput = {
   name: string;
   email?: string | null;
   identified: boolean;
-  sessionTitle: string;
+  reelTitle: string;
   kind: "like" | "comment";
   comment?: string | null;
-  at: Date;
-};
-
-type EngagementComment = {
-  id: string;
-  message: string;
-  sessionTitle: string;
-  at: Date;
-};
-
-type EngagementLike = {
-  id: string;
-  sessionTitle: string;
   at: Date;
 };
 
@@ -103,7 +87,7 @@ function SectionHeader({
 
 function formatDate(value: Date | null) {
   if (!value) {
-    return "Not scheduled";
+    return "—";
   }
 
   return new Intl.DateTimeFormat("en-US", {
@@ -143,33 +127,27 @@ function formatPrice(
   }).format(amount);
 }
 
-function formatSessionStatus(status: string, hasRecording: boolean) {
-  if (status !== "LIVE" && hasRecording) {
-    return "recorded";
+function formatBytes(value: bigint | null | undefined) {
+  if (!value) {
+    return "—";
   }
 
-  return status.toLowerCase();
-}
+  const bytes = Number(value);
 
-function isRecordingVisible(session: {
-  recordingPlaybackId: string | null;
-  recordingStatus: string | null;
-}) {
-  return (
-    session.recordingStatus !== "deleted" &&
-    Boolean(session.recordingPlaybackId)
-  );
-}
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return "—";
+  }
 
-function canDeleteRecording(session: {
-  muxAssetId: string | null;
-  recordingPlaybackId: string | null;
-  recordingStatus: string | null;
-}) {
-  return (
-    session.recordingStatus !== "deleted" &&
-    Boolean(session.recordingPlaybackId || session.muxAssetId)
-  );
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
 }
 
 function normalizeEngagementName(value: string) {
@@ -180,27 +158,6 @@ function mergeEngagement(
   rows: Map<string, EngagementRow>,
   input: EngagementInput,
 ) {
-  const commentEvent =
-    input.kind === "comment"
-      ? [
-          {
-            id: input.id,
-            message: input.comment ?? "",
-            sessionTitle: input.sessionTitle,
-            at: input.at,
-          },
-        ]
-      : [];
-  const likeEvent =
-    input.kind === "like"
-      ? [
-          {
-            id: input.id,
-            sessionTitle: input.sessionTitle,
-            at: input.at,
-          },
-        ]
-      : [];
   const existing = rows.get(input.key);
 
   if (!existing) {
@@ -212,20 +169,42 @@ function mergeEngagement(
       likes: input.kind === "like" ? 1 : 0,
       comments: input.kind === "comment" ? 1 : 0,
       lastActivity: input.at,
-      latestSessionTitle: input.sessionTitle,
+      latestReelTitle: input.reelTitle,
       latestComment: input.comment ?? null,
-      commentEvents: commentEvent,
-      likeEvents: likeEvent,
+      commentEvents:
+        input.kind === "comment"
+          ? [
+              {
+                id: input.id,
+                message: input.comment ?? "",
+                reelTitle: input.reelTitle,
+                at: input.at,
+              },
+            ]
+          : [],
+      likeEvents:
+        input.kind === "like"
+          ? [{ id: input.id, reelTitle: input.reelTitle, at: input.at }]
+          : [],
     });
     return;
   }
 
   if (input.kind === "like") {
     existing.likes += 1;
-    existing.likeEvents.push(...likeEvent);
+    existing.likeEvents.push({
+      id: input.id,
+      reelTitle: input.reelTitle,
+      at: input.at,
+    });
   } else {
     existing.comments += 1;
-    existing.commentEvents.push(...commentEvent);
+    existing.commentEvents.push({
+      id: input.id,
+      message: input.comment ?? "",
+      reelTitle: input.reelTitle,
+      at: input.at,
+    });
   }
 
   if (input.identified) {
@@ -238,7 +217,7 @@ function mergeEngagement(
 
   if (input.at > existing.lastActivity) {
     existing.lastActivity = input.at;
-    existing.latestSessionTitle = input.sessionTitle;
+    existing.latestReelTitle = input.reelTitle;
     existing.latestComment = input.comment ?? existing.latestComment;
   }
 }
@@ -246,103 +225,81 @@ function mergeEngagement(
 export default async function AgentDashboardPage() {
   const [
     databaseProperties,
-    databaseLiveSessions,
-    allLeads,
-    allOffers,
+    videoTours,
+    recentOffers,
     recentComments,
     recentLikes,
   ] = await Promise.all([
     prisma.property.findMany({
       include: {
         _count: {
-          select: {
-            leads: true,
-            liveSessions: true,
-          },
+          select: { videoTours: true },
         },
-        liveSessions: {
-          orderBy: { createdAt: "desc" },
-          select: {
-            startsAt: true,
-            status: true,
-          },
+        videoTours: {
+          orderBy: { updatedAt: "desc" },
+          select: { status: true, updatedAt: true },
           take: 1,
         },
       },
       orderBy: { updatedAt: "desc" },
       take: 6,
     }),
-    prisma.liveSession.findMany({
-      include: {
+    prisma.videoTour.findMany({
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        description: true,
+        status: true,
+        blobUrl: true,
+        mimeType: true,
+        fileSize: true,
+        viewCount: true,
+        likeCount: true,
+        commentCount: true,
+        publishedAt: true,
+        createdAt: true,
+        property: {
+          select: { id: true, title: true, location: true },
+        },
         _count: {
-          select: {
-            comments: true,
-            leads: true,
-            likeEvents: true,
-          },
-        },
-        property: {
-          select: {
-            title: true,
-          },
+          select: { offers: true },
         },
       },
       orderBy: { createdAt: "desc" },
-      take: 10,
+      take: 25,
     }),
-    prisma.lead.findMany({
+    prisma.videoTourOffer.findMany({
       include: {
-        liveSession: {
+        videoTour: {
           select: {
             title: true,
+            property: { select: { title: true } },
           },
         },
       },
       orderBy: { createdAt: "desc" },
       take: 6,
     }),
-    prisma.offer.findMany({
+    prisma.videoTourComment.findMany({
       include: {
-        property: {
-          select: {
-            title: true,
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 6,
-    }),
-    prisma.comment.findMany({
-      include: {
-        liveSession: {
-          select: {
-            roomId: true,
-            title: true,
-          },
+        videoTour: {
+          select: { id: true, title: true },
         },
         user: {
-          select: {
-            email: true,
-            name: true,
-          },
+          select: { email: true, name: true },
         },
       },
       orderBy: { createdAt: "desc" },
       take: 100,
     }),
-    prisma.likeEvent.findMany({
+    prisma.videoTourLike.findMany({
       include: {
-        liveSession: {
-          select: {
-            roomId: true,
-            title: true,
-          },
+        videoTour: {
+          select: { id: true, title: true },
         },
         user: {
-          select: {
-            email: true,
-            name: true,
-          },
+          select: { email: true, name: true },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -350,24 +307,68 @@ export default async function AgentDashboardPage() {
     }),
   ]);
 
-  const totalViews = databaseLiveSessions.reduce(
-    (sum, session) => sum + session.viewers,
+  const totalReels = videoTours.length;
+  const publishedReels = videoTours.filter(
+    (reel) => reel.status === "PUBLISHED",
+  ).length;
+  const draftReels = videoTours.filter(
+    (reel) => reel.status === "DRAFT" || reel.status === "PROCESSING",
+  ).length;
+  const totalViews = videoTours.reduce(
+    (sum, reel) => sum + reel.viewCount,
     0,
   );
-  const totalLeads = allLeads.length;
-  const totalOffers = allOffers.length;
-  const totalWhatsappClicks = databaseLiveSessions.reduce(
-    (sum, session) => sum + session.whatsappClicks,
+  const totalLikes = videoTours.reduce(
+    (sum, reel) => sum + reel.likeCount,
     0,
   );
-  const totalLikes = databaseLiveSessions.reduce(
-    (sum, session) => sum + session._count.likeEvents,
+  const totalComments = videoTours.reduce(
+    (sum, reel) => sum + reel.commentCount,
     0,
   );
-  const totalComments = databaseLiveSessions.reduce(
-    (sum, session) => sum + session._count.comments,
+  const totalOffers = videoTours.reduce(
+    (sum, reel) => sum + reel._count.offers,
     0,
   );
+
+  const overviewCards = [
+    {
+      label: "Total reels",
+      value: totalReels.toLocaleString(),
+      detail: `${publishedReels} published · ${draftReels} draft`,
+      icon: Clapperboard,
+    },
+    {
+      label: "Reel views",
+      value: totalViews.toLocaleString(),
+      detail: "Across all reels",
+      icon: Eye,
+    },
+    {
+      label: "Likes",
+      value: totalLikes.toLocaleString(),
+      detail: "Buyer reactions",
+      icon: Heart,
+    },
+    {
+      label: "Comments",
+      value: totalComments.toLocaleString(),
+      detail: "Conversation volume",
+      icon: MessageCircle,
+    },
+    {
+      label: "Offers",
+      value: totalOffers.toLocaleString(),
+      detail: totalOffers > 0 ? "Offers tracked" : "No offers yet",
+      icon: BadgeDollarSign,
+    },
+  ];
+
+  const propertyOptions = databaseProperties.map((property) => ({
+    id: property.id,
+    location: property.location,
+    title: property.title,
+  }));
 
   const engagementRows = new Map<string, EngagementRow>();
   const knownUserKeyByName = new Map<string, string>();
@@ -402,7 +403,7 @@ export default async function AgentDashboardPage() {
       name: comment.user?.name ?? comment.author,
       email: comment.user?.email,
       identified: Boolean(comment.userId),
-      sessionTitle: comment.liveSession.title,
+      reelTitle: comment.videoTour.title,
       kind: "comment",
       comment: comment.message,
       at: comment.createdAt,
@@ -420,7 +421,7 @@ export default async function AgentDashboardPage() {
       name: like.user?.name ?? like.user?.email ?? "Unknown viewer",
       email: like.user?.email,
       identified: Boolean(like.userId),
-      sessionTitle: like.liveSession.title,
+      reelTitle: like.videoTour.title,
       kind: "like",
       at: like.createdAt,
     });
@@ -438,70 +439,33 @@ export default async function AgentDashboardPage() {
     }))
     .sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime());
 
-  const overviewCards = [
-    {
-      label: "Total live views",
-      value: totalViews.toLocaleString(),
-      detail: `${databaseLiveSessions.length} active sessions`,
-      icon: Eye,
-    },
-    {
-      label: "Total leads",
-      value: totalLeads.toLocaleString(),
-      detail: `${allLeads.filter((l) => l.status === "NEW").length} new leads`,
-      icon: UsersRound,
-    },
-    {
-      label: "Total offers",
-      value: totalOffers.toLocaleString(),
-      detail: allOffers.length > 0 ? "Offers tracked" : "No offers yet",
-      icon: BadgeDollarSign,
-    },
-    {
-      label: "WhatsApp clicks",
-      value: totalWhatsappClicks.toLocaleString(),
-      detail: "High-intent interactions",
-      icon: MessageCircle,
-    },
-    {
-      label: "Live engagement",
-      value: (totalLikes + totalComments).toLocaleString(),
-      detail: `${totalLikes.toLocaleString()} likes, ${totalComments.toLocaleString()} comments`,
-      icon: Heart,
-    },
-  ];
-  const propertyOptions = databaseProperties.map((property) => ({
-    id: property.id,
-    location: property.location,
-    title: property.title,
-  }));
-
   return (
     <div className="bg-[#050505]">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#d6b15f]">
-              <CalendarClock aria-hidden className="size-4" />
+              <Clapperboard aria-hidden className="size-4" />
               Agent dashboard
             </p>
             <h1 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">
-              Live sales command center
+              Property reels command center
             </h1>
             <p className="mt-4 max-w-2xl leading-7 text-white/62">
-              Monitor live sessions, buyer demand, property activity, and offer
-              follow-ups from one workspace.
+              Upload property videos, publish reels to buyers, and track likes,
+              comments, and offers from a single workspace.
             </p>
+          </div>
+          <div className="flex items-center gap-2 rounded-md border border-[#d6b15f]/25 bg-[#d6b15f]/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#f0cf79]">
+            <UploadCloud aria-hidden className="size-4" />
+            {totalReels} reels in library
           </div>
         </div>
 
-        <CreateLiveSessionButton
-          consultants={HB_CONSULTANTS}
-          properties={propertyOptions}
-        />
+        <UploadPropertyReelPanel properties={propertyOptions} />
 
         <section
-          aria-label="Overview"
+          aria-label="Property reels analytics"
           className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
         >
           {overviewCards.map((card) => {
@@ -528,18 +492,18 @@ export default async function AgentDashboardPage() {
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
           <Card className="p-5">
-            <SectionHeader eyebrow="Live sessions" title="Session performance" />
+            <SectionHeader
+              eyebrow="Property reels"
+              title="Reel performance"
+            />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1040px] text-left text-sm">
+              <table className="w-full min-w-[1080px] text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
-                    <th className="pb-3 pr-4 font-semibold">Title</th>
+                    <th className="pb-3 pr-4 font-semibold">Reel</th>
                     <th className="pb-3 pr-4 font-semibold">Status</th>
                     <th className="pb-3 pr-4 text-right font-semibold">
-                      Viewers
-                    </th>
-                    <th className="pb-3 pr-4 text-right font-semibold">
-                      Leads
+                      Views
                     </th>
                     <th className="pb-3 pr-4 text-right font-semibold">
                       Likes
@@ -547,62 +511,71 @@ export default async function AgentDashboardPage() {
                     <th className="pb-3 pr-4 text-right font-semibold">
                       Comments
                     </th>
-                    <th className="pb-3 pr-4 font-semibold">Date</th>
-                    <th className="pb-3 pr-4 font-semibold">Recording</th>
+                    <th className="pb-3 pr-4 text-right font-semibold">
+                      Offers
+                    </th>
+                    <th className="pb-3 pr-4 font-semibold">Size</th>
+                    <th className="pb-3 pr-4 font-semibold">Uploaded</th>
                     <th className="pb-3 font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                  {databaseLiveSessions.map((session) => (
-                    <tr key={session.id}>
+                  {videoTours.map((reel) => (
+                    <tr key={reel.id}>
                       <td className="py-4 pr-4 font-medium text-white">
-                        <Link
-                          className="transition hover:text-[#f0cf79]"
-                          href={`/live/${session.roomId}`}
+                        <a
+                          className="inline-flex items-center gap-2 transition hover:text-[#f0cf79]"
+                          href={reel.blobUrl}
+                          rel="noreferrer"
+                          target="_blank"
                         >
-                          {session.title}
-                        </Link>
+                          <PlayCircle aria-hidden className="size-4 text-[#d6b15f]" />
+                          <span>
+                            <span className="block">{reel.title}</span>
+                            <span className="block text-xs text-white/52">
+                              {reel.property.title} · {reel.property.location}
+                            </span>
+                          </span>
+                        </a>
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge
-                          status={formatSessionStatus(
-                            session.status,
-                            isRecordingVisible(session),
-                          )}
-                        />
+                        <StatusBadge status={reel.status.toLowerCase()} />
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
-                        {session.viewers}
+                        {reel.viewCount.toLocaleString()}
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
-                        {session._count.leads}
+                        {reel.likeCount.toLocaleString()}
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
-                        {session._count.likeEvents}
+                        {reel.commentCount.toLocaleString()}
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
-                        {session._count.comments}
+                        {reel._count.offers.toLocaleString()}
                       </td>
                       <td className="py-4 pr-4 text-white/62">
-                        {formatDate(session.startsAt ?? session.createdAt)}
+                        {formatBytes(reel.fileSize)}
                       </td>
-                      <td className="py-4 pr-4">
-                        <RecordingActions
-                          canDelete={canDeleteRecording(session)}
-                          canWatch={isRecordingVisible(session)}
-                          liveSessionId={session.id}
-                          roomId={session.roomId}
-                        />
+                      <td className="py-4 pr-4 text-white/62">
+                        {formatDate(reel.createdAt)}
                       </td>
                       <td className="py-4">
-                        <SessionDeleteButton liveSessionId={session.id} />
+                        <ReelRowActions
+                          reel={{
+                            id: reel.id,
+                            title: reel.title,
+                            description: reel.description,
+                            status: reel.status,
+                            videoUrl: reel.blobUrl,
+                          }}
+                        />
                       </td>
                     </tr>
                   ))}
-                  {databaseLiveSessions.length === 0 ? (
+                  {videoTours.length === 0 ? (
                     <tr>
                       <td className="py-6 text-sm text-white/52" colSpan={9}>
-                        No live sessions yet.
+                        No property reels yet — upload one above to get started.
                       </td>
                     </tr>
                   ) : null}
@@ -615,34 +588,31 @@ export default async function AgentDashboardPage() {
             <SectionHeader eyebrow="Properties" title="Active inventory" />
             <div className="space-y-3">
               {databaseProperties.map((property) => {
-                const latestSession = property.liveSessions[0];
-                const activity =
-                  latestSession?.status === "LIVE"
-                    ? "1 live now"
-                    : latestSession?.startsAt
-                      ? `Next: ${formatDate(latestSession.startsAt)}`
-                      : `${property._count.leads} leads`;
+                const latestReel = property.videoTours[0];
+                const activity = latestReel
+                  ? `Latest reel · ${latestReel.status.toLowerCase()} · ${formatDate(latestReel.updatedAt)}`
+                  : `${property._count.videoTours} reels`;
 
                 return (
-                <div
-                  className="rounded-md border border-white/10 bg-black/20 p-4"
-                  key={property.id}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-white">{property.title}</p>
-                      <p className="mt-1 text-sm text-white/52">
-                        {property.location}
+                  <div
+                    className="rounded-md border border-white/10 bg-black/20 p-4"
+                    key={property.id}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-medium text-white">
+                          {property.title}
+                        </p>
+                        <p className="mt-1 text-sm text-white/52">
+                          {property.location}
+                        </p>
+                      </div>
+                      <p className="shrink-0 text-sm font-semibold text-[#d6b15f]">
+                        {formatPrice(property.price, property.currency)}
                       </p>
                     </div>
-                    <p className="shrink-0 text-sm font-semibold text-[#d6b15f]">
-                      {formatPrice(property.price, property.currency)}
-                    </p>
+                    <p className="mt-3 text-sm text-white/56">{activity}</p>
                   </div>
-                  <p className="mt-3 text-sm text-white/56">
-                    {activity}
-                  </p>
-                </div>
                 );
               })}
               {databaseProperties.length === 0 ? (
@@ -657,7 +627,7 @@ export default async function AgentDashboardPage() {
         <Card className="mt-6 p-5">
           <SectionHeader
             eyebrow="Engagement"
-            title={`Buyer engagement (${engagementSummary.length})`}
+            title={`Likes & comments (${engagementSummary.length})`}
           />
           <div className="max-h-[560px] space-y-3 overflow-y-auto pr-1">
             {engagementSummary.length > 0 ? (
@@ -671,15 +641,15 @@ export default async function AgentDashboardPage() {
                       <p className="font-medium text-white">{row.name}</p>
                       <p className="mt-1 text-xs text-white/48">
                         {row.email ??
-                          (row.identified ? "Signed-in buyer" : "Guest name")}
+                          (row.identified ? "Signed-in buyer" : "Guest")}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-[0.14em] text-white/36">
-                        Latest session
+                        Latest reel
                       </p>
                       <p className="mt-1 truncate text-white/70">
-                        {row.latestSessionTitle}
+                        {row.latestReelTitle}
                       </p>
                     </div>
                     <div className="flex gap-2 sm:justify-end">
@@ -715,7 +685,7 @@ export default async function AgentDashboardPage() {
                                 {comment.message}
                               </p>
                               <p className="mt-2 text-xs text-white/42">
-                                {comment.sessionTitle} ·{" "}
+                                {comment.reelTitle} ·{" "}
                                 {formatDateTime(comment.at)}
                               </p>
                             </div>
@@ -740,7 +710,7 @@ export default async function AgentDashboardPage() {
                               key={like.id}
                             >
                               <span className="text-white/76">
-                                {like.sessionTitle}
+                                {like.reelTitle}
                               </span>
                               <span className="shrink-0 text-xs text-white/42">
                                 {formatDateTime(like.at)}
@@ -765,104 +735,69 @@ export default async function AgentDashboardPage() {
           </div>
         </Card>
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-2">
-          <Card className="p-5">
-            <SectionHeader eyebrow="Leads" title="Buyer pipeline" />
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px] text-left text-sm">
-                <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
-                  <tr>
-                    <th className="pb-3 pr-4 font-semibold">Name</th>
-                    <th className="pb-3 pr-4 font-semibold">Phone</th>
-                    <th className="pb-3 pr-4 font-semibold">Interest</th>
-                    <th className="pb-3 pr-4 font-semibold">Budget</th>
-                    <th className="pb-3 font-semibold">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  {allLeads.length > 0 ? (
-                    allLeads.map((lead) => (
-                      <tr key={lead.id}>
-                        <td className="py-4 pr-4 font-medium text-white">
-                          {lead.fullName}
-                        </td>
-                        <td className="py-4 pr-4 text-white/62">{lead.phone}</td>
-                        <td className="py-4 pr-4 text-white/72">
-                          {lead.liveSession?.title || lead.interest}
-                        </td>
-                        <td className="py-4 pr-4 text-white/72">
-                          {lead.budget}
-                        </td>
-                        <td className="py-4">
-                          <StatusBadge status={lead.status.toLowerCase()} />
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td className="py-6 text-sm text-white/52" colSpan={5}>
-                        No leads yet.
+        <Card className="mt-6 p-5">
+          <SectionHeader eyebrow="Offers" title="Offers from reels" />
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px] text-left text-sm">
+              <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
+                <tr>
+                  <th className="pb-3 pr-4 font-semibold">Reel</th>
+                  <th className="pb-3 pr-4 font-semibold">Property</th>
+                  <th className="pb-3 pr-4 font-semibold">Offer amount</th>
+                  <th className="pb-3 pr-4 font-semibold">Buyer</th>
+                  <th className="pb-3 pr-4 font-semibold">Phone</th>
+                  <th className="pb-3 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {recentOffers.length > 0 ? (
+                  recentOffers.map((offer) => (
+                    <tr key={offer.id}>
+                      <td className="py-4 pr-4 font-medium text-white">
+                        {offer.videoTour.title}
+                      </td>
+                      <td className="py-4 pr-4 text-white/72">
+                        {offer.videoTour.property?.title ?? "—"}
+                      </td>
+                      <td className="py-4 pr-4 font-semibold text-[#d6b15f]">
+                        {new Intl.NumberFormat("en-US", {
+                          currency: offer.currency,
+                          style: "currency",
+                        }).format(Number(offer.amount))}
+                      </td>
+                      <td className="py-4 pr-4 text-white/72">
+                        {offer.buyerName}
+                      </td>
+                      <td className="py-4 pr-4 text-white/62">
+                        {offer.phone}
+                      </td>
+                      <td className="py-4">
+                        <StatusBadge
+                          status={offer.status.toLowerCase().replace("_", " ")}
+                        />
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
-          <Card className="p-5">
-            <SectionHeader eyebrow="Offers" title="Negotiation tracker" />
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px] text-left text-sm">
-                <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
+                  ))
+                ) : (
                   <tr>
-                    <th className="pb-3 pr-4 font-semibold">Property</th>
-                    <th className="pb-3 pr-4 font-semibold">Offer amount</th>
-                    <th className="pb-3 pr-4 font-semibold">Buyer name</th>
-                    <th className="pb-3 pr-4 font-semibold">Phone</th>
-                    <th className="pb-3 font-semibold">Status</th>
+                    <td className="py-6 text-sm text-white/52" colSpan={6}>
+                      No offers from property reels yet.
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  {allOffers.length > 0 ? (
-                    allOffers.map((offer) => (
-                      <tr key={offer.id}>
-                        <td className="py-4 pr-4 font-medium text-white">
-                          {offer.property?.title}
-                        </td>
-                        <td className="py-4 pr-4 font-semibold text-[#d6b15f]">
-                          {new Intl.NumberFormat("en-US", {
-                            currency: offer.currency,
-                            style: "currency",
-                          }).format(Number(offer.amount))}
-                        </td>
-                        <td className="py-4 pr-4 text-white/72">
-                          {offer.buyerName}
-                        </td>
-                        <td className="py-4 pr-4 text-white/62">
-                          {offer.phone}
-                        </td>
-                        <td className="py-4">
-                          <StatusBadge
-                            status={offer.status
-                              .toLowerCase()
-                              .replace("_", " ")}
-                          />
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td className="py-6 text-sm text-white/52" colSpan={5}>
-                        No offers yet.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-4 text-xs text-white/40">
+            <Link
+              className="underline-offset-4 hover:text-[#f0cf79] hover:underline"
+              href="/agent/dashboard"
+            >
+              Refresh dashboard
+            </Link>{" "}
+            to pull the latest offer activity.
+          </p>
+        </Card>
       </div>
     </div>
   );

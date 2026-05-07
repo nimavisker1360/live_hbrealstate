@@ -52,9 +52,11 @@ export async function POST(request: Request) {
     const context = payload.liveSessionId
       ? await prisma.liveSession.findUnique({
           where: { id: payload.liveSessionId },
-          include: {
+          select: {
             agent: true,
+            id: true,
             property: true,
+            title: true,
           },
         })
       : null;
@@ -79,7 +81,7 @@ export async function POST(request: Request) {
     const agent = context?.agent ?? fallbackContext?.agent;
 
     if (!liveSession || !property) {
-      return jsonError("A live session is required for comments.", 400);
+      return jsonError("A property reel is required for comments.", 400);
     }
 
     const comment = await prisma.comment.create({

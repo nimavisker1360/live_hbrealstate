@@ -24,7 +24,7 @@ export type LiveTour = {
   agent: string;
   agentSpecialty?: string;
   agentWhatsapp?: string;
-  status: "Live" | "Starting Soon" | "Scheduled" | "Recorded" | "Ended";
+  status: "Available" | "Processing" | "Draft";
   viewers: number;
   startsAt: string;
   duration: string;

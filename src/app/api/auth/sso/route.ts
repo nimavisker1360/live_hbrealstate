@@ -13,19 +13,19 @@ function safeNextUrl(request: Request, nextValue?: string | null) {
   const requestUrl = new URL(request.url);
 
   if (!nextValue) {
-    return new URL("/live", requestUrl);
+    return new URL("/reels", requestUrl);
   }
 
   try {
     const nextUrl = new URL(nextValue, requestUrl);
 
     if (nextUrl.origin !== requestUrl.origin) {
-      return new URL("/live", requestUrl);
+      return new URL("/reels", requestUrl);
     }
 
     return nextUrl;
   } catch {
-    return new URL("/live", requestUrl);
+    return new URL("/reels", requestUrl);
   }
 }
 

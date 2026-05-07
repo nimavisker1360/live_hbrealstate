@@ -1,7 +1,5 @@
-import { ManualUploadRecoveryPage } from "@/components/live/upload-recovery/ManualUploadRecoveryPage";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default function UploadRecoveryPage() {
-  return <ManualUploadRecoveryPage />;
+export default function LegacyUploadRecoveryPage() {
+  redirect("/agent/dashboard");
 }

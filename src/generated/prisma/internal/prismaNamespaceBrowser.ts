@@ -61,7 +61,12 @@ export const ModelName = {
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
-  LikeEvent: 'LikeEvent'
+  LikeEvent: 'LikeEvent',
+  VideoTour: 'VideoTour',
+  VideoTourLike: 'VideoTourLike',
+  VideoTourComment: 'VideoTourComment',
+  VideoTourOffer: 'VideoTourOffer',
+  VideoTourView: 'VideoTourView'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -145,7 +150,9 @@ export const LiveSessionScalarFieldEnum = {
   viewers: 'viewers',
   whatsappClicks: 'whatsappClicks',
   startsAt: 'startsAt',
+  lastSeenAt: 'lastSeenAt',
   endedAt: 'endedAt',
+  reconnectUntil: 'reconnectUntil',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -274,6 +281,92 @@ export const LikeEventScalarFieldEnum = {
 } as const
 
 export type LikeEventScalarFieldEnum = (typeof LikeEventScalarFieldEnum)[keyof typeof LikeEventScalarFieldEnum]
+
+
+export const VideoTourScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  propertyId: 'propertyId',
+  agentId: 'agentId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  blobUrl: 'blobUrl',
+  blobPathname: 'blobPathname',
+  thumbnailUrl: 'thumbnailUrl',
+  durationSeconds: 'durationSeconds',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  width: 'width',
+  height: 'height',
+  likeCount: 'likeCount',
+  commentCount: 'commentCount',
+  viewCount: 'viewCount',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VideoTourScalarFieldEnum = (typeof VideoTourScalarFieldEnum)[keyof typeof VideoTourScalarFieldEnum]
+
+
+export const VideoTourLikeScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  userId: 'userId',
+  visitorId: 'visitorId',
+  createdAt: 'createdAt'
+} as const
+
+export type VideoTourLikeScalarFieldEnum = (typeof VideoTourLikeScalarFieldEnum)[keyof typeof VideoTourLikeScalarFieldEnum]
+
+
+export const VideoTourCommentScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  userId: 'userId',
+  agentId: 'agentId',
+  visitorId: 'visitorId',
+  author: 'author',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VideoTourCommentScalarFieldEnum = (typeof VideoTourCommentScalarFieldEnum)[keyof typeof VideoTourCommentScalarFieldEnum]
+
+
+export const VideoTourOfferScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  agentId: 'agentId',
+  userId: 'userId',
+  buyerName: 'buyerName',
+  phone: 'phone',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VideoTourOfferScalarFieldEnum = (typeof VideoTourOfferScalarFieldEnum)[keyof typeof VideoTourOfferScalarFieldEnum]
+
+
+export const VideoTourViewScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  userId: 'userId',
+  visitorId: 'visitorId',
+  watchedSeconds: 'watchedSeconds',
+  completed: 'completed',
+  ipHash: 'ipHash',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type VideoTourViewScalarFieldEnum = (typeof VideoTourViewScalarFieldEnum)[keyof typeof VideoTourViewScalarFieldEnum]
 
 
 export const SortOrder = {

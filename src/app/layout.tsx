@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HB Live | HB Real Estate",
+  title: "HB Property Reels | HB Real Estate",
   description:
-    "A live property tour platform for premium HB Real Estate listings.",
+    "A property video reels platform for premium HB Real Estate listings.",
 };
 
 export default function RootLayout({

@@ -96,3 +96,28 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type LikeEvent = Prisma.LikeEventModel
+/**
+ * Model VideoTour
+ * 
+ */
+export type VideoTour = Prisma.VideoTourModel
+/**
+ * Model VideoTourLike
+ * 
+ */
+export type VideoTourLike = Prisma.VideoTourLikeModel
+/**
+ * Model VideoTourComment
+ * 
+ */
+export type VideoTourComment = Prisma.VideoTourCommentModel
+/**
+ * Model VideoTourOffer
+ * 
+ */
+export type VideoTourOffer = Prisma.VideoTourOfferModel
+/**
+ * Model VideoTourView
+ * 
+ */
+export type VideoTourView = Prisma.VideoTourViewModel

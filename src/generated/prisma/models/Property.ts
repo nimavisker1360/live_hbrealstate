@@ -262,6 +262,7 @@ export type PropertyWhereInput = {
   leads?: Prisma.LeadListRelationFilter
   offers?: Prisma.OfferListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  videoTours?: Prisma.VideoTourListRelationFilter
 }
 
 export type PropertyOrderByWithRelationInput = {
@@ -281,6 +282,7 @@ export type PropertyOrderByWithRelationInput = {
   leads?: Prisma.LeadOrderByRelationAggregateInput
   offers?: Prisma.OfferOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  videoTours?: Prisma.VideoTourOrderByRelationAggregateInput
 }
 
 export type PropertyWhereUniqueInput = Prisma.AtLeast<{
@@ -303,6 +305,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   leads?: Prisma.LeadListRelationFilter
   offers?: Prisma.OfferListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  videoTours?: Prisma.VideoTourListRelationFilter
 }, "id">
 
 export type PropertyOrderByWithAggregationInput = {
@@ -355,6 +358,7 @@ export type PropertyCreateInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateInput = {
@@ -373,6 +377,7 @@ export type PropertyUncheckedCreateInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUpdateInput = {
@@ -391,6 +396,7 @@ export type PropertyUpdateInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateInput = {
@@ -409,6 +415,7 @@ export type PropertyUncheckedUpdateInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyInput = {
@@ -638,6 +645,20 @@ export type PropertyUpdateOneRequiredWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutCommentsInput, Prisma.PropertyUpdateWithoutCommentsInput>, Prisma.PropertyUncheckedUpdateWithoutCommentsInput>
 }
 
+export type PropertyCreateNestedOneWithoutVideoToursInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutVideoToursInput, Prisma.PropertyUncheckedCreateWithoutVideoToursInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutVideoToursInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutVideoToursNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutVideoToursInput, Prisma.PropertyUncheckedCreateWithoutVideoToursInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutVideoToursInput
+  upsert?: Prisma.PropertyUpsertWithoutVideoToursInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutVideoToursInput, Prisma.PropertyUpdateWithoutVideoToursInput>, Prisma.PropertyUncheckedUpdateWithoutVideoToursInput>
+}
+
 export type PropertyCreateWithoutAgentInput = {
   id?: string
   title: string
@@ -653,6 +674,7 @@ export type PropertyCreateWithoutAgentInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAgentInput = {
@@ -670,6 +692,7 @@ export type PropertyUncheckedCreateWithoutAgentInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAgentInput = {
@@ -729,6 +752,7 @@ export type PropertyCreateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutLiveSessionsInput = {
@@ -746,6 +770,7 @@ export type PropertyUncheckedCreateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutLiveSessionsInput = {
@@ -779,6 +804,7 @@ export type PropertyUpdateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutLiveSessionsInput = {
@@ -796,6 +822,7 @@ export type PropertyUncheckedUpdateWithoutLiveSessionsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutLiveRecordingsInput = {
@@ -813,6 +840,7 @@ export type PropertyCreateWithoutLiveRecordingsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutLiveRecordingsInput = {
@@ -830,6 +858,7 @@ export type PropertyUncheckedCreateWithoutLiveRecordingsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutLiveRecordingsInput = {
@@ -863,6 +892,7 @@ export type PropertyUpdateWithoutLiveRecordingsInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutLiveRecordingsInput = {
@@ -880,6 +910,7 @@ export type PropertyUncheckedUpdateWithoutLiveRecordingsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutLeadsInput = {
@@ -897,6 +928,7 @@ export type PropertyCreateWithoutLeadsInput = {
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutLeadsInput = {
@@ -914,6 +946,7 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutLeadsInput = {
@@ -947,6 +980,7 @@ export type PropertyUpdateWithoutLeadsInput = {
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutLeadsInput = {
@@ -964,6 +998,7 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutOffersInput = {
@@ -981,6 +1016,7 @@ export type PropertyCreateWithoutOffersInput = {
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutPropertyInput
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutOffersInput = {
@@ -998,6 +1034,7 @@ export type PropertyUncheckedCreateWithoutOffersInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutPropertyInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutOffersInput = {
@@ -1031,6 +1068,7 @@ export type PropertyUpdateWithoutOffersInput = {
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutPropertyNestedInput
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutOffersInput = {
@@ -1048,6 +1086,7 @@ export type PropertyUncheckedUpdateWithoutOffersInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutPropertyNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutCommentsInput = {
@@ -1065,6 +1104,7 @@ export type PropertyCreateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutPropertyInput
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutCommentsInput = {
@@ -1082,6 +1122,7 @@ export type PropertyUncheckedCreateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutPropertyInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutPropertyInput
+  videoTours?: Prisma.VideoTourUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutCommentsInput = {
@@ -1115,6 +1156,7 @@ export type PropertyUpdateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutPropertyNestedInput
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutCommentsInput = {
@@ -1132,6 +1174,95 @@ export type PropertyUncheckedUpdateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutPropertyNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutVideoToursInput = {
+  id?: string
+  title: string
+  location: string
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string
+  image?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
+  liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutPropertyInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutPropertyInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  offers?: Prisma.OfferCreateNestedManyWithoutPropertyInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutVideoToursInput = {
+  id?: string
+  agentId: string
+  title: string
+  location: string
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string
+  image?: string | null
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutPropertyInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  offers?: Prisma.OfferUncheckedCreateNestedManyWithoutPropertyInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutVideoToursInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutVideoToursInput, Prisma.PropertyUncheckedCreateWithoutVideoToursInput>
+}
+
+export type PropertyUpsertWithoutVideoToursInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutVideoToursInput, Prisma.PropertyUncheckedUpdateWithoutVideoToursInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutVideoToursInput, Prisma.PropertyUncheckedCreateWithoutVideoToursInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutVideoToursInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutVideoToursInput, Prisma.PropertyUncheckedUpdateWithoutVideoToursInput>
+}
+
+export type PropertyUpdateWithoutVideoToursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
+  liveSessions?: Prisma.LiveSessionUpdateManyWithoutPropertyNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutPropertyNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  offers?: Prisma.OfferUpdateManyWithoutPropertyNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutVideoToursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  agentId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutPropertyNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
+  offers?: Prisma.OfferUncheckedUpdateManyWithoutPropertyNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyAgentInput = {
@@ -1161,6 +1292,7 @@ export type PropertyUpdateWithoutAgentInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAgentInput = {
@@ -1178,6 +1310,7 @@ export type PropertyUncheckedUpdateWithoutAgentInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   offers?: Prisma.OfferUncheckedUpdateManyWithoutPropertyNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPropertyNestedInput
+  videoTours?: Prisma.VideoTourUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutAgentInput = {
@@ -1203,6 +1336,7 @@ export type PropertyCountOutputType = {
   leads: number
   offers: number
   comments: number
+  videoTours: number
 }
 
 export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1211,6 +1345,7 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   leads?: boolean | PropertyCountOutputTypeCountLeadsArgs
   offers?: boolean | PropertyCountOutputTypeCountOffersArgs
   comments?: boolean | PropertyCountOutputTypeCountCommentsArgs
+  videoTours?: boolean | PropertyCountOutputTypeCountVideoToursArgs
 }
 
 /**
@@ -1258,6 +1393,13 @@ export type PropertyCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.CommentWhereInput
 }
 
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountVideoToursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourWhereInput
+}
+
 
 export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1276,6 +1418,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   leads?: boolean | Prisma.Property$leadsArgs<ExtArgs>
   offers?: boolean | Prisma.Property$offersArgs<ExtArgs>
   comments?: boolean | Prisma.Property$commentsArgs<ExtArgs>
+  videoTours?: boolean | Prisma.Property$videoToursArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
@@ -1328,6 +1471,7 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   leads?: boolean | Prisma.Property$leadsArgs<ExtArgs>
   offers?: boolean | Prisma.Property$offersArgs<ExtArgs>
   comments?: boolean | Prisma.Property$commentsArgs<ExtArgs>
+  videoTours?: boolean | Prisma.Property$videoToursArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1346,6 +1490,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     leads: Prisma.$LeadPayload<ExtArgs>[]
     offers: Prisma.$OfferPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    videoTours: Prisma.$VideoTourPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1758,6 +1903,7 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   leads<T extends Prisma.Property$leadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   offers<T extends Prisma.Property$offersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$offersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Property$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTours<T extends Prisma.Property$videoToursArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$videoToursArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2315,6 +2461,30 @@ export type Property$commentsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Property.videoTours
+ */
+export type Property$videoToursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTour
+   */
+  select?: Prisma.VideoTourSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTour
+   */
+  omit?: Prisma.VideoTourOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourInclude<ExtArgs> | null
+  where?: Prisma.VideoTourWhereInput
+  orderBy?: Prisma.VideoTourOrderByWithRelationInput | Prisma.VideoTourOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourScalarFieldEnum | Prisma.VideoTourScalarFieldEnum[]
 }
 
 /**

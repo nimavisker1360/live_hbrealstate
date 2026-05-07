@@ -394,7 +394,12 @@ export const ModelName = {
   Lead: 'Lead',
   Offer: 'Offer',
   Comment: 'Comment',
-  LikeEvent: 'LikeEvent'
+  LikeEvent: 'LikeEvent',
+  VideoTour: 'VideoTour',
+  VideoTourLike: 'VideoTourLike',
+  VideoTourComment: 'VideoTourComment',
+  VideoTourOffer: 'VideoTourOffer',
+  VideoTourView: 'VideoTourView'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -410,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agent" | "property" | "liveSession" | "liveRecording" | "uploadSession" | "uploadChunk" | "lead" | "offer" | "comment" | "likeEvent"
+    modelProps: "user" | "agent" | "property" | "liveSession" | "liveRecording" | "uploadSession" | "uploadChunk" | "lead" | "offer" | "comment" | "likeEvent" | "videoTour" | "videoTourLike" | "videoTourComment" | "videoTourOffer" | "videoTourView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1228,6 +1233,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VideoTour: {
+      payload: Prisma.$VideoTourPayload<ExtArgs>
+      fields: Prisma.VideoTourFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VideoTourFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VideoTourFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>
+        }
+        findFirst: {
+          args: Prisma.VideoTourFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VideoTourFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>
+        }
+        findMany: {
+          args: Prisma.VideoTourFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>[]
+        }
+        create: {
+          args: Prisma.VideoTourCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>
+        }
+        createMany: {
+          args: Prisma.VideoTourCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VideoTourCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>[]
+        }
+        delete: {
+          args: Prisma.VideoTourDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>
+        }
+        update: {
+          args: Prisma.VideoTourUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>
+        }
+        deleteMany: {
+          args: Prisma.VideoTourDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VideoTourUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VideoTourUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>[]
+        }
+        upsert: {
+          args: Prisma.VideoTourUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourPayload>
+        }
+        aggregate: {
+          args: Prisma.VideoTourAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVideoTour>
+        }
+        groupBy: {
+          args: Prisma.VideoTourGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VideoTourCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourCountAggregateOutputType> | number
+        }
+      }
+    }
+    VideoTourLike: {
+      payload: Prisma.$VideoTourLikePayload<ExtArgs>
+      fields: Prisma.VideoTourLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VideoTourLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VideoTourLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>
+        }
+        findFirst: {
+          args: Prisma.VideoTourLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VideoTourLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>
+        }
+        findMany: {
+          args: Prisma.VideoTourLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>[]
+        }
+        create: {
+          args: Prisma.VideoTourLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>
+        }
+        createMany: {
+          args: Prisma.VideoTourLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VideoTourLikeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>[]
+        }
+        delete: {
+          args: Prisma.VideoTourLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>
+        }
+        update: {
+          args: Prisma.VideoTourLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.VideoTourLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VideoTourLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VideoTourLikeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>[]
+        }
+        upsert: {
+          args: Prisma.VideoTourLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourLikePayload>
+        }
+        aggregate: {
+          args: Prisma.VideoTourLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVideoTourLike>
+        }
+        groupBy: {
+          args: Prisma.VideoTourLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VideoTourLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourLikeCountAggregateOutputType> | number
+        }
+      }
+    }
+    VideoTourComment: {
+      payload: Prisma.$VideoTourCommentPayload<ExtArgs>
+      fields: Prisma.VideoTourCommentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VideoTourCommentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VideoTourCommentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>
+        }
+        findFirst: {
+          args: Prisma.VideoTourCommentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VideoTourCommentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>
+        }
+        findMany: {
+          args: Prisma.VideoTourCommentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>[]
+        }
+        create: {
+          args: Prisma.VideoTourCommentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>
+        }
+        createMany: {
+          args: Prisma.VideoTourCommentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VideoTourCommentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>[]
+        }
+        delete: {
+          args: Prisma.VideoTourCommentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>
+        }
+        update: {
+          args: Prisma.VideoTourCommentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>
+        }
+        deleteMany: {
+          args: Prisma.VideoTourCommentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VideoTourCommentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VideoTourCommentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>[]
+        }
+        upsert: {
+          args: Prisma.VideoTourCommentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourCommentPayload>
+        }
+        aggregate: {
+          args: Prisma.VideoTourCommentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVideoTourComment>
+        }
+        groupBy: {
+          args: Prisma.VideoTourCommentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourCommentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VideoTourCommentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourCommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    VideoTourOffer: {
+      payload: Prisma.$VideoTourOfferPayload<ExtArgs>
+      fields: Prisma.VideoTourOfferFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VideoTourOfferFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VideoTourOfferFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>
+        }
+        findFirst: {
+          args: Prisma.VideoTourOfferFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VideoTourOfferFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>
+        }
+        findMany: {
+          args: Prisma.VideoTourOfferFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>[]
+        }
+        create: {
+          args: Prisma.VideoTourOfferCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>
+        }
+        createMany: {
+          args: Prisma.VideoTourOfferCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VideoTourOfferCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>[]
+        }
+        delete: {
+          args: Prisma.VideoTourOfferDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>
+        }
+        update: {
+          args: Prisma.VideoTourOfferUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>
+        }
+        deleteMany: {
+          args: Prisma.VideoTourOfferDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VideoTourOfferUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VideoTourOfferUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>[]
+        }
+        upsert: {
+          args: Prisma.VideoTourOfferUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourOfferPayload>
+        }
+        aggregate: {
+          args: Prisma.VideoTourOfferAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVideoTourOffer>
+        }
+        groupBy: {
+          args: Prisma.VideoTourOfferGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourOfferGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VideoTourOfferCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourOfferCountAggregateOutputType> | number
+        }
+      }
+    }
+    VideoTourView: {
+      payload: Prisma.$VideoTourViewPayload<ExtArgs>
+      fields: Prisma.VideoTourViewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VideoTourViewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VideoTourViewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>
+        }
+        findFirst: {
+          args: Prisma.VideoTourViewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VideoTourViewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>
+        }
+        findMany: {
+          args: Prisma.VideoTourViewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>[]
+        }
+        create: {
+          args: Prisma.VideoTourViewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>
+        }
+        createMany: {
+          args: Prisma.VideoTourViewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VideoTourViewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>[]
+        }
+        delete: {
+          args: Prisma.VideoTourViewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>
+        }
+        update: {
+          args: Prisma.VideoTourViewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>
+        }
+        deleteMany: {
+          args: Prisma.VideoTourViewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VideoTourViewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VideoTourViewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>[]
+        }
+        upsert: {
+          args: Prisma.VideoTourViewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VideoTourViewPayload>
+        }
+        aggregate: {
+          args: Prisma.VideoTourViewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVideoTourView>
+        }
+        groupBy: {
+          args: Prisma.VideoTourViewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourViewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VideoTourViewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VideoTourViewCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1332,7 +1707,9 @@ export const LiveSessionScalarFieldEnum = {
   viewers: 'viewers',
   whatsappClicks: 'whatsappClicks',
   startsAt: 'startsAt',
+  lastSeenAt: 'lastSeenAt',
   endedAt: 'endedAt',
+  reconnectUntil: 'reconnectUntil',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1461,6 +1838,92 @@ export const LikeEventScalarFieldEnum = {
 } as const
 
 export type LikeEventScalarFieldEnum = (typeof LikeEventScalarFieldEnum)[keyof typeof LikeEventScalarFieldEnum]
+
+
+export const VideoTourScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  propertyId: 'propertyId',
+  agentId: 'agentId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  blobUrl: 'blobUrl',
+  blobPathname: 'blobPathname',
+  thumbnailUrl: 'thumbnailUrl',
+  durationSeconds: 'durationSeconds',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  width: 'width',
+  height: 'height',
+  likeCount: 'likeCount',
+  commentCount: 'commentCount',
+  viewCount: 'viewCount',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VideoTourScalarFieldEnum = (typeof VideoTourScalarFieldEnum)[keyof typeof VideoTourScalarFieldEnum]
+
+
+export const VideoTourLikeScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  userId: 'userId',
+  visitorId: 'visitorId',
+  createdAt: 'createdAt'
+} as const
+
+export type VideoTourLikeScalarFieldEnum = (typeof VideoTourLikeScalarFieldEnum)[keyof typeof VideoTourLikeScalarFieldEnum]
+
+
+export const VideoTourCommentScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  userId: 'userId',
+  agentId: 'agentId',
+  visitorId: 'visitorId',
+  author: 'author',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VideoTourCommentScalarFieldEnum = (typeof VideoTourCommentScalarFieldEnum)[keyof typeof VideoTourCommentScalarFieldEnum]
+
+
+export const VideoTourOfferScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  agentId: 'agentId',
+  userId: 'userId',
+  buyerName: 'buyerName',
+  phone: 'phone',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VideoTourOfferScalarFieldEnum = (typeof VideoTourOfferScalarFieldEnum)[keyof typeof VideoTourOfferScalarFieldEnum]
+
+
+export const VideoTourViewScalarFieldEnum = {
+  id: 'id',
+  videoTourId: 'videoTourId',
+  userId: 'userId',
+  visitorId: 'visitorId',
+  watchedSeconds: 'watchedSeconds',
+  completed: 'completed',
+  ipHash: 'ipHash',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type VideoTourViewScalarFieldEnum = (typeof VideoTourViewScalarFieldEnum)[keyof typeof VideoTourViewScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1690,6 +2153,27 @@ export type ListEnumOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'VideoTourStatus'
+ */
+export type EnumVideoTourStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VideoTourStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'VideoTourStatus[]'
+ */
+export type ListEnumVideoTourStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VideoTourStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1823,6 +2307,11 @@ export type GlobalOmitConfig = {
   offer?: Prisma.OfferOmit
   comment?: Prisma.CommentOmit
   likeEvent?: Prisma.LikeEventOmit
+  videoTour?: Prisma.VideoTourOmit
+  videoTourLike?: Prisma.VideoTourLikeOmit
+  videoTourComment?: Prisma.VideoTourCommentOmit
+  videoTourOffer?: Prisma.VideoTourOfferOmit
+  videoTourView?: Prisma.VideoTourViewOmit
 }
 
 /* Types for Logging */

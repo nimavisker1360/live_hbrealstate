@@ -228,6 +228,10 @@ export type UserWhereInput = {
   liveRecordings?: Prisma.LiveRecordingListRelationFilter
   uploadChunks?: Prisma.UploadChunkListRelationFilter
   uploadSessions?: Prisma.UploadSessionListRelationFilter
+  videoTourLikes?: Prisma.VideoTourLikeListRelationFilter
+  videoTourComments?: Prisma.VideoTourCommentListRelationFilter
+  videoTourOffers?: Prisma.VideoTourOfferListRelationFilter
+  videoTourViews?: Prisma.VideoTourViewListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -247,6 +251,10 @@ export type UserOrderByWithRelationInput = {
   liveRecordings?: Prisma.LiveRecordingOrderByRelationAggregateInput
   uploadChunks?: Prisma.UploadChunkOrderByRelationAggregateInput
   uploadSessions?: Prisma.UploadSessionOrderByRelationAggregateInput
+  videoTourLikes?: Prisma.VideoTourLikeOrderByRelationAggregateInput
+  videoTourComments?: Prisma.VideoTourCommentOrderByRelationAggregateInput
+  videoTourOffers?: Prisma.VideoTourOfferOrderByRelationAggregateInput
+  videoTourViews?: Prisma.VideoTourViewOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -269,6 +277,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   liveRecordings?: Prisma.LiveRecordingListRelationFilter
   uploadChunks?: Prisma.UploadChunkListRelationFilter
   uploadSessions?: Prisma.UploadSessionListRelationFilter
+  videoTourLikes?: Prisma.VideoTourLikeListRelationFilter
+  videoTourComments?: Prisma.VideoTourCommentListRelationFilter
+  videoTourOffers?: Prisma.VideoTourOfferListRelationFilter
+  videoTourViews?: Prisma.VideoTourViewListRelationFilter
 }, "id" | "auth0Id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -320,6 +332,10 @@ export type UserCreateInput = {
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -339,6 +355,10 @@ export type UserUncheckedCreateInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -358,6 +378,10 @@ export type UserUpdateInput = {
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -377,6 +401,10 @@ export type UserUncheckedUpdateInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -577,6 +605,70 @@ export type UserUpdateOneWithoutLikeEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLikeEventsInput, Prisma.UserUpdateWithoutLikeEventsInput>, Prisma.UserUncheckedUpdateWithoutLikeEventsInput>
 }
 
+export type UserCreateNestedOneWithoutVideoTourLikesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourLikesInput, Prisma.UserUncheckedCreateWithoutVideoTourLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutVideoTourLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourLikesInput, Prisma.UserUncheckedCreateWithoutVideoTourLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourLikesInput
+  upsert?: Prisma.UserUpsertWithoutVideoTourLikesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVideoTourLikesInput, Prisma.UserUpdateWithoutVideoTourLikesInput>, Prisma.UserUncheckedUpdateWithoutVideoTourLikesInput>
+}
+
+export type UserCreateNestedOneWithoutVideoTourCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourCommentsInput, Prisma.UserUncheckedCreateWithoutVideoTourCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutVideoTourCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourCommentsInput, Prisma.UserUncheckedCreateWithoutVideoTourCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourCommentsInput
+  upsert?: Prisma.UserUpsertWithoutVideoTourCommentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVideoTourCommentsInput, Prisma.UserUpdateWithoutVideoTourCommentsInput>, Prisma.UserUncheckedUpdateWithoutVideoTourCommentsInput>
+}
+
+export type UserCreateNestedOneWithoutVideoTourOffersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourOffersInput, Prisma.UserUncheckedCreateWithoutVideoTourOffersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourOffersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutVideoTourOffersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourOffersInput, Prisma.UserUncheckedCreateWithoutVideoTourOffersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourOffersInput
+  upsert?: Prisma.UserUpsertWithoutVideoTourOffersInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVideoTourOffersInput, Prisma.UserUpdateWithoutVideoTourOffersInput>, Prisma.UserUncheckedUpdateWithoutVideoTourOffersInput>
+}
+
+export type UserCreateNestedOneWithoutVideoTourViewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourViewsInput, Prisma.UserUncheckedCreateWithoutVideoTourViewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourViewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutVideoTourViewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVideoTourViewsInput, Prisma.UserUncheckedCreateWithoutVideoTourViewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVideoTourViewsInput
+  upsert?: Prisma.UserUpsertWithoutVideoTourViewsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVideoTourViewsInput, Prisma.UserUpdateWithoutVideoTourViewsInput>, Prisma.UserUncheckedUpdateWithoutVideoTourViewsInput>
+}
+
 export type UserCreateWithoutAgentInput = {
   id?: string
   auth0Id?: string | null
@@ -593,6 +685,10 @@ export type UserCreateWithoutAgentInput = {
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAgentInput = {
@@ -611,6 +707,10 @@ export type UserUncheckedCreateWithoutAgentInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAgentInput = {
@@ -645,6 +745,10 @@ export type UserUpdateWithoutAgentInput = {
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAgentInput = {
@@ -663,6 +767,10 @@ export type UserUncheckedUpdateWithoutAgentInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLiveRecordingsInput = {
@@ -681,6 +789,10 @@ export type UserCreateWithoutLiveRecordingsInput = {
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLiveRecordingsInput = {
@@ -699,6 +811,10 @@ export type UserUncheckedCreateWithoutLiveRecordingsInput = {
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLiveRecordingsInput = {
@@ -733,6 +849,10 @@ export type UserUpdateWithoutLiveRecordingsInput = {
   likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLiveRecordingsInput = {
@@ -751,6 +871,10 @@ export type UserUncheckedUpdateWithoutLiveRecordingsInput = {
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadSessionsInput = {
@@ -769,6 +893,10 @@ export type UserCreateWithoutUploadSessionsInput = {
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadSessionsInput = {
@@ -787,6 +915,10 @@ export type UserUncheckedCreateWithoutUploadSessionsInput = {
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadSessionsInput = {
@@ -821,6 +953,10 @@ export type UserUpdateWithoutUploadSessionsInput = {
   likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadSessionsInput = {
@@ -839,6 +975,10 @@ export type UserUncheckedUpdateWithoutUploadSessionsInput = {
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadChunksInput = {
@@ -857,6 +997,10 @@ export type UserCreateWithoutUploadChunksInput = {
   likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadChunksInput = {
@@ -875,6 +1019,10 @@ export type UserUncheckedCreateWithoutUploadChunksInput = {
   likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadChunksInput = {
@@ -909,6 +1057,10 @@ export type UserUpdateWithoutUploadChunksInput = {
   likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadChunksInput = {
@@ -927,6 +1079,10 @@ export type UserUncheckedUpdateWithoutUploadChunksInput = {
   likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -945,6 +1101,10 @@ export type UserCreateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -963,6 +1123,10 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -997,6 +1161,10 @@ export type UserUpdateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1015,6 +1183,10 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLikeEventsInput = {
@@ -1033,6 +1205,10 @@ export type UserCreateWithoutLikeEventsInput = {
   liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLikeEventsInput = {
@@ -1051,6 +1227,10 @@ export type UserUncheckedCreateWithoutLikeEventsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
   uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
   uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLikeEventsInput = {
@@ -1085,6 +1265,10 @@ export type UserUpdateWithoutLikeEventsInput = {
   liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikeEventsInput = {
@@ -1103,6 +1287,426 @@ export type UserUncheckedUpdateWithoutLikeEventsInput = {
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
   uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
   uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutVideoTourLikesInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutVideoTourLikesInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutVideoTourLikesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourLikesInput, Prisma.UserUncheckedCreateWithoutVideoTourLikesInput>
+}
+
+export type UserUpsertWithoutVideoTourLikesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourLikesInput, Prisma.UserUncheckedUpdateWithoutVideoTourLikesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourLikesInput, Prisma.UserUncheckedCreateWithoutVideoTourLikesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVideoTourLikesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourLikesInput, Prisma.UserUncheckedUpdateWithoutVideoTourLikesInput>
+}
+
+export type UserUpdateWithoutVideoTourLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVideoTourLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutVideoTourCommentsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutVideoTourCommentsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutVideoTourCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourCommentsInput, Prisma.UserUncheckedCreateWithoutVideoTourCommentsInput>
+}
+
+export type UserUpsertWithoutVideoTourCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourCommentsInput, Prisma.UserUncheckedUpdateWithoutVideoTourCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourCommentsInput, Prisma.UserUncheckedCreateWithoutVideoTourCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVideoTourCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourCommentsInput, Prisma.UserUncheckedUpdateWithoutVideoTourCommentsInput>
+}
+
+export type UserUpdateWithoutVideoTourCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVideoTourCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutVideoTourOffersInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutVideoTourOffersInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutVideoTourOffersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourOffersInput, Prisma.UserUncheckedCreateWithoutVideoTourOffersInput>
+}
+
+export type UserUpsertWithoutVideoTourOffersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourOffersInput, Prisma.UserUncheckedUpdateWithoutVideoTourOffersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourOffersInput, Prisma.UserUncheckedCreateWithoutVideoTourOffersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVideoTourOffersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourOffersInput, Prisma.UserUncheckedUpdateWithoutVideoTourOffersInput>
+}
+
+export type UserUpdateWithoutVideoTourOffersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVideoTourOffersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourViews?: Prisma.VideoTourViewUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutVideoTourViewsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutVideoTourViewsInput = {
+  id?: string
+  auth0Id?: string | null
+  name: string
+  email?: string | null
+  phone?: string | null
+  picture?: string | null
+  role?: $Enums.UserRole
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.AgentUncheckedCreateNestedOneWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  likeEvents?: Prisma.LikeEventUncheckedCreateNestedManyWithoutUserInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutUserInput
+  uploadChunks?: Prisma.UploadChunkUncheckedCreateNestedManyWithoutUserInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedCreateNestedManyWithoutUserInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutUserInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutVideoTourViewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourViewsInput, Prisma.UserUncheckedCreateWithoutVideoTourViewsInput>
+}
+
+export type UserUpsertWithoutVideoTourViewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourViewsInput, Prisma.UserUncheckedUpdateWithoutVideoTourViewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVideoTourViewsInput, Prisma.UserUncheckedCreateWithoutVideoTourViewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVideoTourViewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVideoTourViewsInput, Prisma.UserUncheckedUpdateWithoutVideoTourViewsInput>
+}
+
+export type UserUpdateWithoutVideoTourViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVideoTourViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.AgentUncheckedUpdateOneWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  likeEvents?: Prisma.LikeEventUncheckedUpdateManyWithoutUserNestedInput
+  liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutUserNestedInput
+  uploadChunks?: Prisma.UploadChunkUncheckedUpdateManyWithoutUserNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  videoTourLikes?: Prisma.VideoTourLikeUncheckedUpdateManyWithoutUserNestedInput
+  videoTourComments?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutUserNestedInput
+  videoTourOffers?: Prisma.VideoTourOfferUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1116,6 +1720,10 @@ export type UserCountOutputType = {
   liveRecordings: number
   uploadChunks: number
   uploadSessions: number
+  videoTourLikes: number
+  videoTourComments: number
+  videoTourOffers: number
+  videoTourViews: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1124,6 +1732,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   liveRecordings?: boolean | UserCountOutputTypeCountLiveRecordingsArgs
   uploadChunks?: boolean | UserCountOutputTypeCountUploadChunksArgs
   uploadSessions?: boolean | UserCountOutputTypeCountUploadSessionsArgs
+  videoTourLikes?: boolean | UserCountOutputTypeCountVideoTourLikesArgs
+  videoTourComments?: boolean | UserCountOutputTypeCountVideoTourCommentsArgs
+  videoTourOffers?: boolean | UserCountOutputTypeCountVideoTourOffersArgs
+  videoTourViews?: boolean | UserCountOutputTypeCountVideoTourViewsArgs
 }
 
 /**
@@ -1171,6 +1783,34 @@ export type UserCountOutputTypeCountUploadSessionsArgs<ExtArgs extends runtime.T
   where?: Prisma.UploadSessionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVideoTourLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourLikeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVideoTourCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourCommentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVideoTourOffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourOfferWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVideoTourViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourViewWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1189,6 +1829,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   liveRecordings?: boolean | Prisma.User$liveRecordingsArgs<ExtArgs>
   uploadChunks?: boolean | Prisma.User$uploadChunksArgs<ExtArgs>
   uploadSessions?: boolean | Prisma.User$uploadSessionsArgs<ExtArgs>
+  videoTourLikes?: boolean | Prisma.User$videoTourLikesArgs<ExtArgs>
+  videoTourComments?: boolean | Prisma.User$videoTourCommentsArgs<ExtArgs>
+  videoTourOffers?: boolean | Prisma.User$videoTourOffersArgs<ExtArgs>
+  videoTourViews?: boolean | Prisma.User$videoTourViewsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1239,6 +1883,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   liveRecordings?: boolean | Prisma.User$liveRecordingsArgs<ExtArgs>
   uploadChunks?: boolean | Prisma.User$uploadChunksArgs<ExtArgs>
   uploadSessions?: boolean | Prisma.User$uploadSessionsArgs<ExtArgs>
+  videoTourLikes?: boolean | Prisma.User$videoTourLikesArgs<ExtArgs>
+  videoTourComments?: boolean | Prisma.User$videoTourCommentsArgs<ExtArgs>
+  videoTourOffers?: boolean | Prisma.User$videoTourOffersArgs<ExtArgs>
+  videoTourViews?: boolean | Prisma.User$videoTourViewsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1253,6 +1901,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     liveRecordings: Prisma.$LiveRecordingPayload<ExtArgs>[]
     uploadChunks: Prisma.$UploadChunkPayload<ExtArgs>[]
     uploadSessions: Prisma.$UploadSessionPayload<ExtArgs>[]
+    videoTourLikes: Prisma.$VideoTourLikePayload<ExtArgs>[]
+    videoTourComments: Prisma.$VideoTourCommentPayload<ExtArgs>[]
+    videoTourOffers: Prisma.$VideoTourOfferPayload<ExtArgs>[]
+    videoTourViews: Prisma.$VideoTourViewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1665,6 +2317,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   liveRecordings<T extends Prisma.User$liveRecordingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$liveRecordingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LiveRecordingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadChunks<T extends Prisma.User$uploadChunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadChunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UploadChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadSessions<T extends Prisma.User$uploadSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UploadSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTourLikes<T extends Prisma.User$videoTourLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$videoTourLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTourComments<T extends Prisma.User$videoTourCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$videoTourCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTourOffers<T extends Prisma.User$videoTourOffersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$videoTourOffersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videoTourViews<T extends Prisma.User$videoTourViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$videoTourViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2233,6 +2889,102 @@ export type User$uploadSessionsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.UploadSessionScalarFieldEnum | Prisma.UploadSessionScalarFieldEnum[]
+}
+
+/**
+ * User.videoTourLikes
+ */
+export type User$videoTourLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourLike
+   */
+  select?: Prisma.VideoTourLikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourLike
+   */
+  omit?: Prisma.VideoTourLikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourLikeInclude<ExtArgs> | null
+  where?: Prisma.VideoTourLikeWhereInput
+  orderBy?: Prisma.VideoTourLikeOrderByWithRelationInput | Prisma.VideoTourLikeOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourLikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourLikeScalarFieldEnum | Prisma.VideoTourLikeScalarFieldEnum[]
+}
+
+/**
+ * User.videoTourComments
+ */
+export type User$videoTourCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourComment
+   */
+  select?: Prisma.VideoTourCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourComment
+   */
+  omit?: Prisma.VideoTourCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourCommentInclude<ExtArgs> | null
+  where?: Prisma.VideoTourCommentWhereInput
+  orderBy?: Prisma.VideoTourCommentOrderByWithRelationInput | Prisma.VideoTourCommentOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourCommentScalarFieldEnum | Prisma.VideoTourCommentScalarFieldEnum[]
+}
+
+/**
+ * User.videoTourOffers
+ */
+export type User$videoTourOffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourOffer
+   */
+  select?: Prisma.VideoTourOfferSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourOffer
+   */
+  omit?: Prisma.VideoTourOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourOfferInclude<ExtArgs> | null
+  where?: Prisma.VideoTourOfferWhereInput
+  orderBy?: Prisma.VideoTourOfferOrderByWithRelationInput | Prisma.VideoTourOfferOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourOfferWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourOfferScalarFieldEnum | Prisma.VideoTourOfferScalarFieldEnum[]
+}
+
+/**
+ * User.videoTourViews
+ */
+export type User$videoTourViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourView
+   */
+  select?: Prisma.VideoTourViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourView
+   */
+  omit?: Prisma.VideoTourViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourViewInclude<ExtArgs> | null
+  where?: Prisma.VideoTourViewWhereInput
+  orderBy?: Prisma.VideoTourViewOrderByWithRelationInput | Prisma.VideoTourViewOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourViewScalarFieldEnum | Prisma.VideoTourViewScalarFieldEnum[]
 }
 
 /**

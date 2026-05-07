@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     const liveSession = await findLiveSession(liveSessionId, roomId);
 
     if (!liveSession) {
-      return jsonError("Live session not found.", 404);
+      return jsonError("Property reel not found.", 404);
     }
 
     const count = await prisma.likeEvent.count({
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     );
 
     if (!liveSession) {
-      return jsonError("Live session not found.", 404);
+      return jsonError("Property reel not found.", 404);
     }
 
     const now = Date.now();

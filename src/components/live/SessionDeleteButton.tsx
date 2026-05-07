@@ -28,14 +28,14 @@ export function SessionDeleteButton({
       );
 
       if (!response.ok) {
-        throw new Error("Could not delete session.");
+        throw new Error("Could not delete property reel.");
       }
 
       setIsConfirmOpen(false);
       router.refresh();
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : "Could not delete session.",
+        error instanceof Error ? error.message : "Could not delete property reel.",
       );
     } finally {
       setIsDeleting(false);
@@ -58,8 +58,8 @@ export function SessionDeleteButton({
         isOpen={isConfirmOpen}
         isLoading={isDeleting}
         isDangerous
-        title="Delete live session"
-        description="This will permanently remove this live session and all associated data. This action cannot be undone."
+        title="Delete property reel"
+        description="This will permanently remove this property reel and all associated data. This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
         onConfirm={deleteSession}

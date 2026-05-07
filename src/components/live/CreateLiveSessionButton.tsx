@@ -1,18 +1,18 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
 import {
-  CalendarClock,
   Check,
   Copy,
   ExternalLink,
+  FileVideo,
   Home,
-  KeyRound,
   LinkIcon,
   ListChecks,
-  Smartphone,
   Plus,
-  Radio,
+  UploadCloud,
   UserRoundCheck,
 } from "lucide-react";
 import type { FormEvent, ReactNode } from "react";
@@ -28,17 +28,13 @@ type PropertyOption = {
   title: string;
 };
 
-type CreatedLiveSession = {
+type CreatedReel = {
   id: string;
-  ingestUrl?: string;
-  livePageUrl: string;
   property: PropertyOption;
+  reelPageUrl: string;
   roomId: string;
-  rtmpUrl?: string;
-  startsAt: string | null;
-  status: "SCHEDULED" | "LIVE" | "ENDED";
-  streamKey: string | null;
   title: string;
+  videoUrl: string;
 };
 
 type ApiResponse<T> = {
@@ -51,74 +47,6 @@ type ApiResponse<T> = {
 const fieldClassName =
   "h-11 w-full rounded-md border border-white/10 bg-black/28 px-3 text-sm text-white outline-none transition placeholder:text-white/32 focus:border-[#d6b15f]/70 focus:ring-2 focus:ring-[#d6b15f]/18";
 
-const statusStyles: Record<CreatedLiveSession["status"], string> = {
-  ENDED: "border-white/15 bg-white/[0.06] text-white/62",
-  LIVE: "border-red-400/35 bg-red-500/12 text-red-100",
-  SCHEDULED: "border-violet-300/30 bg-violet-400/10 text-violet-100",
-};
-
-function formatStatus(status: CreatedLiveSession["status"]) {
-  return status.toLowerCase();
-}
-
-function getFriendlyErrorMessage(message: string) {
-  if (message.toLowerCase().includes("free plan")) {
-    return "Mux Live Streaming is not enabled for this Mux account. Use a Mux account with Live Streaming enabled, then try again.";
-  }
-
-  return message;
-}
-
-function formatDateTime(value: string | null) {
-  if (!value) {
-    return "Not scheduled";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
-
-function padDatePart(value: number) {
-  return String(value).padStart(2, "0");
-}
-
-function toDateInputValue(date: Date) {
-  return [
-    date.getFullYear(),
-    padDatePart(date.getMonth() + 1),
-    padDatePart(date.getDate()),
-  ].join("-");
-}
-
-function toTimeInputValue(date: Date) {
-  return [padDatePart(date.getHours()), padDatePart(date.getMinutes())].join(
-    ":",
-  );
-}
-
-function getDefaultSchedule() {
-  const nextHour = new Date();
-
-  nextHour.setHours(nextHour.getHours() + 1, 0, 0, 0);
-
-  return {
-    date: toDateInputValue(nextHour),
-    time: toTimeInputValue(nextHour),
-  };
-}
-
-function getLocalDateTime(date: string, time: string) {
-  if (!date || !time) {
-    return null;
-  }
-
-  const startsAt = new Date(`${date}T${time}:00`);
-
-  return Number.isNaN(startsAt.getTime()) ? null : startsAt;
-}
-
 export function CreateLiveSessionButton({
   consultants,
   properties,
@@ -126,7 +54,6 @@ export function CreateLiveSessionButton({
   consultants: HbConsultant[];
   properties: PropertyOption[];
 }) {
-  const defaultSchedule = useMemo(() => getDefaultSchedule(), []);
   const [propertyMode, setPropertyMode] = useState<"existing" | "new">(
     "existing",
   );
@@ -142,17 +69,15 @@ export function CreateLiveSessionButton({
   const [newPropertyDescription, setNewPropertyDescription] = useState("");
   const [newPropertyImage, setNewPropertyImage] = useState("");
   const [newPropertyImagePreview, setNewPropertyImagePreview] = useState("");
-  const [liveTitle, setLiveTitle] = useState(
-    properties[0] ? `${properties[0].title} Live Tour` : "",
+  const [reelTitle, setReelTitle] = useState(
+    properties[0] ? `${properties[0].title} Property Reel` : "",
   );
-  const [scheduledDate, setScheduledDate] = useState(defaultSchedule.date);
-  const [scheduledTime, setScheduledTime] = useState(defaultSchedule.time);
-  const [createdSession, setCreatedSession] =
-    useState<CreatedLiveSession | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [createdReel, setCreatedReel] = useState<CreatedReel | null>(null);
   const [copiedValue, setCopiedValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
-  const isCreatingRef = useRef(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const isUploadingRef = useRef(false);
 
   const selectedProperty = useMemo(
     () => propertyOptions.find((property) => property.id === selectedPropertyId),
@@ -169,50 +94,36 @@ export function CreateLiveSessionButton({
     setSelectedPropertyId(propertyId);
     const property = propertyOptions.find((item) => item.id === propertyId);
 
-    if (property && !liveTitle.trim()) {
-      setLiveTitle(`${property.title} Live Tour`);
+    if (property && !reelTitle.trim()) {
+      setReelTitle(`${property.title} Property Reel`);
     }
   }
 
   function selectExistingPropertyMode() {
     setPropertyMode("existing");
 
-    if (selectedProperty && !liveTitle.trim()) {
-      setLiveTitle(`${selectedProperty.title} Live Tour`);
+    if (selectedProperty && !reelTitle.trim()) {
+      setReelTitle(`${selectedProperty.title} Property Reel`);
     }
   }
 
   function selectNewPropertyMode() {
     setPropertyMode("new");
 
-    if (selectedProperty && liveTitle === `${selectedProperty.title} Live Tour`) {
-      setLiveTitle("");
+    if (
+      selectedProperty &&
+      reelTitle === `${selectedProperty.title} Property Reel`
+    ) {
+      setReelTitle("");
     }
   }
 
   function handleNewPropertyTitleChange(value: string) {
     setNewPropertyTitle(value);
 
-    if (!liveTitle.trim()) {
-      setLiveTitle(value ? `${value} Live Tour` : "");
+    if (!reelTitle.trim()) {
+      setReelTitle(value ? `${value} Property Reel` : "");
     }
-  }
-
-  function setQuickSchedule(hoursFromNow: number) {
-    const date = new Date();
-
-    date.setHours(date.getHours() + hoursFromNow, 0, 0, 0);
-    setScheduledDate(toDateInputValue(date));
-    setScheduledTime(toTimeInputValue(date));
-  }
-
-  function setTomorrowMorning() {
-    const date = new Date();
-
-    date.setDate(date.getDate() + 1);
-    date.setHours(10, 0, 0, 0);
-    setScheduledDate(toDateInputValue(date));
-    setScheduledTime(toTimeInputValue(date));
   }
 
   function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
@@ -225,22 +136,19 @@ export function CreateLiveSessionButton({
       img.onload = () => {
         const canvas = document.createElement("canvas");
         let { width, height } = img;
-
-        // Resize if image is too large
         const maxWidth = 800;
         const maxHeight = 600;
+
         if (width > maxWidth || height > maxHeight) {
           const ratio = Math.min(maxWidth / width, maxHeight / height);
-          width = width * ratio;
-          height = height * ratio;
+          width *= ratio;
+          height *= ratio;
         }
 
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx?.drawImage(img, 0, 0, width, height);
+        canvas.getContext("2d")?.drawImage(img, 0, 0, width, height);
 
-        // Compress to JPEG with quality 0.8
         const compressedUrl = canvas.toDataURL("image/jpeg", 0.8);
         setNewPropertyImage(compressedUrl);
         setNewPropertyImagePreview(compressedUrl);
@@ -250,16 +158,16 @@ export function CreateLiveSessionButton({
     reader.readAsDataURL(file);
   }
 
-  async function createLiveSession(event: FormEvent<HTMLFormElement>) {
+  async function uploadReel(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (isCreatingRef.current) {
+    if (isUploadingRef.current) {
       return;
     }
 
-    isCreatingRef.current = true;
+    isUploadingRef.current = true;
     setErrorMessage("");
-    setIsCreating(true);
+    setIsUploading(true);
 
     try {
       const property =
@@ -275,42 +183,43 @@ export function CreateLiveSessionButton({
         throw new Error("Choose a property or enter the new property details.");
       }
 
-      if (!scheduledDate || !scheduledTime) {
-        throw new Error("Scheduled date and time are required.");
+      if (!videoFile) {
+        throw new Error("Choose a property video to upload.");
       }
 
-      const startsAt = getLocalDateTime(scheduledDate, scheduledTime);
+      const formData = new FormData();
+      formData.set("agentId", selectedConsultant?.id ?? "");
+      formData.set("agentName", selectedConsultant?.name ?? "HB Real Estate");
+      formData.set(
+        "propertyId",
+        propertyMode === "existing" ? property.id : "",
+      );
+      formData.set("propertyLocation", property.location);
+      formData.set("propertyTitle", property.title);
+      formData.set("title", reelTitle.trim());
+      formData.set("video", videoFile);
 
-      if (!startsAt) {
-        throw new Error("Scheduled date and time are invalid.");
+      if (propertyMode === "new" && newPropertyDescription.trim()) {
+        formData.set("propertyDescription", newPropertyDescription.trim());
       }
 
-      const response = await fetch("/api/live-sessions", {
+      if (propertyMode === "new" && newPropertyImage.trim()) {
+        formData.set("propertyImage", newPropertyImage.trim());
+      }
+
+      const response = await fetch("/api/property-reels", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          agentId: selectedConsultant?.id,
-          agentName: selectedConsultant?.name,
-          propertyId: propertyMode === "existing" ? property.id : undefined,
-          propertyLocation: property.location,
-          propertyTitle: property.title,
-          ...(propertyMode === "new" && newPropertyDescription && { propertyDescription: newPropertyDescription.trim() }),
-          ...(propertyMode === "new" && newPropertyImage && { propertyImage: newPropertyImage.trim() }),
-          startsAt: startsAt.toISOString(),
-          title: liveTitle.trim(),
-        }),
+        body: formData,
       });
       const body = (await response.json().catch(() => ({}))) as ApiResponse<
-        CreatedLiveSession
+        CreatedReel
       >;
 
       if (!response.ok || !body.data) {
-        throw new Error(body.error?.message ?? "Could not create live session.");
+        throw new Error(body.error?.message ?? "Could not upload property reel.");
       }
 
-      setCreatedSession(body.data);
+      setCreatedReel(body.data);
 
       if (!propertyOptions.some((item) => item.id === body.data?.property.id)) {
         setPropertyOptions((current) => [...current, body.data!.property]);
@@ -318,13 +227,11 @@ export function CreateLiveSessionButton({
       }
     } catch (error) {
       setErrorMessage(
-        error instanceof Error
-          ? getFriendlyErrorMessage(error.message)
-          : "Could not create live session.",
+        error instanceof Error ? error.message : "Could not upload property reel.",
       );
     } finally {
-      isCreatingRef.current = false;
-      setIsCreating(false);
+      isUploadingRef.current = false;
+      setIsUploading(false);
     }
   }
 
@@ -341,17 +248,17 @@ export function CreateLiveSessionButton({
   return (
     <Card className="p-5">
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <form className="space-y-5" onSubmit={createLiveSession}>
+        <form className="space-y-5" onSubmit={uploadReel}>
           <div>
             <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
               <ListChecks aria-hidden className="size-4" />
-              Create New Live
+              Create Property Reel
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-white">
-              Set up a live tour
+              Upload a property video
             </h2>
             <p className="mt-2 text-sm font-medium text-white/72">
-              مشاور من ={" "}
+              Advisor:{" "}
               <span className="text-[#f0cf79]">
                 {selectedConsultant?.name ?? "HB Real Estate"}
               </span>
@@ -359,8 +266,8 @@ export function CreateLiveSessionButton({
             <div className="mt-4 grid gap-2 text-sm text-white/62 sm:grid-cols-4">
               <StepPill step="1" text="Choose advisor" />
               <StepPill step="2" text="Choose property" />
-              <StepPill step="3" text="Pick time" />
-              <StepPill step="4" text="Create stream" />
+              <StepPill step="3" text="Add video" />
+              <StepPill step="4" text="Publish reel" />
             </div>
           </div>
 
@@ -473,115 +380,77 @@ export function CreateLiveSessionButton({
                 </div>
                 <label className="block">
                   <span className="text-sm font-medium text-white/72">
-                    Preview image (optional)
+                    Cover image
                   </span>
-                  <div className="mt-2">
-                    <input
-                      accept="image/*"
-                      className="hidden"
-                      id="property-image-upload"
-                      onChange={handleImageUpload}
-                      type="file"
-                    />
-                    <label
-                      className="flex cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-white/20 bg-white/[0.02] p-6 transition hover:border-[#d6b15f]/50 hover:bg-[#d6b15f]/5"
-                      htmlFor="property-image-upload"
-                    >
-                      <div className="text-center">
-                        {newPropertyImagePreview ? (
-                          <>
-                            <img
-                              alt="Preview"
-                              className="mx-auto max-h-32 max-w-full rounded"
-                              src={newPropertyImagePreview}
-                            />
-                            <p className="mt-2 text-xs text-white/62">
-                              Click to change image
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <p className="text-sm text-white/72">
-                              📸 Click to upload or drag & drop
-                            </p>
-                            <p className="mt-1 text-xs text-white/48">
-                              PNG, JPG up to 5MB
-                            </p>
-                          </>
-                        )}
-                      </div>
-                    </label>
-                  </div>
+                  <input
+                    accept="image/*"
+                    className="hidden"
+                    id="property-image-upload"
+                    onChange={handleImageUpload}
+                    type="file"
+                  />
+                  <label
+                    className="mt-2 flex cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-white/20 bg-white/[0.02] p-6 transition hover:border-[#d6b15f]/50 hover:bg-[#d6b15f]/5"
+                    htmlFor="property-image-upload"
+                  >
+                    {newPropertyImagePreview ? (
+                      <img
+                        alt="Cover preview"
+                        className="max-h-32 max-w-full rounded"
+                        src={newPropertyImagePreview}
+                      />
+                    ) : (
+                      <span className="text-sm text-white/62">
+                        Select an image
+                      </span>
+                    )}
+                  </label>
                 </label>
                 <label className="block">
                   <span className="text-sm font-medium text-white/72">
-                    Property description (optional)
+                    Property description
                   </span>
                   <textarea
-                    className={cn(fieldClassName, "mt-2 resize-none")}
+                    className={cn(fieldClassName, "mt-2 min-h-24 resize-none py-3")}
                     onChange={(event) =>
                       setNewPropertyDescription(event.target.value)
                     }
-                    placeholder="Describe the property, features, amenities, etc."
-                    rows={3}
+                    placeholder="Key features, amenities, and buyer notes."
                     value={newPropertyDescription}
                   />
-                  <p className="mt-1 text-xs text-white/48">
-                    Max 2000 characters
-                  </p>
                 </label>
               </div>
             )}
           </div>
 
           <div className="rounded-md border border-white/10 bg-black/18 p-4">
-            <StepLabel number="3" title="Title and time" />
+            <StepLabel number="3" title="Reel video" />
             <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_0.9fr]">
               <label className="block">
                 <span className="text-sm font-medium text-white/72">
-                  Live title
+                  Reel title
                 </span>
                 <input
                   className={cn(fieldClassName, "mt-2")}
-                  onChange={(event) => setLiveTitle(event.target.value)}
-                  placeholder="Evening live tour"
+                  onChange={(event) => setReelTitle(event.target.value)}
+                  placeholder="Bosphorus view walkthrough"
                   required
                   type="text"
-                  value={liveTitle}
+                  value={reelTitle}
                 />
               </label>
-              <div>
+              <label className="block">
                 <span className="text-sm font-medium text-white/72">
-                  Start time
+                  Video file
                 </span>
-                <div className="mt-2 grid grid-cols-[1fr_116px] gap-2">
-                  <input
-                    className={fieldClassName}
-                    onChange={(event) => setScheduledDate(event.target.value)}
-                    required
-                    type="date"
-                    value={scheduledDate}
-                  />
-                  <input
-                    className={fieldClassName}
-                    onChange={(event) => setScheduledTime(event.target.value)}
-                    required
-                    type="time"
-                    value={scheduledTime}
-                  />
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <QuickScheduleButton onClick={() => setQuickSchedule(1)}>
-                    In 1 hour
-                  </QuickScheduleButton>
-                  <QuickScheduleButton onClick={() => setQuickSchedule(3)}>
-                    In 3 hours
-                  </QuickScheduleButton>
-                  <QuickScheduleButton onClick={setTomorrowMorning}>
-                    Tomorrow 10:00
-                  </QuickScheduleButton>
-                </div>
-              </div>
+                <input
+                  accept="video/mp4,video/quicktime,video/webm"
+                  className={cn(fieldClassName, "mt-2 file:mr-3 file:h-8 file:rounded file:border-0 file:bg-[#d6b15f] file:px-3 file:text-sm file:font-semibold file:text-black")}
+                  onChange={(event) => setVideoFile(event.target.files?.[0] ?? null)}
+                  required
+                  type="file"
+                />
+              </label>
             </div>
           </div>
 
@@ -592,18 +461,18 @@ export function CreateLiveSessionButton({
           ) : null}
 
           <div className="rounded-md border border-[#d6b15f]/22 bg-[#d6b15f]/8 p-4">
-            <StepLabel number="4" title="Create stream instructions" />
+            <StepLabel number="4" title="Publish" />
             <p className="mt-2 text-sm leading-6 text-white/56">
-              This creates the Mux stream and gives you the RTMP URL, stream key,
-              and live page link.
+              The video is uploaded to Vercel Blob and published as a vertical
+              property reel for buyers.
             </p>
             <Button
               className="mt-4 w-full sm:w-auto"
-              disabled={isCreating}
+              disabled={isUploading}
               type="submit"
             >
-              <Plus aria-hidden className="size-4" />
-              {isCreating ? "Creating stream..." : "Create live session"}
+              <UploadCloud aria-hidden className="size-4" />
+              {isUploading ? "Uploading reel..." : "Upload property reel"}
             </Button>
           </div>
         </form>
@@ -611,96 +480,53 @@ export function CreateLiveSessionButton({
         <div className="rounded-md border border-white/10 bg-black/22 p-4">
           <div className="flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-white">
-                Stream instructions
-              </p>
+              <p className="text-sm font-semibold text-white">Published reel</p>
               <p className="mt-1 text-sm text-white/52">
-                {createdSession
-                  ? createdSession.title
-                  : "Create a session to generate stream credentials."}
+                {createdReel
+                  ? createdReel.title
+                  : "Upload a video to create a buyer-facing reel."}
               </p>
             </div>
-            {createdSession ? (
-              <span
-                className={cn(
-                  "inline-flex h-7 w-fit items-center rounded-full border px-2.5 text-xs font-semibold capitalize",
-                  statusStyles[createdSession.status],
-                )}
-              >
-                {formatStatus(createdSession.status)}
+            {createdReel ? (
+              <span className="inline-flex h-7 w-fit items-center rounded-full border border-emerald-300/30 bg-emerald-400/10 px-2.5 text-xs font-semibold text-emerald-100">
+                Published
               </span>
             ) : null}
           </div>
 
-          {createdSession ? (
+          {createdReel ? (
             <div className="mt-4 space-y-3">
               <InstructionRow
-                copied={copiedValue === "rtmp"}
-                icon={<Radio aria-hidden className="size-4" />}
-                label="RTMP URL"
-                onCopy={() =>
-                  copyValue(
-                    "rtmp",
-                    createdSession.rtmpUrl ?? createdSession.ingestUrl,
-                  )
-                }
-                value={createdSession.rtmpUrl ?? createdSession.ingestUrl ?? ""}
-              />
-              <InstructionRow
-                copied={copiedValue === "streamKey"}
-                icon={<KeyRound aria-hidden className="size-4" />}
-                label="Stream Key"
-                onCopy={() => copyValue("streamKey", createdSession.streamKey)}
-                value={createdSession.streamKey ?? "Pending"}
-              />
-              <InstructionRow
-                copied={copiedValue === "livePage"}
+                copied={copiedValue === "reelPage"}
                 icon={<LinkIcon aria-hidden className="size-4" />}
-                label="Live page link"
-                onCopy={() => copyValue("livePage", createdSession.livePageUrl)}
-                value={createdSession.livePageUrl}
+                label="Reel link"
+                onCopy={() => copyValue("reelPage", createdReel.reelPageUrl)}
+                value={createdReel.reelPageUrl}
               />
-              <div className="grid gap-3 pt-2 sm:grid-cols-2">
-                <div className="rounded-md border border-white/10 bg-white/[0.04] p-3">
-                  <p className="flex items-center gap-2 text-xs text-white/48">
-                    <CalendarClock aria-hidden className="size-4" />
-                    Scheduled
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-white">
-                    {formatDateTime(createdSession.startsAt)}
-                  </p>
-                </div>
-                <Link
-                  className="inline-flex h-full min-h-16 items-center justify-center gap-2 rounded-md border border-[#d6b15f]/35 bg-[#d6b15f]/10 px-4 text-sm font-semibold text-[#f0cf79] transition hover:bg-[#d6b15f]/16 hover:text-white"
-                  href={`/live/${createdSession.roomId}`}
-                >
-                  <ExternalLink aria-hidden className="size-4" />
-                  Open live page
-                </Link>
-              </div>
-              <div className="rounded-md border border-[#d6b15f]/24 bg-[#d6b15f]/8 p-4">
-                <p className="flex items-center gap-2 text-sm font-semibold text-white">
-                  <Smartphone aria-hidden className="size-4 text-[#d6b15f]" />
-                  Mobile agent setup
-                </p>
-                <ol className="mt-3 space-y-2 text-sm leading-6 text-white/62">
-                  <li>1. Install Larix Broadcaster or another RTMP app.</li>
-                  <li>2. Create a new RTMP connection in the app.</li>
-                  <li>3. Paste RTMP URL into the app URL/server field.</li>
-                  <li>4. Paste Stream Key into the stream key field.</li>
-                  <li>5. Start streaming, then share the live page link.</li>
-                </ol>
-              </div>
+              <InstructionRow
+                copied={copiedValue === "videoUrl"}
+                icon={<FileVideo aria-hidden className="size-4" />}
+                label="Video URL"
+                onCopy={() => copyValue("videoUrl", createdReel.videoUrl)}
+                value={createdReel.videoUrl}
+              />
+              <Link
+                className="inline-flex min-h-16 w-full items-center justify-center gap-2 rounded-md border border-[#d6b15f]/35 bg-[#d6b15f]/10 px-4 text-sm font-semibold text-[#f0cf79] transition hover:bg-[#d6b15f]/16 hover:text-white"
+                href={`/reels/${createdReel.roomId}`}
+              >
+                <ExternalLink aria-hidden className="size-4" />
+                Open property reel
+              </Link>
             </div>
           ) : (
             <div className="mt-4 flex min-h-64 flex-col items-center justify-center rounded-md border border-dashed border-white/12 bg-white/[0.025] px-6 text-center">
-              <Radio aria-hidden className="size-9 text-[#d6b15f]" />
+              <FileVideo aria-hidden className="size-9 text-[#d6b15f]" />
               <p className="mt-4 text-sm font-semibold text-white">
-                Stream details will appear here
+                Upload details will appear here
               </p>
               <p className="mt-2 max-w-sm text-sm leading-6 text-white/52">
-                After step 3, copy the RTMP URL and stream key into OBS or your
-                streaming app. The live page link is for buyers.
+                Agents can record property videos offline on their phone, then
+                upload the finished file here.
               </p>
             </div>
           )}
@@ -729,24 +555,6 @@ function StepLabel({ number, title }: { number: string; title: string }) {
       </span>
       <p className="text-sm font-semibold text-white">{title}</p>
     </div>
-  );
-}
-
-function QuickScheduleButton({
-  children,
-  onClick,
-}: {
-  children: ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      className="h-8 rounded-md border border-white/10 bg-white/[0.05] px-2.5 text-xs font-semibold text-white/62 transition hover:border-[#d6b15f]/45 hover:bg-[#d6b15f]/10 hover:text-white"
-      onClick={onClick}
-      type="button"
-    >
-      {children}
-    </button>
   );
 }
 
@@ -792,7 +600,7 @@ function InstructionRow({
   value: string;
 }) {
   return (
-    <div className="grid grid-cols-[124px_1fr_36px] items-center gap-2">
+    <div className="grid grid-cols-[92px_1fr_36px] items-center gap-2">
       <span className="flex items-center gap-2 text-xs font-medium text-white/58">
         {icon}
         {label}

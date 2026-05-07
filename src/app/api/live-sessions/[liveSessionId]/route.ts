@@ -66,7 +66,7 @@ export async function DELETE(
     });
 
     revalidatePath("/");
-    revalidatePath("/live");
+    revalidatePath("/reels");
     revalidatePath("/agent/dashboard");
     return Response.json({ success: true, ...deleted });
   } catch (error) {

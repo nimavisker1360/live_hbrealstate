@@ -2,7 +2,7 @@ import {
   BadgeDollarSign,
   BarChart3,
   Building2,
-  Radio,
+  Clapperboard,
   ShieldCheck,
   UsersRound,
 } from "lucide-react";
@@ -15,10 +15,9 @@ export const dynamic = "force-dynamic";
 const statusStyles: Record<string, string> = {
   active: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
   ended: "border-white/15 bg-white/[0.06] text-white/62",
-  live: "border-red-400/35 bg-red-500/12 text-red-100",
   paused: "border-amber-400/30 bg-amber-400/10 text-amber-200",
   pending: "border-sky-400/30 bg-sky-400/10 text-sky-200",
-  scheduled: "border-violet-300/30 bg-violet-400/10 text-violet-100",
+  published: "border-emerald-300/30 bg-emerald-400/10 text-emerald-100",
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -32,6 +31,10 @@ function StatusBadge({ status }: { status: string }) {
       {status}
     </span>
   );
+}
+
+function formatReelStatus(recordingPlaybackId: string | null) {
+  return recordingPlaybackId ? "published" : "draft";
 }
 
 function SectionHeader({
@@ -69,8 +72,12 @@ export default async function AdminPage() {
       take: 20,
     }),
     prisma.liveSession.findMany({
-      include: {
+      select: {
         agent: { select: { name: true } },
+        id: true,
+        recordingPlaybackId: true,
+        title: true,
+        viewers: true,
         _count: { select: { leads: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -87,26 +94,26 @@ export default async function AdminPage() {
       icon: UsersRound,
     },
     {
-      label: "Total live sessions",
+      label: "Total property reels",
       value: liveSessions.length.toString(),
-      detail: `${liveSessions.filter((s) => s.status === "SCHEDULED").length} scheduled`,
-      icon: Radio,
+      detail: `${liveSessions.filter((s) => s.recordingPlaybackId).length} published`,
+      icon: Clapperboard,
     },
     {
       label: "Total leads",
       value: totalLeads.toString(),
-      detail: "From all sessions",
+      detail: "From all reels",
       icon: BarChart3,
     },
     {
-      label: "Avg viewers per session",
+      label: "Avg views per reel",
       value: liveSessions.length > 0
         ? Math.round(
             liveSessions.reduce((sum, s) => sum + s.viewers, 0) /
               liveSessions.length,
           ).toString()
         : "0",
-      detail: "Across all sessions",
+      detail: "Across all reels",
       icon: BadgeDollarSign,
     },
   ];
@@ -123,8 +130,8 @@ export default async function AdminPage() {
             Platform owner overview
           </h1>
           <p className="mt-4 max-w-2xl leading-7 text-white/62">
-            Monitor agents, live sessions, lead flow, and performance with
-            real-time data from your database.
+            Monitor agents, property reels, lead flow, and performance with
+            data from your database.
           </p>
         </div>
 
@@ -206,8 +213,8 @@ export default async function AdminPage() {
 
           <Card className="p-5">
             <SectionHeader
-              eyebrow="Sessions"
-              icon={Radio}
+              eyebrow="Reels"
+              icon={Clapperboard}
               title="Top performers"
             />
             <div className="space-y-3">
@@ -219,7 +226,7 @@ export default async function AdminPage() {
                   <div className="flex items-start justify-between gap-4">
                     <p className="font-medium text-white">{session.title}</p>
                     <p className="shrink-0 font-semibold text-[#d6b15f]">
-                      {session.viewers} viewers
+                      {session.viewers} views
                     </p>
                   </div>
                   <p className="mt-2 text-sm text-white/56">
@@ -229,7 +236,7 @@ export default async function AdminPage() {
               ))}
               {liveSessions.length === 0 && (
                 <div className="py-8 text-center text-sm text-white/52">
-                  No sessions yet.
+                  No property reels yet.
                 </div>
               )}
             </div>
@@ -239,9 +246,9 @@ export default async function AdminPage() {
         <div className="mt-6">
           <Card className="p-5">
             <SectionHeader
-              eyebrow="Live sessions"
-              icon={Radio}
-              title="All sessions"
+              eyebrow="Property reels"
+              icon={Clapperboard}
+              title="All reels"
             />
             <div className="overflow-x-auto">
               <table className="w-full min-w-170 text-left text-sm">
@@ -251,7 +258,7 @@ export default async function AdminPage() {
                     <th className="pb-3 pr-4 font-semibold">Agent</th>
                     <th className="pb-3 pr-4 font-semibold">Status</th>
                     <th className="pb-3 pr-4 text-right font-semibold">
-                      Viewers
+                      Views
                     </th>
                     <th className="pb-3 text-right font-semibold">Leads</th>
                   </tr>
@@ -266,7 +273,9 @@ export default async function AdminPage() {
                         {session.agent.name}
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge status={session.status.toLowerCase()} />
+                        <StatusBadge
+                          status={formatReelStatus(session.recordingPlaybackId)}
+                        />
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
                         {session.viewers}
@@ -280,7 +289,7 @@ export default async function AdminPage() {
               </table>
               {liveSessions.length === 0 && (
                 <div className="py-8 text-center text-sm text-white/52">
-                  No sessions yet.
+                  No property reels yet.
                 </div>
               )}
             </div>

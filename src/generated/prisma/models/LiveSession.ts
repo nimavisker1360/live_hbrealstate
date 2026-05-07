@@ -55,7 +55,9 @@ export type LiveSessionMinAggregateOutputType = {
   viewers: number | null
   whatsappClicks: number | null
   startsAt: Date | null
+  lastSeenAt: Date | null
   endedAt: Date | null
+  reconnectUntil: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -79,7 +81,9 @@ export type LiveSessionMaxAggregateOutputType = {
   viewers: number | null
   whatsappClicks: number | null
   startsAt: Date | null
+  lastSeenAt: Date | null
   endedAt: Date | null
+  reconnectUntil: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -103,7 +107,9 @@ export type LiveSessionCountAggregateOutputType = {
   viewers: number
   whatsappClicks: number
   startsAt: number
+  lastSeenAt: number
   endedAt: number
+  reconnectUntil: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -139,7 +145,9 @@ export type LiveSessionMinAggregateInputType = {
   viewers?: true
   whatsappClicks?: true
   startsAt?: true
+  lastSeenAt?: true
   endedAt?: true
+  reconnectUntil?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -163,7 +171,9 @@ export type LiveSessionMaxAggregateInputType = {
   viewers?: true
   whatsappClicks?: true
   startsAt?: true
+  lastSeenAt?: true
   endedAt?: true
+  reconnectUntil?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -187,7 +197,9 @@ export type LiveSessionCountAggregateInputType = {
   viewers?: true
   whatsappClicks?: true
   startsAt?: true
+  lastSeenAt?: true
   endedAt?: true
+  reconnectUntil?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -298,7 +310,9 @@ export type LiveSessionGroupByOutputType = {
   viewers: number
   whatsappClicks: number
   startsAt: Date | null
+  lastSeenAt: Date | null
   endedAt: Date | null
+  reconnectUntil: Date | null
   createdAt: Date
   updatedAt: Date
   _count: LiveSessionCountAggregateOutputType | null
@@ -345,7 +359,9 @@ export type LiveSessionWhereInput = {
   viewers?: Prisma.IntFilter<"LiveSession"> | number
   whatsappClicks?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
+  reconnectUntil?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
@@ -376,7 +392,9 @@ export type LiveSessionOrderByWithRelationInput = {
   viewers?: Prisma.SortOrder
   whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reconnectUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
@@ -410,7 +428,9 @@ export type LiveSessionWhereUniqueInput = Prisma.AtLeast<{
   viewers?: Prisma.IntFilter<"LiveSession"> | number
   whatsappClicks?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
+  reconnectUntil?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
@@ -441,7 +461,9 @@ export type LiveSessionOrderByWithAggregationInput = {
   viewers?: Prisma.SortOrder
   whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reconnectUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.LiveSessionCountOrderByAggregateInput
@@ -473,7 +495,9 @@ export type LiveSessionScalarWhereWithAggregatesInput = {
   viewers?: Prisma.IntWithAggregatesFilter<"LiveSession"> | number
   whatsappClicks?: Prisma.IntWithAggregatesFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
+  lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
+  reconnectUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LiveSession"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LiveSession"> | Date | string
 }
@@ -495,7 +519,9 @@ export type LiveSessionCreateInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
@@ -526,7 +552,9 @@ export type LiveSessionUncheckedCreateInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -553,7 +581,9 @@ export type LiveSessionUpdateInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -584,7 +614,9 @@ export type LiveSessionUncheckedUpdateInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -613,7 +645,9 @@ export type LiveSessionCreateManyInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -635,7 +669,9 @@ export type LiveSessionUpdateManyMutationInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -659,7 +695,9 @@ export type LiveSessionUncheckedUpdateManyInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -693,7 +731,9 @@ export type LiveSessionCountOrderByAggregateInput = {
   viewers?: Prisma.SortOrder
   whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
+  reconnectUntil?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -722,7 +762,9 @@ export type LiveSessionMaxOrderByAggregateInput = {
   viewers?: Prisma.SortOrder
   whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
+  reconnectUntil?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -746,7 +788,9 @@ export type LiveSessionMinOrderByAggregateInput = {
   viewers?: Prisma.SortOrder
   whatsappClicks?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
+  reconnectUntil?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -955,7 +999,9 @@ export type LiveSessionCreateWithoutAgentInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
@@ -984,7 +1030,9 @@ export type LiveSessionUncheckedCreateWithoutAgentInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -1042,7 +1090,9 @@ export type LiveSessionScalarWhereInput = {
   viewers?: Prisma.IntFilter<"LiveSession"> | number
   whatsappClicks?: Prisma.IntFilter<"LiveSession"> | number
   startsAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
+  reconnectUntil?: Prisma.DateTimeNullableFilter<"LiveSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LiveSession"> | Date | string
 }
@@ -1064,7 +1114,9 @@ export type LiveSessionCreateWithoutPropertyInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutLiveSessionsInput
@@ -1093,7 +1145,9 @@ export type LiveSessionUncheckedCreateWithoutPropertyInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -1146,7 +1200,9 @@ export type LiveSessionCreateWithoutLiveRecordingsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
@@ -1176,7 +1232,9 @@ export type LiveSessionUncheckedCreateWithoutLiveRecordingsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -1218,7 +1276,9 @@ export type LiveSessionUpdateWithoutLiveRecordingsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -1248,7 +1308,9 @@ export type LiveSessionUncheckedUpdateWithoutLiveRecordingsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -1274,7 +1336,9 @@ export type LiveSessionCreateWithoutLeadsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
@@ -1304,7 +1368,9 @@ export type LiveSessionUncheckedCreateWithoutLeadsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -1346,7 +1412,9 @@ export type LiveSessionUpdateWithoutLeadsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -1376,7 +1444,9 @@ export type LiveSessionUncheckedUpdateWithoutLeadsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   offers?: Prisma.OfferUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -1402,7 +1472,9 @@ export type LiveSessionCreateWithoutOffersInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
@@ -1432,7 +1504,9 @@ export type LiveSessionUncheckedCreateWithoutOffersInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -1474,7 +1548,9 @@ export type LiveSessionUpdateWithoutOffersInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -1504,7 +1580,9 @@ export type LiveSessionUncheckedUpdateWithoutOffersInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -1530,7 +1608,9 @@ export type LiveSessionCreateWithoutCommentsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
@@ -1560,7 +1640,9 @@ export type LiveSessionUncheckedCreateWithoutCommentsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -1602,7 +1684,9 @@ export type LiveSessionUpdateWithoutCommentsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -1632,7 +1716,9 @@ export type LiveSessionUncheckedUpdateWithoutCommentsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -1658,7 +1744,9 @@ export type LiveSessionCreateWithoutLikeEventsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutLiveSessionsInput
@@ -1688,7 +1776,9 @@ export type LiveSessionUncheckedCreateWithoutLikeEventsInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutLiveSessionInput
@@ -1730,7 +1820,9 @@ export type LiveSessionUpdateWithoutLikeEventsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -1760,7 +1852,9 @@ export type LiveSessionUncheckedUpdateWithoutLikeEventsInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -1787,7 +1881,9 @@ export type LiveSessionCreateManyAgentInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1809,7 +1905,9 @@ export type LiveSessionUpdateWithoutAgentInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -1838,7 +1936,9 @@ export type LiveSessionUncheckedUpdateWithoutAgentInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -1866,7 +1966,9 @@ export type LiveSessionUncheckedUpdateManyWithoutAgentInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1889,7 +1991,9 @@ export type LiveSessionCreateManyPropertyInput = {
   viewers?: number
   whatsappClicks?: number
   startsAt?: Date | string | null
+  lastSeenAt?: Date | string | null
   endedAt?: Date | string | null
+  reconnectUntil?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1911,7 +2015,9 @@ export type LiveSessionUpdateWithoutPropertyInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutLiveSessionsNestedInput
@@ -1940,7 +2046,9 @@ export type LiveSessionUncheckedUpdateWithoutPropertyInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutLiveSessionNestedInput
@@ -1968,7 +2076,9 @@ export type LiveSessionUncheckedUpdateManyWithoutPropertyInput = {
   viewers?: Prisma.IntFieldUpdateOperationsInput | number
   whatsappClicks?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconnectUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2059,7 +2169,9 @@ export type LiveSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   viewers?: boolean
   whatsappClicks?: boolean
   startsAt?: boolean
+  lastSeenAt?: boolean
   endedAt?: boolean
+  reconnectUntil?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -2091,7 +2203,9 @@ export type LiveSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   viewers?: boolean
   whatsappClicks?: boolean
   startsAt?: boolean
+  lastSeenAt?: boolean
   endedAt?: boolean
+  reconnectUntil?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -2117,7 +2231,9 @@ export type LiveSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   viewers?: boolean
   whatsappClicks?: boolean
   startsAt?: boolean
+  lastSeenAt?: boolean
   endedAt?: boolean
+  reconnectUntil?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -2143,12 +2259,14 @@ export type LiveSessionSelectScalar = {
   viewers?: boolean
   whatsappClicks?: boolean
   startsAt?: boolean
+  lastSeenAt?: boolean
   endedAt?: boolean
+  reconnectUntil?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "streamProvider" | "muxLiveStreamId" | "muxAssetId" | "streamKey" | "playbackId" | "recordingPlaybackId" | "recordingStatus" | "recordingReadyAt" | "rtmpUrl" | "status" | "viewers" | "whatsappClicks" | "startsAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
+export type LiveSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "propertyId" | "agentId" | "title" | "streamProvider" | "muxLiveStreamId" | "muxAssetId" | "streamKey" | "playbackId" | "recordingPlaybackId" | "recordingStatus" | "recordingReadyAt" | "rtmpUrl" | "status" | "viewers" | "whatsappClicks" | "startsAt" | "lastSeenAt" | "endedAt" | "reconnectUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["liveSession"]>
 export type LiveSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
@@ -2198,7 +2316,9 @@ export type $LiveSessionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     viewers: number
     whatsappClicks: number
     startsAt: Date | null
+    lastSeenAt: Date | null
     endedAt: Date | null
+    reconnectUntil: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["liveSession"]>
@@ -2649,7 +2769,9 @@ export interface LiveSessionFieldRefs {
   readonly viewers: Prisma.FieldRef<"LiveSession", 'Int'>
   readonly whatsappClicks: Prisma.FieldRef<"LiveSession", 'Int'>
   readonly startsAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
+  readonly lastSeenAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
   readonly endedAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
+  readonly reconnectUntil: Prisma.FieldRef<"LiveSession", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LiveSession", 'DateTime'>
 }

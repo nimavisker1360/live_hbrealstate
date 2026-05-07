@@ -14,19 +14,19 @@ function safeNextUrl(request: Request) {
   const nextValue = requestUrl.searchParams.get("next");
 
   if (!nextValue) {
-    return new URL("/live", requestUrl);
+    return new URL("/reels", requestUrl);
   }
 
   try {
     const nextUrl = new URL(nextValue, requestUrl);
 
     if (nextUrl.origin !== requestUrl.origin) {
-      return new URL("/live", requestUrl);
+      return new URL("/reels", requestUrl);
     }
 
     return nextUrl;
   } catch {
-    return new URL("/live", requestUrl);
+    return new URL("/reels", requestUrl);
   }
 }
 

@@ -27,8 +27,12 @@ enum SubscriptionPlan {
 
 enum LiveSessionStatus {
   SCHEDULED
+  STARTING
   LIVE
+  RECONNECTING
+  DISCONNECTED
   ENDED
+  REPLAY_AVAILABLE
 }
 
 enum LeadStatus {
@@ -68,40 +72,54 @@ enum UploadSessionStatus {
   EXPIRED
 }
 
+enum VideoTourStatus {
+  DRAFT
+  PROCESSING
+  PUBLISHED
+  ARCHIVED
+}
+
 model User {
-  id             String          @id @default(cuid())
-  auth0Id        String?         @unique
-  name           String
-  email          String?         @unique
-  phone          String?
-  picture        String?
-  role           UserRole        @default(BUYER)
-  agent          Agent?
-  comments       Comment[]
-  likeEvents     LikeEvent[]
-  liveRecordings LiveRecording[]
-  uploadChunks   UploadChunk[]
-  uploadSessions UploadSession[]
-  lastSeenAt     DateTime?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id                String             @id @default(cuid())
+  auth0Id           String?            @unique
+  name              String
+  email             String?            @unique
+  phone             String?
+  picture           String?
+  role              UserRole           @default(BUYER)
+  agent             Agent?
+  comments          Comment[]
+  likeEvents        LikeEvent[]
+  liveRecordings    LiveRecording[]
+  uploadChunks      UploadChunk[]
+  uploadSessions    UploadSession[]
+  videoTourLikes    VideoTourLike[]
+  videoTourComments VideoTourComment[]
+  videoTourOffers   VideoTourOffer[]
+  videoTourViews    VideoTourView[]
+  lastSeenAt        DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model Agent {
-  id               String           @id @default(cuid())
-  userId           String?          @unique
-  user             User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
-  name             String
-  company          String
-  status           AgentStatus      @default(ACTIVE)
-  subscriptionPlan SubscriptionPlan @default(PRO)
-  properties       Property[]
-  liveSessions     LiveSession[]
-  leads            Lead[]
-  offers           Offer[]
-  comments         Comment[]
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  id                String             @id @default(cuid())
+  userId            String?            @unique
+  user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name              String
+  company           String
+  status            AgentStatus        @default(ACTIVE)
+  subscriptionPlan  SubscriptionPlan   @default(PRO)
+  properties        Property[]
+  liveSessions      LiveSession[]
+  leads             Lead[]
+  offers            Offer[]
+  comments          Comment[]
+  videoTours        VideoTour[]
+  videoTourOffers   VideoTourOffer[]
+  videoTourComments VideoTourComment[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model Property {
@@ -119,6 +137,7 @@ model Property {
   leads          Lead[]
   offers         Offer[]
   comments       Comment[]
+  videoTours     VideoTour[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -133,7 +152,7 @@ model LiveSession {
   agentId             String
   agent               Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
   title               String
-  streamProvider      String?           @default("mux")
+  streamProvider      String?           @default("vercel_blob")
   muxLiveStreamId     String?
   muxAssetId          String?
   streamKey           String?
@@ -142,11 +161,13 @@ model LiveSession {
   recordingStatus     String?
   recordingReadyAt    DateTime?
   rtmpUrl             String?
-  status              LiveSessionStatus @default(SCHEDULED)
+  status              LiveSessionStatus @default(ENDED)
   viewers             Int               @default(0)
   whatsappClicks      Int               @default(0)
   startsAt            DateTime?
+  lastSeenAt          DateTime?
   endedAt             DateTime?
+  reconnectUntil      DateTime?
   leads               Lead[]
   offers              Offer[]
   comments            Comment[]
@@ -161,6 +182,7 @@ model LiveSession {
   @@index([muxAssetId])
   @@index([playbackId])
   @@index([recordingPlaybackId])
+  @@index([reconnectUntil])
 }
 
 model LiveRecording {
@@ -316,4 +338,118 @@ model LikeEvent {
   @@index([liveSessionId])
   @@index([liveSessionId, userId, createdAt])
   @@index([userId])
+}
+
+model VideoTour {
+  id              String             @id @default(cuid())
+  slug            String             @unique
+  propertyId      String
+  property        Property           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  agentId         String
+  agent           Agent              @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  status          VideoTourStatus    @default(DRAFT)
+  blobUrl         String
+  blobPathname    String
+  thumbnailUrl    String?
+  durationSeconds Int?
+  fileSize        BigInt?
+  mimeType        String?
+  width           Int?
+  height          Int?
+  likeCount       Int                @default(0)
+  commentCount    Int                @default(0)
+  viewCount       Int                @default(0)
+  publishedAt     DateTime?
+  likes           VideoTourLike[]
+  comments        VideoTourComment[]
+  offers          VideoTourOffer[]
+  views           VideoTourView[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([propertyId])
+  @@index([agentId])
+  @@index([status])
+  @@index([slug])
+  @@index([status, publishedAt])
+}
+
+model VideoTourLike {
+  id          String    @id @default(cuid())
+  videoTourId String
+  videoTour   VideoTour @relation(fields: [videoTourId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visitorId   String?
+  createdAt   DateTime  @default(now())
+
+  @@unique([videoTourId, userId])
+  @@unique([videoTourId, visitorId])
+  @@index([videoTourId])
+  @@index([videoTourId, createdAt])
+  @@index([userId])
+}
+
+model VideoTourComment {
+  id          String    @id @default(cuid())
+  videoTourId String
+  videoTour   VideoTour @relation(fields: [videoTourId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  agentId     String?
+  agent       Agent?    @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  visitorId   String?
+  author      String
+  message     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([videoTourId])
+  @@index([videoTourId, createdAt])
+  @@index([userId])
+  @@index([agentId])
+}
+
+model VideoTourOffer {
+  id          String      @id @default(cuid())
+  videoTourId String
+  videoTour   VideoTour   @relation(fields: [videoTourId], references: [id], onDelete: Cascade)
+  agentId     String
+  agent       Agent       @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  buyerName   String
+  phone       String
+  amount      Decimal     @db.Decimal(14, 2)
+  currency    String      @default("USD")
+  status      OfferStatus @default(PENDING)
+  message     String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([videoTourId])
+  @@index([agentId])
+  @@index([status])
+  @@index([userId])
+}
+
+model VideoTourView {
+  id             String    @id @default(cuid())
+  videoTourId    String
+  videoTour      VideoTour @relation(fields: [videoTourId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  visitorId      String?
+  watchedSeconds Int       @default(0)
+  completed      Boolean   @default(false)
+  ipHash         String?
+  userAgent      String?
+  createdAt      DateTime  @default(now())
+
+  @@index([videoTourId])
+  @@index([videoTourId, createdAt])
+  @@index([userId])
+  @@index([visitorId])
 }

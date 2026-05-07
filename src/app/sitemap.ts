@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-import { LiveRecordingStatus } from "@/generated/prisma/client";
-import { FALLBACK_PROPERTY_IMAGE, getMuxThumbnailUrl } from "@/lib/live-media";
+import { FALLBACK_PROPERTY_IMAGE } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
 import { absoluteUrl, getSiteUrl } from "@/lib/site-url";
 
@@ -8,22 +7,15 @@ export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
-  const recordings = await prisma.liveRecording.findMany({
-    where: {
-      status: {
-        in: [LiveRecordingStatus.READY, LiveRecordingStatus.UPLOADED],
-      },
-    },
+  const reels = await prisma.liveSession.findMany({
+    where: { recordingPlaybackId: { not: null } },
     orderBy: { updatedAt: "desc" },
     take: 5000,
-    include: {
+    select: {
       property: { select: { image: true, location: true, title: true } },
-      stream: {
-        select: {
-          property: { select: { image: true, location: true, title: true } },
-          title: true,
-        },
-      },
+      roomId: true,
+      title: true,
+      updatedAt: true,
     },
   });
 
@@ -38,29 +30,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "hourly",
       lastModified: new Date(),
       priority: 0.9,
-      url: `${siteUrl}/live`,
+      url: `${siteUrl}/reels`,
     },
-    ...recordings.map((recording) => {
-      const property = recording.property ?? recording.stream?.property;
-      const title =
-        recording.title ??
-        recording.stream?.title ??
-        property?.title ??
-        recording.fileName;
-      const thumbnail = recording.playbackId
-        ? getMuxThumbnailUrl(recording.playbackId)
-        : property?.image || FALLBACK_PROPERTY_IMAGE;
+    ...reels.map((reel) => {
+      const property = reel.property;
+      const title = reel.title ?? property.title;
+      const thumbnail = property?.image || FALLBACK_PROPERTY_IMAGE;
 
       return {
         changeFrequency: "weekly" as const,
-        lastModified: recording.updatedAt,
+        lastModified: reel.updatedAt,
         priority: 0.7,
-        url: `${siteUrl}/live/replay/${recording.id}`,
+        url: `${siteUrl}/reels/${reel.roomId}`,
         videos: [
           {
             description: property
-              ? `HB Live replay for ${property.title} in ${property.location}.`
-              : `HB Live replay for ${title}.`,
+              ? `HB Property Reels video for ${property.title} in ${property.location}.`
+              : `HB Property Reels video for ${title}.`,
             thumbnail_loc: absoluteUrl(thumbnail),
             title,
           },

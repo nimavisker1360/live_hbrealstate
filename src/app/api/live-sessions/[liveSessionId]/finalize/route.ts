@@ -20,30 +20,25 @@ export async function POST(
     };
 
     if (!liveSessionId) {
-      return jsonError("Live session ID is required.", 400);
+      return jsonError("Property reel ID is required.", 400);
     }
 
-    // Get lead count for this session
     const leadCount = await prisma.lead.count({
       where: { liveSessionId },
     });
 
-    // Get offer count for this session
     const offerCount = await prisma.offer.count({
       where: { liveSessionId },
     });
 
-    // Update live session with final stats
     const updatedSession = await prisma.liveSession.update({
       where: { id: liveSessionId },
       data: {
         viewers: viewers ?? 0,
-        // You can add more fields if needed
       },
       select: {
         id: true,
         viewers: true,
-        status: true,
         endedAt: true,
       },
     });
