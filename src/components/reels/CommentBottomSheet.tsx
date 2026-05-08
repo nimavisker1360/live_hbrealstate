@@ -75,6 +75,7 @@ type CommentBottomSheetProps = {
   reelId: string;
   isAuthenticated: boolean;
   isAgent: boolean;
+  commentAuthorName: string;
   onCommentAdded: (newCount: number) => void;
 };
 
@@ -191,6 +192,7 @@ export function CommentBottomSheet({
   reelId,
   isAuthenticated,
   isAgent,
+  commentAuthorName,
   onCommentAdded,
 }: CommentBottomSheetProps) {
   const [sort, setSort] = useState<SortMode>("newest");
@@ -525,7 +527,7 @@ export function CommentBottomSheet({
       const optimistic: SheetComment = {
         id: tempId,
         parentId: replyTo?.id ?? null,
-        author: isAgent ? "Official Agent" : isAuthenticated ? "You" : "Guest",
+        author: isAgent ? commentAuthorName : isAuthenticated ? "You" : "Guest",
         message,
         createdAt: new Date().toISOString(),
         pending: true,
@@ -597,6 +599,7 @@ export function CommentBottomSheet({
     },
     [
       draft,
+      commentAuthorName,
       isAgent,
       isAuthenticated,
       onCommentAdded,

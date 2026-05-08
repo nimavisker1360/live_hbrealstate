@@ -259,6 +259,8 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
           ref={commentsRef}
           reelId={reel.id}
           isAuthenticated={reel.isAuthenticated}
+          isAgent={reel.isAgent}
+          commentAuthorName={consultantName}
           onCommentCountChange={handleCommentAdded}
         />
 
@@ -296,6 +298,7 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
         reelId={reel.id}
         isAuthenticated={reel.isAuthenticated}
         isAgent={reel.isAgent}
+        commentAuthorName={consultantName}
         onCommentAdded={handleCommentAdded}
       />
     </div>

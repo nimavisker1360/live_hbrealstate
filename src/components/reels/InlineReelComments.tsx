@@ -60,6 +60,8 @@ function flattenComments(comments: ApiComment[]) {
 type InlineReelCommentsProps = {
   reelId: string;
   isAuthenticated: boolean;
+  isAgent: boolean;
+  commentAuthorName: string;
   onCommentCountChange: (newCount: number) => void;
 };
 
@@ -67,7 +69,13 @@ export const InlineReelComments = forwardRef<
   InlineReelCommentsHandle,
   InlineReelCommentsProps
 >(function InlineReelComments(
-  { reelId, isAuthenticated, onCommentCountChange },
+  {
+    reelId,
+    isAuthenticated,
+    isAgent,
+    commentAuthorName,
+    onCommentCountChange,
+  },
   ref,
 ) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -173,10 +181,12 @@ export const InlineReelComments = forwardRef<
 
     const optimistic: CommentToast = {
       id: `temp-${Date.now()}`,
-      author: isAuthenticated ? "You" : "Guest",
+      author: isAgent ? commentAuthorName : isAuthenticated ? "You" : "Guest",
       message,
       createdAt: new Date().toISOString(),
       isMember: isAuthenticated,
+      isAgent,
+      agentBadge: isAgent ? "Official Agent" : null,
       optimistic: true,
     };
 
