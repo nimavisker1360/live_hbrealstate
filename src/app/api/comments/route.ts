@@ -9,7 +9,7 @@ import {
 } from "@/lib/pusher-channels";
 import { triggerRealtimeEvent } from "@/lib/pusher-server";
 import { commentPayloadSchema } from "@/lib/schemas";
-import { getCurrentSession, type AuthSession } from "@/lib/auth";
+import { getCurrentSession } from "@/lib/auth";
 import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { getConsultantById } from "@/lib/hb-consultants";
 
@@ -18,25 +18,19 @@ export const runtime = "nodejs";
 function resolveLiveCommentAuthor({
   agentName,
   fallbackAuthor,
-  rawSession,
   session,
   consultantId,
 }: {
   agentName?: string | null;
   fallbackAuthor: string;
-  rawSession: AuthSession | null;
   session: Awaited<ReturnType<typeof getSessionBackedByDatabase>> | null;
   consultantId?: string | null;
 }) {
-  const hasAgentRole = session?.role === "AGENT" || session?.role === "OWNER";
-  const consultant = getConsultantById(consultantId);
-  const isSelectedConsultantSession =
-    Boolean(consultant) &&
-    (consultant?.id === session?.sub || consultant?.id === rawSession?.sub);
+  const isAgent = session?.role === "AGENT" || session?.role === "OWNER";
 
-  if (hasAgentRole && isSelectedConsultantSession) {
+  if (isAgent) {
     return (
-      consultant?.name?.trim() ||
+      getConsultantById(consultantId)?.name?.trim() ||
       agentName?.trim() ||
       session?.name?.trim() ||
       fallbackAuthor
@@ -126,7 +120,6 @@ export async function POST(request: Request) {
           agentName: agent?.name,
           consultantId: property.consultantId,
           fallbackAuthor: payload.author,
-          rawSession,
           session,
         }),
         message: payload.message,

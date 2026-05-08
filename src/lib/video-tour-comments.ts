@@ -192,38 +192,24 @@ export async function resolveCommentIdentity({
   session: AuthSession | null;
 }) {
   const dbSession = session ? await getSessionBackedByDatabase(session) : null;
-  const hasAgentRole =
+  const isAgent =
     dbSession?.role === "AGENT" || dbSession?.role === "OWNER";
   const visitor = dbSession ? null : await ensureVisitorId();
   const consultant = getConsultantById(consultantId);
   let agentId: string | null = null;
   let agentName: string | null = null;
-  let linkedAgent: { id: string; name: string } | null = null;
 
-  if (hasAgentRole && dbSession) {
-    linkedAgent =
+  if (isAgent && dbSession) {
+    const linkedAgent =
       (await prisma.agent.findUnique({
         where: { userId: dbSession.sub },
         select: { id: true, name: true },
       })) ??
       (await prisma.agent.findUnique({
-        where: { id: session?.sub ?? dbSession.sub },
+        where: { id: reelAgentId },
         select: { id: true, name: true },
       }));
-  }
 
-  const isSelectedConsultantSession =
-    Boolean(consultant) &&
-    (consultant?.id === dbSession?.sub ||
-      consultant?.id === session?.sub ||
-      consultant?.id === linkedAgent?.id);
-  const shouldPostAsFallbackAgent =
-    !consultant && linkedAgent?.id === reelAgentId;
-  const shouldPostAsAgent =
-    Boolean(hasAgentRole) &&
-    (isSelectedConsultantSession || shouldPostAsFallbackAgent);
-
-  if (shouldPostAsAgent) {
     agentId = linkedAgent?.id ?? reelAgentId;
     agentName = linkedAgent?.name ?? null;
   }
@@ -233,11 +219,11 @@ export async function resolveCommentIdentity({
     agentId,
     visitor,
     author:
-      (shouldPostAsAgent ? consultant?.name?.trim() || agentName?.trim() : null) ||
+      (isAgent ? consultant?.name?.trim() || agentName?.trim() : null) ||
       dbSession?.name?.trim() ||
       author?.trim() ||
       "Guest",
-    isAgent: shouldPostAsAgent,
+    isAgent,
     identity: dbSession?.sub ?? visitor?.visitorId ?? null,
   };
 }

@@ -252,16 +252,6 @@ export default async function ReelPage({ params }: ReelPageProps) {
     : null;
   const hasAgentRole =
     persistedSession?.role === "AGENT" || persistedSession?.role === "OWNER";
-  const matchesSelectedConsultant =
-    Boolean(reel.property.consultantId) &&
-    (reel.property.consultantId === session?.sub ||
-      reel.property.consultantId === persistedSession?.sub);
-  const matchesFallbackAgent =
-    !reel.property.consultantId &&
-    Boolean(reel.agent.userId) &&
-    reel.agent.userId === persistedSession?.sub;
-  const isCommentingAsAgent =
-    hasAgentRole && (matchesSelectedConsultant || matchesFallbackAgent);
   const poster = reel.thumbnailUrl ?? reel.property.image ?? FALLBACK_PROPERTY_IMAGE;
   const isProcessing = reel.status === "PROCESSING" || reel.status === "DRAFT";
   const isPublished = reel.status === "PUBLISHED";
@@ -352,7 +342,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
           poster,
           isProcessing,
           isAuthenticated: Boolean(session?.sub),
-          isAgent: isCommentingAsAgent,
+          isAgent: hasAgentRole,
           viewerName: persistedSession?.name ?? session?.name,
           likeCount: reel.likeCount,
           commentCount: reel.commentCount,
