@@ -242,7 +242,7 @@ export default async function AgentDashboardPage() {
         },
       },
       orderBy: { updatedAt: "desc" },
-      take: 6,
+      take: 12,
     }),
     prisma.videoTour.findMany({
       select: {
@@ -593,25 +593,50 @@ export default async function AgentDashboardPage() {
                   ? `Latest reel · ${latestReel.status.toLowerCase()} · ${formatDate(latestReel.updatedAt)}`
                   : `${property._count.videoTours} reels`;
 
+                const specs: string[] = [];
+                if (property.bedrooms) {
+                  specs.push(`${property.bedrooms} bd`);
+                }
+                if (property.bathrooms) {
+                  specs.push(`${property.bathrooms} ba`);
+                }
+                if (property.areaSquareMeters) {
+                  specs.push(`${property.areaSquareMeters} m²`);
+                }
+
                 return (
                   <div
-                    className="rounded-md border border-white/10 bg-black/20 p-4"
+                    className="overflow-hidden rounded-md border border-white/10 bg-black/20"
                     key={property.id}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="font-medium text-white">
-                          {property.title}
-                        </p>
-                        <p className="mt-1 text-sm text-white/52">
-                          {property.location}
+                    {property.image ? (
+                      <div
+                        aria-hidden
+                        className="aspect-[16/9] w-full bg-cover bg-center"
+                        style={{ backgroundImage: `url('${property.image}')` }}
+                      />
+                    ) : null}
+                    <div className="p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="font-medium text-white">
+                            {property.title}
+                          </p>
+                          <p className="mt-1 text-sm text-white/52">
+                            {property.location}
+                          </p>
+                        </div>
+                        <p className="shrink-0 text-sm font-semibold text-[#d6b15f]">
+                          {formatPrice(property.price, property.currency)}
                         </p>
                       </div>
-                      <p className="shrink-0 text-sm font-semibold text-[#d6b15f]">
-                        {formatPrice(property.price, property.currency)}
-                      </p>
+                      {specs.length > 0 ? (
+                        <p className="mt-2 text-xs text-white/52">
+                          {specs.join(" · ")}
+                        </p>
+                      ) : null}
+                      <p className="mt-3 text-sm text-white/56">{activity}</p>
                     </div>
-                    <p className="mt-3 text-sm text-white/56">{activity}</p>
                   </div>
                 );
               })}

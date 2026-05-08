@@ -1680,7 +1680,11 @@ export const PropertyScalarFieldEnum = {
   price: 'price',
   currency: 'currency',
   image: 'image',
+  imagePathname: 'imagePathname',
   description: 'description',
+  bedrooms: 'bedrooms',
+  bathrooms: 'bathrooms',
+  areaSquareMeters: 'areaSquareMeters',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2041,20 +2045,6 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
- * Reference to a field of type 'LiveSessionStatus'
- */
-export type EnumLiveSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveSessionStatus'>
-    
-
-
-/**
- * Reference to a field of type 'LiveSessionStatus[]'
- */
-export type ListEnumLiveSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveSessionStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -2065,6 +2055,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LiveSessionStatus'
+ */
+export type EnumLiveSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LiveSessionStatus[]'
+ */
+export type ListEnumLiveSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveSessionStatus[]'>
     
 
 

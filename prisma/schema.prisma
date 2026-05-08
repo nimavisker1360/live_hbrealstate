@@ -131,7 +131,11 @@ model Property {
   price          Decimal?        @db.Decimal(14, 2)
   currency       String          @default("USD")
   image          String?
+  imagePathname  String?
   description    String?
+  bedrooms       Int?
+  bathrooms      Int?
+  areaSquareMeters Int?
   liveSessions   LiveSession[]
   liveRecordings LiveRecording[]
   leads          Lead[]

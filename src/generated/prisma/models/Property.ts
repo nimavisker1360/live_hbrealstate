@@ -28,10 +28,16 @@ export type AggregateProperty = {
 
 export type PropertyAvgAggregateOutputType = {
   price: runtime.Decimal | null
+  bedrooms: number | null
+  bathrooms: number | null
+  areaSquareMeters: number | null
 }
 
 export type PropertySumAggregateOutputType = {
   price: runtime.Decimal | null
+  bedrooms: number | null
+  bathrooms: number | null
+  areaSquareMeters: number | null
 }
 
 export type PropertyMinAggregateOutputType = {
@@ -42,7 +48,11 @@ export type PropertyMinAggregateOutputType = {
   price: runtime.Decimal | null
   currency: string | null
   image: string | null
+  imagePathname: string | null
   description: string | null
+  bedrooms: number | null
+  bathrooms: number | null
+  areaSquareMeters: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -55,7 +65,11 @@ export type PropertyMaxAggregateOutputType = {
   price: runtime.Decimal | null
   currency: string | null
   image: string | null
+  imagePathname: string | null
   description: string | null
+  bedrooms: number | null
+  bathrooms: number | null
+  areaSquareMeters: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,7 +82,11 @@ export type PropertyCountAggregateOutputType = {
   price: number
   currency: number
   image: number
+  imagePathname: number
   description: number
+  bedrooms: number
+  bathrooms: number
+  areaSquareMeters: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -77,10 +95,16 @@ export type PropertyCountAggregateOutputType = {
 
 export type PropertyAvgAggregateInputType = {
   price?: true
+  bedrooms?: true
+  bathrooms?: true
+  areaSquareMeters?: true
 }
 
 export type PropertySumAggregateInputType = {
   price?: true
+  bedrooms?: true
+  bathrooms?: true
+  areaSquareMeters?: true
 }
 
 export type PropertyMinAggregateInputType = {
@@ -91,7 +115,11 @@ export type PropertyMinAggregateInputType = {
   price?: true
   currency?: true
   image?: true
+  imagePathname?: true
   description?: true
+  bedrooms?: true
+  bathrooms?: true
+  areaSquareMeters?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -104,7 +132,11 @@ export type PropertyMaxAggregateInputType = {
   price?: true
   currency?: true
   image?: true
+  imagePathname?: true
   description?: true
+  bedrooms?: true
+  bathrooms?: true
+  areaSquareMeters?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -117,7 +149,11 @@ export type PropertyCountAggregateInputType = {
   price?: true
   currency?: true
   image?: true
+  imagePathname?: true
   description?: true
+  bedrooms?: true
+  bathrooms?: true
+  areaSquareMeters?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -217,7 +253,11 @@ export type PropertyGroupByOutputType = {
   price: runtime.Decimal | null
   currency: string
   image: string | null
+  imagePathname: string | null
   description: string | null
+  bedrooms: number | null
+  bathrooms: number | null
+  areaSquareMeters: number | null
   createdAt: Date
   updatedAt: Date
   _count: PropertyCountAggregateOutputType | null
@@ -253,7 +293,11 @@ export type PropertyWhereInput = {
   price?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFilter<"Property"> | string
   image?: Prisma.StringNullableFilter<"Property"> | string | null
+  imagePathname?: Prisma.StringNullableFilter<"Property"> | string | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
+  bedrooms?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathrooms?: Prisma.IntNullableFilter<"Property"> | number | null
+  areaSquareMeters?: Prisma.IntNullableFilter<"Property"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   agent?: Prisma.XOR<Prisma.AgentScalarRelationFilter, Prisma.AgentWhereInput>
@@ -273,7 +317,11 @@ export type PropertyOrderByWithRelationInput = {
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  imagePathname?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  areaSquareMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   agent?: Prisma.AgentOrderByWithRelationInput
@@ -296,7 +344,11 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   price?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFilter<"Property"> | string
   image?: Prisma.StringNullableFilter<"Property"> | string | null
+  imagePathname?: Prisma.StringNullableFilter<"Property"> | string | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
+  bedrooms?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathrooms?: Prisma.IntNullableFilter<"Property"> | number | null
+  areaSquareMeters?: Prisma.IntNullableFilter<"Property"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   agent?: Prisma.XOR<Prisma.AgentScalarRelationFilter, Prisma.AgentWhereInput>
@@ -316,7 +368,11 @@ export type PropertyOrderByWithAggregationInput = {
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  imagePathname?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  areaSquareMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PropertyCountOrderByAggregateInput
@@ -337,7 +393,11 @@ export type PropertyScalarWhereWithAggregatesInput = {
   price?: Prisma.DecimalNullableWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringWithAggregatesFilter<"Property"> | string
   image?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  imagePathname?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  bedrooms?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  bathrooms?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  areaSquareMeters?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
 }
@@ -349,7 +409,11 @@ export type PropertyCreateInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
@@ -369,7 +433,11 @@ export type PropertyUncheckedCreateInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
@@ -387,7 +455,11 @@ export type PropertyUpdateInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
@@ -407,7 +479,11 @@ export type PropertyUncheckedUpdateInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
@@ -426,7 +502,11 @@ export type PropertyCreateManyInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -438,7 +518,11 @@ export type PropertyUpdateManyMutationInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -451,7 +535,11 @@ export type PropertyUncheckedUpdateManyInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -474,13 +562,20 @@ export type PropertyCountOrderByAggregateInput = {
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  imagePathname?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  bedrooms?: Prisma.SortOrder
+  bathrooms?: Prisma.SortOrder
+  areaSquareMeters?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PropertyAvgOrderByAggregateInput = {
   price?: Prisma.SortOrder
+  bedrooms?: Prisma.SortOrder
+  bathrooms?: Prisma.SortOrder
+  areaSquareMeters?: Prisma.SortOrder
 }
 
 export type PropertyMaxOrderByAggregateInput = {
@@ -491,7 +586,11 @@ export type PropertyMaxOrderByAggregateInput = {
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  imagePathname?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  bedrooms?: Prisma.SortOrder
+  bathrooms?: Prisma.SortOrder
+  areaSquareMeters?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -504,13 +603,20 @@ export type PropertyMinOrderByAggregateInput = {
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  imagePathname?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  bedrooms?: Prisma.SortOrder
+  bathrooms?: Prisma.SortOrder
+  areaSquareMeters?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PropertySumOrderByAggregateInput = {
   price?: Prisma.SortOrder
+  bedrooms?: Prisma.SortOrder
+  bathrooms?: Prisma.SortOrder
+  areaSquareMeters?: Prisma.SortOrder
 }
 
 export type PropertyScalarRelationFilter = {
@@ -571,6 +677,14 @@ export type NullableDecimalFieldUpdateOperationsInput = {
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type PropertyCreateNestedOneWithoutLiveSessionsInput = {
@@ -666,7 +780,11 @@ export type PropertyCreateWithoutAgentInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionCreateNestedManyWithoutPropertyInput
@@ -684,7 +802,11 @@ export type PropertyUncheckedCreateWithoutAgentInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
@@ -732,7 +854,11 @@ export type PropertyScalarWhereInput = {
   price?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFilter<"Property"> | string
   image?: Prisma.StringNullableFilter<"Property"> | string | null
+  imagePathname?: Prisma.StringNullableFilter<"Property"> | string | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
+  bedrooms?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathrooms?: Prisma.IntNullableFilter<"Property"> | number | null
+  areaSquareMeters?: Prisma.IntNullableFilter<"Property"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
 }
@@ -744,7 +870,11 @@ export type PropertyCreateWithoutLiveSessionsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
@@ -763,7 +893,11 @@ export type PropertyUncheckedCreateWithoutLiveSessionsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveRecordings?: Prisma.LiveRecordingUncheckedCreateNestedManyWithoutPropertyInput
@@ -796,7 +930,11 @@ export type PropertyUpdateWithoutLiveSessionsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
@@ -815,7 +953,11 @@ export type PropertyUncheckedUpdateWithoutLiveSessionsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveRecordings?: Prisma.LiveRecordingUncheckedUpdateManyWithoutPropertyNestedInput
@@ -832,7 +974,11 @@ export type PropertyCreateWithoutLiveRecordingsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
@@ -851,7 +997,11 @@ export type PropertyUncheckedCreateWithoutLiveRecordingsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
@@ -884,7 +1034,11 @@ export type PropertyUpdateWithoutLiveRecordingsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
@@ -903,7 +1057,11 @@ export type PropertyUncheckedUpdateWithoutLiveRecordingsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
@@ -920,7 +1078,11 @@ export type PropertyCreateWithoutLeadsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
@@ -939,7 +1101,11 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
@@ -972,7 +1138,11 @@ export type PropertyUpdateWithoutLeadsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
@@ -991,7 +1161,11 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1008,7 +1182,11 @@ export type PropertyCreateWithoutOffersInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
@@ -1027,7 +1205,11 @@ export type PropertyUncheckedCreateWithoutOffersInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
@@ -1060,7 +1242,11 @@ export type PropertyUpdateWithoutOffersInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1079,7 +1265,11 @@ export type PropertyUncheckedUpdateWithoutOffersInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1096,7 +1286,11 @@ export type PropertyCreateWithoutCommentsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
@@ -1115,7 +1309,11 @@ export type PropertyUncheckedCreateWithoutCommentsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
@@ -1148,7 +1346,11 @@ export type PropertyUpdateWithoutCommentsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1167,7 +1369,11 @@ export type PropertyUncheckedUpdateWithoutCommentsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1184,7 +1390,11 @@ export type PropertyCreateWithoutVideoToursInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agent: Prisma.AgentCreateNestedOneWithoutPropertiesInput
@@ -1203,7 +1413,11 @@ export type PropertyUncheckedCreateWithoutVideoToursInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   liveSessions?: Prisma.LiveSessionUncheckedCreateNestedManyWithoutPropertyInput
@@ -1236,7 +1450,11 @@ export type PropertyUpdateWithoutVideoToursInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent?: Prisma.AgentUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1255,7 +1473,11 @@ export type PropertyUncheckedUpdateWithoutVideoToursInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1272,7 +1494,11 @@ export type PropertyCreateManyAgentInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: string
   image?: string | null
+  imagePathname?: string | null
   description?: string | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  areaSquareMeters?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1284,7 +1510,11 @@ export type PropertyUpdateWithoutAgentInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUpdateManyWithoutPropertyNestedInput
@@ -1302,7 +1532,11 @@ export type PropertyUncheckedUpdateWithoutAgentInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveSessions?: Prisma.LiveSessionUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1320,7 +1554,11 @@ export type PropertyUncheckedUpdateManyWithoutAgentInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  areaSquareMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1409,7 +1647,11 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   price?: boolean
   currency?: boolean
   image?: boolean
+  imagePathname?: boolean
   description?: boolean
+  bedrooms?: boolean
+  bathrooms?: boolean
+  areaSquareMeters?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
@@ -1430,7 +1672,11 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   price?: boolean
   currency?: boolean
   image?: boolean
+  imagePathname?: boolean
   description?: boolean
+  bedrooms?: boolean
+  bathrooms?: boolean
+  areaSquareMeters?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
@@ -1444,7 +1690,11 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   price?: boolean
   currency?: boolean
   image?: boolean
+  imagePathname?: boolean
   description?: boolean
+  bedrooms?: boolean
+  bathrooms?: boolean
+  areaSquareMeters?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
@@ -1458,12 +1708,16 @@ export type PropertySelectScalar = {
   price?: boolean
   currency?: boolean
   image?: boolean
+  imagePathname?: boolean
   description?: boolean
+  bedrooms?: boolean
+  bathrooms?: boolean
+  areaSquareMeters?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agentId" | "title" | "location" | "price" | "currency" | "image" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agentId" | "title" | "location" | "price" | "currency" | "image" | "imagePathname" | "description" | "bedrooms" | "bathrooms" | "areaSquareMeters" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
   liveSessions?: boolean | Prisma.Property$liveSessionsArgs<ExtArgs>
@@ -1500,7 +1754,11 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     price: runtime.Decimal | null
     currency: string
     image: string | null
+    imagePathname: string | null
     description: string | null
+    bedrooms: number | null
+    bathrooms: number | null
+    areaSquareMeters: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["property"]>
@@ -1940,7 +2198,11 @@ export interface PropertyFieldRefs {
   readonly price: Prisma.FieldRef<"Property", 'Decimal'>
   readonly currency: Prisma.FieldRef<"Property", 'String'>
   readonly image: Prisma.FieldRef<"Property", 'String'>
+  readonly imagePathname: Prisma.FieldRef<"Property", 'String'>
   readonly description: Prisma.FieldRef<"Property", 'String'>
+  readonly bedrooms: Prisma.FieldRef<"Property", 'Int'>
+  readonly bathrooms: Prisma.FieldRef<"Property", 'Int'>
+  readonly areaSquareMeters: Prisma.FieldRef<"Property", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Property", 'DateTime'>
 }

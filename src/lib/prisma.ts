@@ -1,8 +1,9 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@/generated/prisma/client";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
+  prismaSchemaSignature?: string;
 };
 
 const connectionString = process.env.DATABASE_URL;
@@ -26,6 +27,30 @@ const adapter = new PrismaPg({
   },
 });
 
+const prismaSchemaSignature = Object.entries(Prisma)
+  .filter(
+    ([key, value]) =>
+      key.endsWith("ScalarFieldEnum") &&
+      typeof value === "object" &&
+      value !== null,
+  )
+  .flatMap(([model, fields]) =>
+    Object.entries(fields as Record<string, string>).map(
+      ([key, value]) => `${model}.${key}:${value}`,
+    ),
+  )
+  .sort()
+  .join("|");
+
+if (
+  process.env.NODE_ENV !== "production" &&
+  globalForPrisma.prisma &&
+  globalForPrisma.prismaSchemaSignature !== prismaSchemaSignature
+) {
+  void globalForPrisma.prisma.$disconnect().catch(() => undefined);
+  globalForPrisma.prisma = undefined;
+}
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
@@ -34,4 +59,5 @@ export const prisma =
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
+  globalForPrisma.prismaSchemaSignature = prismaSchemaSignature;
 }

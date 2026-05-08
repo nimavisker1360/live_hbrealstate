@@ -123,7 +123,11 @@ export const PropertyScalarFieldEnum = {
   price: 'price',
   currency: 'currency',
   image: 'image',
+  imagePathname: 'imagePathname',
   description: 'description',
+  bedrooms: 'bedrooms',
+  bathrooms: 'bathrooms',
+  areaSquareMeters: 'areaSquareMeters',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
