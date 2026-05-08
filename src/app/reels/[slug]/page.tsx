@@ -333,6 +333,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
           poster,
           isProcessing,
           isAuthenticated: Boolean(session?.sub),
+          isAgent: session?.role === "AGENT" || session?.role === "OWNER",
           likeCount: reel.likeCount,
           commentCount: reel.commentCount,
           viewCount: reel.viewCount,

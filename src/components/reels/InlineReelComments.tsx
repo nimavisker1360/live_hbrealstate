@@ -21,10 +21,14 @@ export type InlineReelCommentsHandle = {
 
 type ApiComment = {
   id: string;
+  parentId?: string | null;
   author: string;
   message: string;
   createdAt: string;
   isMember?: boolean;
+  isAgent?: boolean;
+  agentBadge?: "Official Agent" | "HB Agent" | null;
+  replies?: ApiComment[];
 };
 
 type CommentToast = ApiComment & {
@@ -45,6 +49,13 @@ type PostResponse = {
   };
   error?: { message?: string };
 };
+
+function flattenComments(comments: ApiComment[]) {
+  return comments.flatMap((comment) => [
+    comment,
+    ...(comment.replies ?? []),
+  ]);
+}
 
 type InlineReelCommentsProps = {
   reelId: string;
@@ -102,7 +113,7 @@ export const InlineReelComments = forwardRef<
         const json = (await res.json()) as CommentsResponse;
         if (!json.data) return;
 
-        const ordered = [...json.data.comments].reverse();
+        const ordered = flattenComments(json.data.comments);
         if (!hasLoadedInitialCommentsRef.current) {
           ordered.forEach((comment) => seenCommentIdsRef.current.add(comment.id));
           hasLoadedInitialCommentsRef.current = true;

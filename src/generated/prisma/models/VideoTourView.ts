@@ -535,10 +535,6 @@ export type VideoTourViewUncheckedUpdateManyWithoutVideoTourNestedInput = {
   deleteMany?: Prisma.VideoTourViewScalarWhereInput | Prisma.VideoTourViewScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type VideoTourViewCreateWithoutUserInput = {
   id?: string
   visitorId?: string | null

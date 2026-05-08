@@ -400,6 +400,9 @@ model VideoTourComment {
   id          String    @id @default(cuid())
   videoTourId String
   videoTour   VideoTour @relation(fields: [videoTourId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      VideoTourComment?  @relation("VideoTourCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     VideoTourComment[] @relation("VideoTourCommentReplies")
   userId      String?
   user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   agentId     String?
@@ -407,11 +410,16 @@ model VideoTourComment {
   visitorId   String?
   author      String
   message     String
+  isPinned    Boolean   @default(false)
+  likeCount   Int       @default(0)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([videoTourId])
+  @@index([videoTourId, parentId, createdAt])
   @@index([videoTourId, createdAt])
+  @@index([videoTourId, isPinned, likeCount, createdAt])
+  @@index([parentId])
   @@index([userId])
   @@index([agentId])
 }

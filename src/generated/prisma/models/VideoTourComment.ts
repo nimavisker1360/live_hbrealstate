@@ -20,18 +20,31 @@ export type VideoTourCommentModel = runtime.Types.Result.DefaultSelection<Prisma
 
 export type AggregateVideoTourComment = {
   _count: VideoTourCommentCountAggregateOutputType | null
+  _avg: VideoTourCommentAvgAggregateOutputType | null
+  _sum: VideoTourCommentSumAggregateOutputType | null
   _min: VideoTourCommentMinAggregateOutputType | null
   _max: VideoTourCommentMaxAggregateOutputType | null
+}
+
+export type VideoTourCommentAvgAggregateOutputType = {
+  likeCount: number | null
+}
+
+export type VideoTourCommentSumAggregateOutputType = {
+  likeCount: number | null
 }
 
 export type VideoTourCommentMinAggregateOutputType = {
   id: string | null
   videoTourId: string | null
+  parentId: string | null
   userId: string | null
   agentId: string | null
   visitorId: string | null
   author: string | null
   message: string | null
+  isPinned: boolean | null
+  likeCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -39,11 +52,14 @@ export type VideoTourCommentMinAggregateOutputType = {
 export type VideoTourCommentMaxAggregateOutputType = {
   id: string | null
   videoTourId: string | null
+  parentId: string | null
   userId: string | null
   agentId: string | null
   visitorId: string | null
   author: string | null
   message: string | null
+  isPinned: boolean | null
+  likeCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -51,25 +67,39 @@ export type VideoTourCommentMaxAggregateOutputType = {
 export type VideoTourCommentCountAggregateOutputType = {
   id: number
   videoTourId: number
+  parentId: number
   userId: number
   agentId: number
   visitorId: number
   author: number
   message: number
+  isPinned: number
+  likeCount: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type VideoTourCommentAvgAggregateInputType = {
+  likeCount?: true
+}
+
+export type VideoTourCommentSumAggregateInputType = {
+  likeCount?: true
+}
+
 export type VideoTourCommentMinAggregateInputType = {
   id?: true
   videoTourId?: true
+  parentId?: true
   userId?: true
   agentId?: true
   visitorId?: true
   author?: true
   message?: true
+  isPinned?: true
+  likeCount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,11 +107,14 @@ export type VideoTourCommentMinAggregateInputType = {
 export type VideoTourCommentMaxAggregateInputType = {
   id?: true
   videoTourId?: true
+  parentId?: true
   userId?: true
   agentId?: true
   visitorId?: true
   author?: true
   message?: true
+  isPinned?: true
+  likeCount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -89,11 +122,14 @@ export type VideoTourCommentMaxAggregateInputType = {
 export type VideoTourCommentCountAggregateInputType = {
   id?: true
   videoTourId?: true
+  parentId?: true
   userId?: true
   agentId?: true
   visitorId?: true
   author?: true
   message?: true
+  isPinned?: true
+  likeCount?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -137,6 +173,18 @@ export type VideoTourCommentAggregateArgs<ExtArgs extends runtime.Types.Extensio
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: VideoTourCommentAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: VideoTourCommentSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: VideoTourCommentMinAggregateInputType
@@ -167,6 +215,8 @@ export type VideoTourCommentGroupByArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   _count?: VideoTourCommentCountAggregateInputType | true
+  _avg?: VideoTourCommentAvgAggregateInputType
+  _sum?: VideoTourCommentSumAggregateInputType
   _min?: VideoTourCommentMinAggregateInputType
   _max?: VideoTourCommentMaxAggregateInputType
 }
@@ -174,14 +224,19 @@ export type VideoTourCommentGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type VideoTourCommentGroupByOutputType = {
   id: string
   videoTourId: string
+  parentId: string | null
   userId: string | null
   agentId: string | null
   visitorId: string | null
   author: string
   message: string
+  isPinned: boolean
+  likeCount: number
   createdAt: Date
   updatedAt: Date
   _count: VideoTourCommentCountAggregateOutputType | null
+  _avg: VideoTourCommentAvgAggregateOutputType | null
+  _sum: VideoTourCommentSumAggregateOutputType | null
   _min: VideoTourCommentMinAggregateOutputType | null
   _max: VideoTourCommentMaxAggregateOutputType | null
 }
@@ -207,14 +262,19 @@ export type VideoTourCommentWhereInput = {
   NOT?: Prisma.VideoTourCommentWhereInput | Prisma.VideoTourCommentWhereInput[]
   id?: Prisma.StringFilter<"VideoTourComment"> | string
   videoTourId?: Prisma.StringFilter<"VideoTourComment"> | string
+  parentId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   userId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   agentId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   visitorId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   author?: Prisma.StringFilter<"VideoTourComment"> | string
   message?: Prisma.StringFilter<"VideoTourComment"> | string
+  isPinned?: Prisma.BoolFilter<"VideoTourComment"> | boolean
+  likeCount?: Prisma.IntFilter<"VideoTourComment"> | number
   createdAt?: Prisma.DateTimeFilter<"VideoTourComment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VideoTourComment"> | Date | string
   videoTour?: Prisma.XOR<Prisma.VideoTourScalarRelationFilter, Prisma.VideoTourWhereInput>
+  parent?: Prisma.XOR<Prisma.VideoTourCommentNullableScalarRelationFilter, Prisma.VideoTourCommentWhereInput> | null
+  replies?: Prisma.VideoTourCommentListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   agent?: Prisma.XOR<Prisma.AgentNullableScalarRelationFilter, Prisma.AgentWhereInput> | null
 }
@@ -222,14 +282,19 @@ export type VideoTourCommentWhereInput = {
 export type VideoTourCommentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   videoTourId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   agentId?: Prisma.SortOrderInput | Prisma.SortOrder
   visitorId?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   videoTour?: Prisma.VideoTourOrderByWithRelationInput
+  parent?: Prisma.VideoTourCommentOrderByWithRelationInput
+  replies?: Prisma.VideoTourCommentOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   agent?: Prisma.AgentOrderByWithRelationInput
 }
@@ -240,14 +305,19 @@ export type VideoTourCommentWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.VideoTourCommentWhereInput[]
   NOT?: Prisma.VideoTourCommentWhereInput | Prisma.VideoTourCommentWhereInput[]
   videoTourId?: Prisma.StringFilter<"VideoTourComment"> | string
+  parentId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   userId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   agentId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   visitorId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   author?: Prisma.StringFilter<"VideoTourComment"> | string
   message?: Prisma.StringFilter<"VideoTourComment"> | string
+  isPinned?: Prisma.BoolFilter<"VideoTourComment"> | boolean
+  likeCount?: Prisma.IntFilter<"VideoTourComment"> | number
   createdAt?: Prisma.DateTimeFilter<"VideoTourComment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VideoTourComment"> | Date | string
   videoTour?: Prisma.XOR<Prisma.VideoTourScalarRelationFilter, Prisma.VideoTourWhereInput>
+  parent?: Prisma.XOR<Prisma.VideoTourCommentNullableScalarRelationFilter, Prisma.VideoTourCommentWhereInput> | null
+  replies?: Prisma.VideoTourCommentListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   agent?: Prisma.XOR<Prisma.AgentNullableScalarRelationFilter, Prisma.AgentWhereInput> | null
 }, "id">
@@ -255,16 +325,21 @@ export type VideoTourCommentWhereUniqueInput = Prisma.AtLeast<{
 export type VideoTourCommentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   videoTourId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   agentId?: Prisma.SortOrderInput | Prisma.SortOrder
   visitorId?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VideoTourCommentCountOrderByAggregateInput
+  _avg?: Prisma.VideoTourCommentAvgOrderByAggregateInput
   _max?: Prisma.VideoTourCommentMaxOrderByAggregateInput
   _min?: Prisma.VideoTourCommentMinOrderByAggregateInput
+  _sum?: Prisma.VideoTourCommentSumOrderByAggregateInput
 }
 
 export type VideoTourCommentScalarWhereWithAggregatesInput = {
@@ -273,11 +348,14 @@ export type VideoTourCommentScalarWhereWithAggregatesInput = {
   NOT?: Prisma.VideoTourCommentScalarWhereWithAggregatesInput | Prisma.VideoTourCommentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"VideoTourComment"> | string
   videoTourId?: Prisma.StringWithAggregatesFilter<"VideoTourComment"> | string
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"VideoTourComment"> | string | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"VideoTourComment"> | string | null
   agentId?: Prisma.StringNullableWithAggregatesFilter<"VideoTourComment"> | string | null
   visitorId?: Prisma.StringNullableWithAggregatesFilter<"VideoTourComment"> | string | null
   author?: Prisma.StringWithAggregatesFilter<"VideoTourComment"> | string
   message?: Prisma.StringWithAggregatesFilter<"VideoTourComment"> | string
+  isPinned?: Prisma.BoolWithAggregatesFilter<"VideoTourComment"> | boolean
+  likeCount?: Prisma.IntWithAggregatesFilter<"VideoTourComment"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VideoTourComment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VideoTourComment"> | Date | string
 }
@@ -287,9 +365,13 @@ export type VideoTourCommentCreateInput = {
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   videoTour: Prisma.VideoTourCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.VideoTourCommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.VideoTourCommentCreateNestedManyWithoutParentInput
   user?: Prisma.UserCreateNestedOneWithoutVideoTourCommentsInput
   agent?: Prisma.AgentCreateNestedOneWithoutVideoTourCommentsInput
 }
@@ -297,13 +379,17 @@ export type VideoTourCommentCreateInput = {
 export type VideoTourCommentUncheckedCreateInput = {
   id?: string
   videoTourId: string
+  parentId?: string | null
   userId?: string | null
   agentId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type VideoTourCommentUpdateInput = {
@@ -311,9 +397,13 @@ export type VideoTourCommentUpdateInput = {
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   videoTour?: Prisma.VideoTourUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.VideoTourCommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.VideoTourCommentUpdateManyWithoutParentNestedInput
   user?: Prisma.UserUpdateOneWithoutVideoTourCommentsNestedInput
   agent?: Prisma.AgentUpdateOneWithoutVideoTourCommentsNestedInput
 }
@@ -321,23 +411,30 @@ export type VideoTourCommentUpdateInput = {
 export type VideoTourCommentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type VideoTourCommentCreateManyInput = {
   id?: string
   videoTourId: string
+  parentId?: string | null
   userId?: string | null
   agentId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -347,6 +444,8 @@ export type VideoTourCommentUpdateManyMutationInput = {
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -354,11 +453,14 @@ export type VideoTourCommentUpdateManyMutationInput = {
 export type VideoTourCommentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -373,26 +475,41 @@ export type VideoTourCommentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type VideoTourCommentNullableScalarRelationFilter = {
+  is?: Prisma.VideoTourCommentWhereInput | null
+  isNot?: Prisma.VideoTourCommentWhereInput | null
+}
+
 export type VideoTourCommentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   videoTourId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   visitorId?: Prisma.SortOrder
   author?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type VideoTourCommentAvgOrderByAggregateInput = {
+  likeCount?: Prisma.SortOrder
 }
 
 export type VideoTourCommentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   videoTourId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   visitorId?: Prisma.SortOrder
   author?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -400,13 +517,20 @@ export type VideoTourCommentMaxOrderByAggregateInput = {
 export type VideoTourCommentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   videoTourId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   agentId?: Prisma.SortOrder
   visitorId?: Prisma.SortOrder
   author?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type VideoTourCommentSumOrderByAggregateInput = {
+  likeCount?: Prisma.SortOrder
 }
 
 export type VideoTourCommentCreateNestedManyWithoutUserInput = {
@@ -535,26 +659,96 @@ export type VideoTourCommentUncheckedUpdateManyWithoutVideoTourNestedInput = {
   deleteMany?: Prisma.VideoTourCommentScalarWhereInput | Prisma.VideoTourCommentScalarWhereInput[]
 }
 
+export type VideoTourCommentCreateNestedOneWithoutRepliesInput = {
+  create?: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutRepliesInput, Prisma.VideoTourCommentUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.VideoTourCommentCreateOrConnectWithoutRepliesInput
+  connect?: Prisma.VideoTourCommentWhereUniqueInput
+}
+
+export type VideoTourCommentCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutParentInput, Prisma.VideoTourCommentUncheckedCreateWithoutParentInput> | Prisma.VideoTourCommentCreateWithoutParentInput[] | Prisma.VideoTourCommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.VideoTourCommentCreateOrConnectWithoutParentInput | Prisma.VideoTourCommentCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.VideoTourCommentCreateManyParentInputEnvelope
+  connect?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+}
+
+export type VideoTourCommentUncheckedCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutParentInput, Prisma.VideoTourCommentUncheckedCreateWithoutParentInput> | Prisma.VideoTourCommentCreateWithoutParentInput[] | Prisma.VideoTourCommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.VideoTourCommentCreateOrConnectWithoutParentInput | Prisma.VideoTourCommentCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.VideoTourCommentCreateManyParentInputEnvelope
+  connect?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type VideoTourCommentUpdateOneWithoutRepliesNestedInput = {
+  create?: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutRepliesInput, Prisma.VideoTourCommentUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.VideoTourCommentCreateOrConnectWithoutRepliesInput
+  upsert?: Prisma.VideoTourCommentUpsertWithoutRepliesInput
+  disconnect?: Prisma.VideoTourCommentWhereInput | boolean
+  delete?: Prisma.VideoTourCommentWhereInput | boolean
+  connect?: Prisma.VideoTourCommentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VideoTourCommentUpdateToOneWithWhereWithoutRepliesInput, Prisma.VideoTourCommentUpdateWithoutRepliesInput>, Prisma.VideoTourCommentUncheckedUpdateWithoutRepliesInput>
+}
+
+export type VideoTourCommentUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutParentInput, Prisma.VideoTourCommentUncheckedCreateWithoutParentInput> | Prisma.VideoTourCommentCreateWithoutParentInput[] | Prisma.VideoTourCommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.VideoTourCommentCreateOrConnectWithoutParentInput | Prisma.VideoTourCommentCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.VideoTourCommentUpsertWithWhereUniqueWithoutParentInput | Prisma.VideoTourCommentUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.VideoTourCommentCreateManyParentInputEnvelope
+  set?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  disconnect?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  delete?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  connect?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  update?: Prisma.VideoTourCommentUpdateWithWhereUniqueWithoutParentInput | Prisma.VideoTourCommentUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.VideoTourCommentUpdateManyWithWhereWithoutParentInput | Prisma.VideoTourCommentUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.VideoTourCommentScalarWhereInput | Prisma.VideoTourCommentScalarWhereInput[]
+}
+
+export type VideoTourCommentUncheckedUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutParentInput, Prisma.VideoTourCommentUncheckedCreateWithoutParentInput> | Prisma.VideoTourCommentCreateWithoutParentInput[] | Prisma.VideoTourCommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.VideoTourCommentCreateOrConnectWithoutParentInput | Prisma.VideoTourCommentCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.VideoTourCommentUpsertWithWhereUniqueWithoutParentInput | Prisma.VideoTourCommentUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.VideoTourCommentCreateManyParentInputEnvelope
+  set?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  disconnect?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  delete?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  connect?: Prisma.VideoTourCommentWhereUniqueInput | Prisma.VideoTourCommentWhereUniqueInput[]
+  update?: Prisma.VideoTourCommentUpdateWithWhereUniqueWithoutParentInput | Prisma.VideoTourCommentUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.VideoTourCommentUpdateManyWithWhereWithoutParentInput | Prisma.VideoTourCommentUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.VideoTourCommentScalarWhereInput | Prisma.VideoTourCommentScalarWhereInput[]
+}
+
 export type VideoTourCommentCreateWithoutUserInput = {
   id?: string
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   videoTour: Prisma.VideoTourCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.VideoTourCommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.VideoTourCommentCreateNestedManyWithoutParentInput
   agent?: Prisma.AgentCreateNestedOneWithoutVideoTourCommentsInput
 }
 
 export type VideoTourCommentUncheckedCreateWithoutUserInput = {
   id?: string
   videoTourId: string
+  parentId?: string | null
   agentId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type VideoTourCommentCreateOrConnectWithoutUserInput = {
@@ -589,11 +783,14 @@ export type VideoTourCommentScalarWhereInput = {
   NOT?: Prisma.VideoTourCommentScalarWhereInput | Prisma.VideoTourCommentScalarWhereInput[]
   id?: Prisma.StringFilter<"VideoTourComment"> | string
   videoTourId?: Prisma.StringFilter<"VideoTourComment"> | string
+  parentId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   userId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   agentId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   visitorId?: Prisma.StringNullableFilter<"VideoTourComment"> | string | null
   author?: Prisma.StringFilter<"VideoTourComment"> | string
   message?: Prisma.StringFilter<"VideoTourComment"> | string
+  isPinned?: Prisma.BoolFilter<"VideoTourComment"> | boolean
+  likeCount?: Prisma.IntFilter<"VideoTourComment"> | number
   createdAt?: Prisma.DateTimeFilter<"VideoTourComment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VideoTourComment"> | Date | string
 }
@@ -603,21 +800,29 @@ export type VideoTourCommentCreateWithoutAgentInput = {
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   videoTour: Prisma.VideoTourCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.VideoTourCommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.VideoTourCommentCreateNestedManyWithoutParentInput
   user?: Prisma.UserCreateNestedOneWithoutVideoTourCommentsInput
 }
 
 export type VideoTourCommentUncheckedCreateWithoutAgentInput = {
   id?: string
   videoTourId: string
+  parentId?: string | null
   userId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type VideoTourCommentCreateOrConnectWithoutAgentInput = {
@@ -651,21 +856,29 @@ export type VideoTourCommentCreateWithoutVideoTourInput = {
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  parent?: Prisma.VideoTourCommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.VideoTourCommentCreateNestedManyWithoutParentInput
   user?: Prisma.UserCreateNestedOneWithoutVideoTourCommentsInput
   agent?: Prisma.AgentCreateNestedOneWithoutVideoTourCommentsInput
 }
 
 export type VideoTourCommentUncheckedCreateWithoutVideoTourInput = {
   id?: string
+  parentId?: string | null
   userId?: string | null
   agentId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type VideoTourCommentCreateOrConnectWithoutVideoTourInput = {
@@ -694,13 +907,148 @@ export type VideoTourCommentUpdateManyWithWhereWithoutVideoTourInput = {
   data: Prisma.XOR<Prisma.VideoTourCommentUpdateManyMutationInput, Prisma.VideoTourCommentUncheckedUpdateManyWithoutVideoTourInput>
 }
 
-export type VideoTourCommentCreateManyUserInput = {
+export type VideoTourCommentCreateWithoutRepliesInput = {
+  id?: string
+  visitorId?: string | null
+  author: string
+  message: string
+  isPinned?: boolean
+  likeCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  videoTour: Prisma.VideoTourCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.VideoTourCommentCreateNestedOneWithoutRepliesInput
+  user?: Prisma.UserCreateNestedOneWithoutVideoTourCommentsInput
+  agent?: Prisma.AgentCreateNestedOneWithoutVideoTourCommentsInput
+}
+
+export type VideoTourCommentUncheckedCreateWithoutRepliesInput = {
   id?: string
   videoTourId: string
+  parentId?: string | null
+  userId?: string | null
   agentId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VideoTourCommentCreateOrConnectWithoutRepliesInput = {
+  where: Prisma.VideoTourCommentWhereUniqueInput
+  create: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutRepliesInput, Prisma.VideoTourCommentUncheckedCreateWithoutRepliesInput>
+}
+
+export type VideoTourCommentCreateWithoutParentInput = {
+  id?: string
+  visitorId?: string | null
+  author: string
+  message: string
+  isPinned?: boolean
+  likeCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  videoTour: Prisma.VideoTourCreateNestedOneWithoutCommentsInput
+  replies?: Prisma.VideoTourCommentCreateNestedManyWithoutParentInput
+  user?: Prisma.UserCreateNestedOneWithoutVideoTourCommentsInput
+  agent?: Prisma.AgentCreateNestedOneWithoutVideoTourCommentsInput
+}
+
+export type VideoTourCommentUncheckedCreateWithoutParentInput = {
+  id?: string
+  videoTourId: string
+  userId?: string | null
+  agentId?: string | null
+  visitorId?: string | null
+  author: string
+  message: string
+  isPinned?: boolean
+  likeCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  replies?: Prisma.VideoTourCommentUncheckedCreateNestedManyWithoutParentInput
+}
+
+export type VideoTourCommentCreateOrConnectWithoutParentInput = {
+  where: Prisma.VideoTourCommentWhereUniqueInput
+  create: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutParentInput, Prisma.VideoTourCommentUncheckedCreateWithoutParentInput>
+}
+
+export type VideoTourCommentCreateManyParentInputEnvelope = {
+  data: Prisma.VideoTourCommentCreateManyParentInput | Prisma.VideoTourCommentCreateManyParentInput[]
+  skipDuplicates?: boolean
+}
+
+export type VideoTourCommentUpsertWithoutRepliesInput = {
+  update: Prisma.XOR<Prisma.VideoTourCommentUpdateWithoutRepliesInput, Prisma.VideoTourCommentUncheckedUpdateWithoutRepliesInput>
+  create: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutRepliesInput, Prisma.VideoTourCommentUncheckedCreateWithoutRepliesInput>
+  where?: Prisma.VideoTourCommentWhereInput
+}
+
+export type VideoTourCommentUpdateToOneWithWhereWithoutRepliesInput = {
+  where?: Prisma.VideoTourCommentWhereInput
+  data: Prisma.XOR<Prisma.VideoTourCommentUpdateWithoutRepliesInput, Prisma.VideoTourCommentUncheckedUpdateWithoutRepliesInput>
+}
+
+export type VideoTourCommentUpdateWithoutRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  videoTour?: Prisma.VideoTourUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.VideoTourCommentUpdateOneWithoutRepliesNestedInput
+  user?: Prisma.UserUpdateOneWithoutVideoTourCommentsNestedInput
+  agent?: Prisma.AgentUpdateOneWithoutVideoTourCommentsNestedInput
+}
+
+export type VideoTourCommentUncheckedUpdateWithoutRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VideoTourCommentUpsertWithWhereUniqueWithoutParentInput = {
+  where: Prisma.VideoTourCommentWhereUniqueInput
+  update: Prisma.XOR<Prisma.VideoTourCommentUpdateWithoutParentInput, Prisma.VideoTourCommentUncheckedUpdateWithoutParentInput>
+  create: Prisma.XOR<Prisma.VideoTourCommentCreateWithoutParentInput, Prisma.VideoTourCommentUncheckedCreateWithoutParentInput>
+}
+
+export type VideoTourCommentUpdateWithWhereUniqueWithoutParentInput = {
+  where: Prisma.VideoTourCommentWhereUniqueInput
+  data: Prisma.XOR<Prisma.VideoTourCommentUpdateWithoutParentInput, Prisma.VideoTourCommentUncheckedUpdateWithoutParentInput>
+}
+
+export type VideoTourCommentUpdateManyWithWhereWithoutParentInput = {
+  where: Prisma.VideoTourCommentScalarWhereInput
+  data: Prisma.XOR<Prisma.VideoTourCommentUpdateManyMutationInput, Prisma.VideoTourCommentUncheckedUpdateManyWithoutParentInput>
+}
+
+export type VideoTourCommentCreateManyUserInput = {
+  id?: string
+  videoTourId: string
+  parentId?: string | null
+  agentId?: string | null
+  visitorId?: string | null
+  author: string
+  message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -710,30 +1058,41 @@ export type VideoTourCommentUpdateWithoutUserInput = {
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   videoTour?: Prisma.VideoTourUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.VideoTourCommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.VideoTourCommentUpdateManyWithoutParentNestedInput
   agent?: Prisma.AgentUpdateOneWithoutVideoTourCommentsNestedInput
 }
 
 export type VideoTourCommentUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type VideoTourCommentUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -741,10 +1100,13 @@ export type VideoTourCommentUncheckedUpdateManyWithoutUserInput = {
 export type VideoTourCommentCreateManyAgentInput = {
   id?: string
   videoTourId: string
+  parentId?: string | null
   userId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -754,41 +1116,55 @@ export type VideoTourCommentUpdateWithoutAgentInput = {
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   videoTour?: Prisma.VideoTourUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.VideoTourCommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.VideoTourCommentUpdateManyWithoutParentNestedInput
   user?: Prisma.UserUpdateOneWithoutVideoTourCommentsNestedInput
 }
 
 export type VideoTourCommentUncheckedUpdateWithoutAgentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type VideoTourCommentUncheckedUpdateManyWithoutAgentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VideoTourCommentCreateManyVideoTourInput = {
   id?: string
+  parentId?: string | null
   userId?: string | null
   agentId?: string | null
   visitorId?: string | null
   author: string
   message: string
+  isPinned?: boolean
+  likeCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -798,62 +1174,170 @@ export type VideoTourCommentUpdateWithoutVideoTourInput = {
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.VideoTourCommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.VideoTourCommentUpdateManyWithoutParentNestedInput
   user?: Prisma.UserUpdateOneWithoutVideoTourCommentsNestedInput
   agent?: Prisma.AgentUpdateOneWithoutVideoTourCommentsNestedInput
 }
 
 export type VideoTourCommentUncheckedUpdateWithoutVideoTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type VideoTourCommentUncheckedUpdateManyWithoutVideoTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type VideoTourCommentCreateManyParentInput = {
+  id?: string
+  videoTourId: string
+  userId?: string | null
+  agentId?: string | null
+  visitorId?: string | null
+  author: string
+  message: string
+  isPinned?: boolean
+  likeCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VideoTourCommentUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  videoTour?: Prisma.VideoTourUpdateOneRequiredWithoutCommentsNestedInput
+  replies?: Prisma.VideoTourCommentUpdateManyWithoutParentNestedInput
+  user?: Prisma.UserUpdateOneWithoutVideoTourCommentsNestedInput
+  agent?: Prisma.AgentUpdateOneWithoutVideoTourCommentsNestedInput
+}
+
+export type VideoTourCommentUncheckedUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.VideoTourCommentUncheckedUpdateManyWithoutParentNestedInput
+}
+
+export type VideoTourCommentUncheckedUpdateManyWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  videoTourId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type VideoTourCommentCountOutputType
+ */
+
+export type VideoTourCommentCountOutputType = {
+  replies: number
+}
+
+export type VideoTourCommentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  replies?: boolean | VideoTourCommentCountOutputTypeCountRepliesArgs
+}
+
+/**
+ * VideoTourCommentCountOutputType without action
+ */
+export type VideoTourCommentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourCommentCountOutputType
+   */
+  select?: Prisma.VideoTourCommentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * VideoTourCommentCountOutputType without action
+ */
+export type VideoTourCommentCountOutputTypeCountRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoTourCommentWhereInput
+}
 
 
 export type VideoTourCommentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   videoTourId?: boolean
+  parentId?: boolean
   userId?: boolean
   agentId?: boolean
   visitorId?: boolean
   author?: boolean
   message?: boolean
+  isPinned?: boolean
+  likeCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   videoTour?: boolean | Prisma.VideoTourDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.VideoTourComment$parentArgs<ExtArgs>
+  replies?: boolean | Prisma.VideoTourComment$repliesArgs<ExtArgs>
   user?: boolean | Prisma.VideoTourComment$userArgs<ExtArgs>
   agent?: boolean | Prisma.VideoTourComment$agentArgs<ExtArgs>
+  _count?: boolean | Prisma.VideoTourCommentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["videoTourComment"]>
 
 export type VideoTourCommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   videoTourId?: boolean
+  parentId?: boolean
   userId?: boolean
   agentId?: boolean
   visitorId?: boolean
   author?: boolean
   message?: boolean
+  isPinned?: boolean
+  likeCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   videoTour?: boolean | Prisma.VideoTourDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.VideoTourComment$parentArgs<ExtArgs>
   user?: boolean | Prisma.VideoTourComment$userArgs<ExtArgs>
   agent?: boolean | Prisma.VideoTourComment$agentArgs<ExtArgs>
 }, ExtArgs["result"]["videoTourComment"]>
@@ -861,14 +1345,18 @@ export type VideoTourCommentSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
 export type VideoTourCommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   videoTourId?: boolean
+  parentId?: boolean
   userId?: boolean
   agentId?: boolean
   visitorId?: boolean
   author?: boolean
   message?: boolean
+  isPinned?: boolean
+  likeCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   videoTour?: boolean | Prisma.VideoTourDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.VideoTourComment$parentArgs<ExtArgs>
   user?: boolean | Prisma.VideoTourComment$userArgs<ExtArgs>
   agent?: boolean | Prisma.VideoTourComment$agentArgs<ExtArgs>
 }, ExtArgs["result"]["videoTourComment"]>
@@ -876,28 +1364,36 @@ export type VideoTourCommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
 export type VideoTourCommentSelectScalar = {
   id?: boolean
   videoTourId?: boolean
+  parentId?: boolean
   userId?: boolean
   agentId?: boolean
   visitorId?: boolean
   author?: boolean
   message?: boolean
+  isPinned?: boolean
+  likeCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VideoTourCommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "videoTourId" | "userId" | "agentId" | "visitorId" | "author" | "message" | "createdAt" | "updatedAt", ExtArgs["result"]["videoTourComment"]>
+export type VideoTourCommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "videoTourId" | "parentId" | "userId" | "agentId" | "visitorId" | "author" | "message" | "isPinned" | "likeCount" | "createdAt" | "updatedAt", ExtArgs["result"]["videoTourComment"]>
 export type VideoTourCommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   videoTour?: boolean | Prisma.VideoTourDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.VideoTourComment$parentArgs<ExtArgs>
+  replies?: boolean | Prisma.VideoTourComment$repliesArgs<ExtArgs>
   user?: boolean | Prisma.VideoTourComment$userArgs<ExtArgs>
   agent?: boolean | Prisma.VideoTourComment$agentArgs<ExtArgs>
+  _count?: boolean | Prisma.VideoTourCommentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VideoTourCommentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   videoTour?: boolean | Prisma.VideoTourDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.VideoTourComment$parentArgs<ExtArgs>
   user?: boolean | Prisma.VideoTourComment$userArgs<ExtArgs>
   agent?: boolean | Prisma.VideoTourComment$agentArgs<ExtArgs>
 }
 export type VideoTourCommentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   videoTour?: boolean | Prisma.VideoTourDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.VideoTourComment$parentArgs<ExtArgs>
   user?: boolean | Prisma.VideoTourComment$userArgs<ExtArgs>
   agent?: boolean | Prisma.VideoTourComment$agentArgs<ExtArgs>
 }
@@ -906,17 +1402,22 @@ export type $VideoTourCommentPayload<ExtArgs extends runtime.Types.Extensions.In
   name: "VideoTourComment"
   objects: {
     videoTour: Prisma.$VideoTourPayload<ExtArgs>
+    parent: Prisma.$VideoTourCommentPayload<ExtArgs> | null
+    replies: Prisma.$VideoTourCommentPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs> | null
     agent: Prisma.$AgentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     videoTourId: string
+    parentId: string | null
     userId: string | null
     agentId: string | null
     visitorId: string | null
     author: string
     message: string
+    isPinned: boolean
+    likeCount: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["videoTourComment"]>
@@ -1314,6 +1815,8 @@ readonly fields: VideoTourCommentFieldRefs;
 export interface Prisma__VideoTourCommentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   videoTour<T extends Prisma.VideoTourDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VideoTourDefaultArgs<ExtArgs>>): Prisma.Prisma__VideoTourClient<runtime.Types.Result.GetResult<Prisma.$VideoTourPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  parent<T extends Prisma.VideoTourComment$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VideoTourComment$parentArgs<ExtArgs>>): Prisma.Prisma__VideoTourCommentClient<runtime.Types.Result.GetResult<Prisma.$VideoTourCommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  replies<T extends Prisma.VideoTourComment$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VideoTourComment$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoTourCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.VideoTourComment$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VideoTourComment$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   agent<T extends Prisma.VideoTourComment$agentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VideoTourComment$agentArgs<ExtArgs>>): Prisma.Prisma__AgentClient<runtime.Types.Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1347,11 +1850,14 @@ export interface Prisma__VideoTourCommentClient<T, Null = never, ExtArgs extends
 export interface VideoTourCommentFieldRefs {
   readonly id: Prisma.FieldRef<"VideoTourComment", 'String'>
   readonly videoTourId: Prisma.FieldRef<"VideoTourComment", 'String'>
+  readonly parentId: Prisma.FieldRef<"VideoTourComment", 'String'>
   readonly userId: Prisma.FieldRef<"VideoTourComment", 'String'>
   readonly agentId: Prisma.FieldRef<"VideoTourComment", 'String'>
   readonly visitorId: Prisma.FieldRef<"VideoTourComment", 'String'>
   readonly author: Prisma.FieldRef<"VideoTourComment", 'String'>
   readonly message: Prisma.FieldRef<"VideoTourComment", 'String'>
+  readonly isPinned: Prisma.FieldRef<"VideoTourComment", 'Boolean'>
+  readonly likeCount: Prisma.FieldRef<"VideoTourComment", 'Int'>
   readonly createdAt: Prisma.FieldRef<"VideoTourComment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VideoTourComment", 'DateTime'>
 }
@@ -1752,6 +2258,49 @@ export type VideoTourCommentDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many VideoTourComments to delete.
    */
   limit?: number
+}
+
+/**
+ * VideoTourComment.parent
+ */
+export type VideoTourComment$parentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourComment
+   */
+  select?: Prisma.VideoTourCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourComment
+   */
+  omit?: Prisma.VideoTourCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourCommentInclude<ExtArgs> | null
+  where?: Prisma.VideoTourCommentWhereInput
+}
+
+/**
+ * VideoTourComment.replies
+ */
+export type VideoTourComment$repliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VideoTourComment
+   */
+  select?: Prisma.VideoTourCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VideoTourComment
+   */
+  omit?: Prisma.VideoTourCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoTourCommentInclude<ExtArgs> | null
+  where?: Prisma.VideoTourCommentWhereInput
+  orderBy?: Prisma.VideoTourCommentOrderByWithRelationInput | Prisma.VideoTourCommentOrderByWithRelationInput[]
+  cursor?: Prisma.VideoTourCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoTourCommentScalarFieldEnum | Prisma.VideoTourCommentScalarFieldEnum[]
 }
 
 /**

@@ -1,47 +1,53 @@
-import { z } from "zod";
 import { handleApiError, jsonError } from "@/lib/api";
 import { getCurrentSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  fetchThreadedVideoTourComments,
+  resolveCommentIdentity,
+  resolveCommentParent,
+  serializeVideoTourComment,
+  videoTourCommentBodySchema,
+  withVisitorCookie,
+} from "@/lib/video-tour-comments";
 
 export const runtime = "nodejs";
 
-const commentBody = z.object({
-  message: z.string().trim().min(1).max(500),
-  author: z.string().trim().min(1).max(80).optional(),
-});
-
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const { slug } = await params;
     const tour = await prisma.videoTour.findUnique({
       where: { slug },
-      select: { id: true },
+      select: { id: true, commentCount: true },
     });
 
     if (!tour) {
       return jsonError("Reel not found.", 404);
     }
 
-    const comments = await prisma.videoTourComment.findMany({
-      where: { videoTourId: tour.id },
-      orderBy: { createdAt: "asc" },
-      take: 200,
-      select: {
-        id: true,
-        author: true,
-        message: true,
-        createdAt: true,
-      },
+    const url = new URL(request.url);
+    const sort = url.searchParams.get("sort") === "mostLiked"
+      ? "mostLiked"
+      : "newest";
+    const take = Math.max(
+      1,
+      Math.min(100, Number(url.searchParams.get("take")) || 50),
+    );
+    const threaded = await fetchThreadedVideoTourComments({
+      cursor: url.searchParams.get("cursor")?.trim() || undefined,
+      sort,
+      take,
+      videoTourId: tour.id,
     });
 
     return Response.json({
-      data: comments.map((comment) => ({
-        ...comment,
-        createdAt: comment.createdAt.toISOString(),
-      })),
+      data: {
+        commentCount: tour.commentCount,
+        comments: threaded.comments,
+        nextCursor: threaded.nextCursor,
+      },
     });
   } catch (error) {
     return handleApiError(error);
@@ -56,7 +62,7 @@ export async function POST(
     const { slug } = await params;
     const tour = await prisma.videoTour.findUnique({
       where: { slug },
-      select: { id: true },
+      select: { id: true, agentId: true },
     });
 
     if (!tour) {
@@ -64,21 +70,40 @@ export async function POST(
     }
 
     const session = await getCurrentSession().catch(() => null);
-    const body = commentBody.parse(await request.json());
-    const author = session?.name ?? body.author ?? "Guest";
+    const body = videoTourCommentBodySchema.parse(await request.json());
+    const parentId = await resolveCommentParent(tour.id, body.parentId);
+    if (parentId === undefined) {
+      return jsonError("Parent comment not found.", 404);
+    }
+    const identityContext = await resolveCommentIdentity({
+      author: body.author,
+      reelAgentId: tour.agentId,
+      session,
+    });
 
     const comment = await prisma.videoTourComment.create({
       data: {
         videoTourId: tour.id,
-        userId: session?.sub,
-        author,
+        parentId,
+        userId: identityContext.userId,
+        agentId: identityContext.agentId,
+        visitorId: identityContext.userId
+          ? null
+          : identityContext.visitor?.visitorId,
+        author: identityContext.author,
         message: body.message,
       },
       select: {
         id: true,
+        parentId: true,
         author: true,
         message: true,
         createdAt: true,
+        userId: true,
+        agentId: true,
+        isPinned: true,
+        likeCount: true,
+        user: { select: { role: true } },
       },
     });
 
@@ -87,11 +112,14 @@ export async function POST(
       data: { commentCount: { increment: 1 } },
     });
 
-    return Response.json(
-      {
-        data: { ...comment, createdAt: comment.createdAt.toISOString() },
-      },
-      { status: 201 },
+    return withVisitorCookie(
+      Response.json(
+        {
+          data: serializeVideoTourComment(comment),
+        },
+        { status: 201 },
+      ),
+      identityContext.visitor,
     );
   } catch (error) {
     return handleApiError(error);

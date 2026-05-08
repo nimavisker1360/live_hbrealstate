@@ -328,11 +328,14 @@ export type VideoTourLikeScalarFieldEnum = (typeof VideoTourLikeScalarFieldEnum)
 export const VideoTourCommentScalarFieldEnum = {
   id: 'id',
   videoTourId: 'videoTourId',
+  parentId: 'parentId',
   userId: 'userId',
   agentId: 'agentId',
   visitorId: 'visitorId',
   author: 'author',
   message: 'message',
+  isPinned: 'isPinned',
+  likeCount: 'likeCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

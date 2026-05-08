@@ -4,74 +4,37 @@ import { prisma } from "@/lib/prisma";
 import {
   checkCommentCooldown,
   detectCommentSpam,
-  fetchThreadedVideoTourComments,
   markCommentPosted,
   resolveCommentIdentity,
   resolveCommentParent,
   serializeVideoTourComment,
   videoTourCommentBodySchema,
   withVisitorCookie,
-  type VideoTourCommentSort,
 } from "@/lib/video-tour-comments";
 
 export const runtime = "nodejs";
 
-async function loadReel(reelId: string) {
-  return prisma.videoTour.findUnique({
-    where: { id: reelId },
-    select: { id: true, agentId: true, commentCount: true },
-  });
-}
-
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ reelId: string }> },
-) {
-  try {
-    const { reelId } = await params;
-    const reel = await loadReel(reelId);
-    if (!reel) return jsonError("Reel not found.", 404);
-
-    const url = new URL(request.url);
-    const cursor = url.searchParams.get("cursor")?.trim() || undefined;
-    const take = Math.max(
-      1,
-      Math.min(100, Number(url.searchParams.get("take")) || 50),
-    );
-    const sortParam = url.searchParams.get("sort");
-    const sort: VideoTourCommentSort =
-      sortParam === "mostLiked" ? "mostLiked" : "newest";
-    const threaded = await fetchThreadedVideoTourComments({
-      cursor,
-      sort,
-      take,
-      videoTourId: reel.id,
-    });
-
-    return Response.json({
-      data: {
-        reelId: reel.id,
-        commentCount: reel.commentCount,
-        comments: threaded.comments,
-        nextCursor: threaded.nextCursor,
-      },
-    });
-  } catch (error) {
-    return handleApiError(error);
-  }
-}
-
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ reelId: string }> },
+  {
+    params,
+  }: { params: Promise<{ reelId: string; commentId: string }> },
 ) {
   try {
-    const { reelId } = await params;
-    const reel = await loadReel(reelId);
+    const { reelId, commentId } = await params;
+    const reel = await prisma.videoTour.findUnique({
+      where: { id: reelId },
+      select: { id: true, agentId: true },
+    });
+
     if (!reel) return jsonError("Reel not found.", 404);
 
     const body = videoTourCommentBodySchema.parse(await request.json());
-    const parentId = await resolveCommentParent(reel.id, body.parentId);
+    const parentId = await resolveCommentParent(
+      reel.id,
+      body.parentId ?? commentId,
+    );
+
     if (parentId === undefined) {
       return jsonError("Parent comment not found.", 404);
     }
@@ -83,6 +46,7 @@ export async function POST(
       session,
     });
     const identity = identityContext.identity;
+
     if (!identity) {
       return jsonError("Could not establish identity.", 500);
     }
@@ -142,6 +106,7 @@ export async function POST(
         data: { commentCount: { increment: 1 } },
         select: { commentCount: true },
       });
+
       return { comment, commentCount: updated.commentCount };
     });
 

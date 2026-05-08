@@ -10,6 +10,7 @@ import {
   InlineReelComments,
   type InlineReelCommentsHandle,
 } from "./InlineReelComments";
+import { CommentBottomSheet } from "./CommentBottomSheet";
 import { OfferSheet } from "./OfferSheet";
 import { BookingSheet } from "./BookingSheet";
 import { DetailsSheet } from "./DetailsSheet";
@@ -26,6 +27,7 @@ export type ReelViewerData = {
   poster: string;
   isProcessing: boolean;
   isAuthenticated: boolean;
+  isAgent: boolean;
   likeCount: number;
   commentCount: number;
   viewCount: number;
@@ -51,6 +53,7 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
   const playerRef = useRef<ReelVideoPlayerHandle | null>(null);
   const commentsRef = useRef<InlineReelCommentsHandle | null>(null);
   const [openSheet, setOpenSheet] = useState<Sheet>(null);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const [commentCount, setCommentCount] = useState(reel.commentCount);
   const {
     liked: hasLiked,
@@ -69,12 +72,12 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
   const burstIdRef = useRef(0);
 
   useEffect(() => {
-    if (openSheet) {
+    if (openSheet || commentsOpen) {
       playerRef.current?.pause();
     } else {
       playerRef.current?.play();
     }
-  }, [openSheet]);
+  }, [commentsOpen, openSheet]);
 
   const triggerHeartBurst = useCallback((x: number, y: number) => {
     const id = ++burstIdRef.current;
@@ -126,7 +129,7 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
   }, []);
 
   const handleCommentClick = useCallback(() => {
-    commentsRef.current?.focus();
+    setCommentsOpen(true);
   }, []);
 
   const handleShare = useCallback(async () => {
@@ -255,6 +258,14 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
         description={reel.description}
         property={reel.property}
         agent={reel.agent}
+      />
+      <CommentBottomSheet
+        open={commentsOpen}
+        onClose={() => setCommentsOpen(false)}
+        reelId={reel.id}
+        isAuthenticated={reel.isAuthenticated}
+        isAgent={reel.isAgent}
+        onCommentAdded={handleCommentAdded}
       />
     </div>
   );
