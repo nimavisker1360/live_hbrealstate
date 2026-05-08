@@ -192,26 +192,31 @@ export async function resolveCommentIdentity({
   session: AuthSession | null;
 }) {
   const dbSession = session ? await getSessionBackedByDatabase(session) : null;
+  const linkedAgent = dbSession
+    ? (await prisma.agent.findUnique({
+        where: { userId: dbSession.sub },
+        select: { id: true, name: true },
+      })) ?? null
+    : null;
   const isAgent =
-    dbSession?.role === "AGENT" || dbSession?.role === "OWNER";
+    dbSession?.role === "AGENT" ||
+    dbSession?.role === "OWNER" ||
+    Boolean(linkedAgent);
   const visitor = dbSession ? null : await ensureVisitorId();
   const consultant = getConsultantById(consultantId);
   let agentId: string | null = null;
   let agentName: string | null = null;
 
   if (isAgent && dbSession) {
-    const linkedAgent =
-      (await prisma.agent.findUnique({
-        where: { userId: dbSession.sub },
-        select: { id: true, name: true },
-      })) ??
+    const resolvedAgent =
+      linkedAgent ??
       (await prisma.agent.findUnique({
         where: { id: reelAgentId },
         select: { id: true, name: true },
       }));
 
-    agentId = linkedAgent?.id ?? reelAgentId;
-    agentName = linkedAgent?.name ?? null;
+    agentId = resolvedAgent?.id ?? reelAgentId;
+    agentName = resolvedAgent?.name ?? null;
   }
 
   return {
