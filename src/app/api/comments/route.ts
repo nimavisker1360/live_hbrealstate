@@ -11,8 +11,34 @@ import { triggerRealtimeEvent } from "@/lib/pusher-server";
 import { commentPayloadSchema } from "@/lib/schemas";
 import { getCurrentSession } from "@/lib/auth";
 import { getSessionBackedByDatabase } from "@/lib/auth-users";
+import { getConsultantById } from "@/lib/hb-consultants";
 
 export const runtime = "nodejs";
+
+function resolveLiveCommentAuthor({
+  agentName,
+  fallbackAuthor,
+  session,
+  consultantId,
+}: {
+  agentName?: string | null;
+  fallbackAuthor: string;
+  session: Awaited<ReturnType<typeof getSessionBackedByDatabase>> | null;
+  consultantId?: string | null;
+}) {
+  const isAgent = session?.role === "AGENT" || session?.role === "OWNER";
+
+  if (isAgent) {
+    return (
+      getConsultantById(consultantId)?.name?.trim() ||
+      agentName?.trim() ||
+      session?.name?.trim() ||
+      fallbackAuthor
+    );
+  }
+
+  return session?.name?.trim() || fallbackAuthor;
+}
 
 export async function GET(request: Request) {
   try {
@@ -90,7 +116,12 @@ export async function POST(request: Request) {
         propertyId: property.id,
         liveSessionId: liveSession.id,
         userId: session?.sub,
-        author: session?.name ?? payload.author,
+        author: resolveLiveCommentAuthor({
+          agentName: agent?.name,
+          consultantId: property.consultantId,
+          fallbackAuthor: payload.author,
+          session,
+        }),
         message: payload.message,
       },
       include: {

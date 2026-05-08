@@ -1,4 +1,5 @@
 import { del } from "@vercel/blob";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { handleApiError, jsonError } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -47,6 +48,7 @@ export async function POST(request: Request) {
     }
 
     const slug = await generateUniqueSlug(fields.title || property.title);
+    const publishedAt = new Date();
     const videoTour = await prisma.videoTour.create({
       data: {
         slug,
@@ -54,7 +56,8 @@ export async function POST(request: Request) {
         agentId: agent.id,
         title: fields.title,
         description: fields.description,
-        status: "PROCESSING",
+        status: "PUBLISHED",
+        publishedAt,
         blobUrl: fields.blob.url,
         blobPathname: fields.blob.pathname,
         fileSize: fields.fileSize ? BigInt(fields.fileSize) : null,
@@ -75,6 +78,10 @@ export async function POST(request: Request) {
         createdAt: true,
       },
     });
+
+    revalidatePath("/reels");
+    revalidatePath(`/reels/${videoTour.slug}`);
+    revalidatePath("/agent/dashboard");
 
     return Response.json(
       {

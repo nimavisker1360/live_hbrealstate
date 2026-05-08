@@ -30,7 +30,11 @@ export async function POST(
     const { reelId, commentId } = await params;
     const reel = await prisma.videoTour.findUnique({
       where: { id: reelId },
-      select: { id: true, agentId: true },
+      select: {
+        id: true,
+        agentId: true,
+        property: { select: { consultantId: true } },
+      },
     });
 
     if (!reel) return jsonError("Reel not found.", 404);
@@ -48,6 +52,7 @@ export async function POST(
     const session = await getCurrentSession().catch(() => null);
     const identityContext = await resolveCommentIdentity({
       author: body.author,
+      consultantId: reel.property.consultantId,
       reelAgentId: reel.agentId,
       session,
     });

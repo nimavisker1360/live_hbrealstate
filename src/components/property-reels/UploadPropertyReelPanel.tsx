@@ -323,8 +323,7 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
                 Reel uploaded — “{success.title}”
               </p>
               <p className="mt-1 text-emerald-100/80">
-                Saved as draft. Publish it from the table below when you are
-                ready to make it visible.
+                Published to Property reels. It is now visible to buyers.
               </p>
             </div>
           </div>

@@ -25,7 +25,12 @@ export const runtime = "nodejs";
 async function loadReel(reelId: string) {
   return prisma.videoTour.findUnique({
     where: { id: reelId },
-    select: { id: true, agentId: true, commentCount: true },
+    select: {
+      id: true,
+      agentId: true,
+      commentCount: true,
+      property: { select: { consultantId: true } },
+    },
   });
 }
 
@@ -85,6 +90,7 @@ export async function POST(
     const session = await getCurrentSession().catch(() => null);
     const identityContext = await resolveCommentIdentity({
       author: body.author,
+      consultantId: reel.property.consultantId,
       reelAgentId: reel.agentId,
       session,
     });

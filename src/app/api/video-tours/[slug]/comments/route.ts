@@ -62,7 +62,11 @@ export async function POST(
     const { slug } = await params;
     const tour = await prisma.videoTour.findUnique({
       where: { slug },
-      select: { id: true, agentId: true },
+      select: {
+        id: true,
+        agentId: true,
+        property: { select: { consultantId: true } },
+      },
     });
 
     if (!tour) {
@@ -77,6 +81,7 @@ export async function POST(
     }
     const identityContext = await resolveCommentIdentity({
       author: body.author,
+      consultantId: tour.property.consultantId,
       reelAgentId: tour.agentId,
       session,
     });

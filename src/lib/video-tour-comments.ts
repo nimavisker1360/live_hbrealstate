@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { AuthSession } from "@/lib/auth";
 import { getSessionBackedByDatabase } from "@/lib/auth-users";
+import { getConsultantById } from "@/lib/hb-consultants";
 import { appendVisitorCookie, ensureVisitorId } from "@/lib/reel-visitor";
 import { prisma } from "@/lib/prisma";
 
@@ -184,10 +185,12 @@ export async function resolveCommentParent(
 
 export async function resolveCommentIdentity({
   author,
+  consultantId,
   reelAgentId,
   session,
 }: {
   author?: string;
+  consultantId?: string | null;
   reelAgentId: string;
   session: AuthSession | null;
 }) {
@@ -196,23 +199,37 @@ export async function resolveCommentIdentity({
     dbSession?.role === "AGENT" || dbSession?.role === "OWNER";
   const visitor = dbSession ? null : await ensureVisitorId();
   let agentId: string | null = null;
+  let agentName: string | null = null;
 
   if (isAgent && dbSession) {
-    const linkedAgent = await prisma.agent.findFirst({
-      where: {
-        OR: [{ userId: dbSession.sub }, { id: reelAgentId }],
-      },
-      select: { id: true },
-    });
+    const linkedAgent =
+      (await prisma.agent.findUnique({
+        where: { userId: dbSession.sub },
+        select: { id: true, name: true },
+      })) ??
+      (await prisma.agent.findUnique({
+        where: { id: reelAgentId },
+        select: { id: true, name: true },
+      }));
 
     agentId = linkedAgent?.id ?? reelAgentId;
+    agentName = linkedAgent?.name ?? null;
   }
+
+  const consultantName = isAgent
+    ? getConsultantById(consultantId)?.name
+    : null;
 
   return {
     userId: dbSession?.sub ?? null,
     agentId,
     visitor,
-    author: dbSession?.name?.trim() || author?.trim() || "Guest",
+    author:
+      consultantName?.trim() ||
+      (isAgent ? agentName?.trim() : null) ||
+      dbSession?.name?.trim() ||
+      author?.trim() ||
+      "Guest",
     isAgent,
     identity: dbSession?.sub ?? visitor?.visitorId ?? null,
   };
