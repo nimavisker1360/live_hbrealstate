@@ -2,8 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { CheckCircle2, Home, ImagePlus } from "lucide-react";
+import { CheckCircle2, ChevronDown, Home, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+
+type ConsultantOption = {
+  id: string;
+  image: string;
+  name: string;
+  specialty: string;
+};
 
 type CreatedProperty = {
   id: string;
@@ -24,13 +31,22 @@ const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp,image/avif";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "TRY", "AED"];
 
-export function AddPropertyForm() {
+export function AddPropertyForm({
+  consultants = [],
+}: {
+  consultants?: ConsultantOption[];
+}) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<CreatedProperty | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedConsultantId, setSelectedConsultantId] = useState("");
+  const [isConsultantOpen, setIsConsultantOpen] = useState(false);
+  const selectedConsultant =
+    consultants.find((consultant) => consultant.id === selectedConsultantId) ??
+    null;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -64,6 +80,8 @@ export function AddPropertyForm() {
 
       setSuccess(result.data);
       form.reset();
+      setSelectedConsultantId("");
+      setIsConsultantOpen(false);
       setPreviewUrl(null);
       router.refresh();
     } catch (uploadError) {
@@ -195,6 +213,96 @@ export function AddPropertyForm() {
           pattern="\d{1,6}"
           type="text"
         />
+      </label>
+
+      <label className="flex flex-col gap-1.5 md:col-span-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
+          Consultant
+        </span>
+        <input name="consultantId" type="hidden" value={selectedConsultantId} />
+        <div className="relative">
+          <button
+            aria-expanded={isConsultantOpen}
+            className="flex min-h-12 w-full items-center justify-between gap-3 rounded-md border border-white/10 bg-black px-3 py-2 text-left text-sm text-white outline-none transition focus:border-[#d6b15f]/70 focus:ring-2 focus:ring-[#d6b15f]/18"
+            onClick={() => setIsConsultantOpen((open) => !open)}
+            type="button"
+          >
+            {selectedConsultant ? (
+              <span className="flex min-w-0 items-center gap-3">
+                <span
+                  aria-label={selectedConsultant.name}
+                  className="size-9 shrink-0 rounded-full border border-[#d6b15f]/55 bg-cover bg-center bg-black/40"
+                  role="img"
+                  style={{ backgroundImage: `url('${selectedConsultant.image}')` }}
+                />
+                <span className="min-w-0">
+                  <span className="block truncate font-semibold">
+                    {selectedConsultant.name}
+                  </span>
+                  <span className="block truncate text-xs text-white/52">
+                    {selectedConsultant.specialty}
+                  </span>
+                </span>
+              </span>
+            ) : (
+              <span className="text-white">Use account consultant</span>
+            )}
+            <ChevronDown
+              aria-hidden
+              className={`size-4 shrink-0 text-white/55 transition ${
+                isConsultantOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {isConsultantOpen ? (
+            <div className="absolute left-0 right-0 top-[calc(100%+0.35rem)] z-40 max-h-80 overflow-y-auto rounded-md border border-[#d6b15f]/30 bg-black shadow-2xl shadow-black/60">
+              <button
+                className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm text-white transition hover:bg-[#d6b15f]/12"
+                onClick={() => {
+                  setSelectedConsultantId("");
+                  setIsConsultantOpen(false);
+                }}
+                type="button"
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold text-[#f0cf79]">
+                  HB
+                </span>
+                <span className="font-semibold">Use account consultant</span>
+              </button>
+              {consultants.map((consultant) => (
+                <button
+                  className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm text-white transition hover:bg-[#d6b15f]/12"
+                  key={consultant.id}
+                  onClick={() => {
+                    setSelectedConsultantId(consultant.id);
+                    setIsConsultantOpen(false);
+                  }}
+                  type="button"
+                >
+                  <span
+                    aria-label={consultant.name}
+                    className="size-9 shrink-0 rounded-full border border-[#d6b15f]/45 bg-cover bg-center bg-black/40"
+                    role="img"
+                    style={{ backgroundImage: `url('${consultant.image}')` }}
+                  />
+                  <span className="min-w-0">
+                    <span className="block truncate font-semibold">
+                      {consultant.name}
+                    </span>
+                    <span className="block truncate text-xs text-white/50">
+                      {consultant.specialty}
+                    </span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        <span className="text-xs text-white/42">
+          Selected consultant appears on the main property reel and contact
+          actions.
+        </span>
       </label>
 
       <label className="flex flex-col gap-1.5 md:col-span-2">

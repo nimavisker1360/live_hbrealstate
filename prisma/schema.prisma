@@ -132,6 +132,7 @@ model Property {
   currency       String          @default("USD")
   image          String?
   imagePathname  String?
+  consultantId   String?
   description    String?
   bedrooms       Int?
   bathrooms      Int?
@@ -146,6 +147,7 @@ model Property {
   updatedAt      DateTime        @updatedAt
 
   @@index([agentId])
+  @@index([consultantId])
 }
 
 model LiveSession {

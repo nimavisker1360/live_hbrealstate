@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { ReelViewer } from "@/components/reels/ReelViewer";
 import { getCurrentSession } from "@/lib/auth";
-import { getConsultantByAgent } from "@/lib/hb-consultants";
+import { getConsultantByAgent, getConsultantById } from "@/lib/hb-consultants";
 import { FALLBACK_PROPERTY_IMAGE, isInlineImageSrc } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
 import { absoluteUrl, getSiteUrl } from "@/lib/site-url";
@@ -79,6 +79,7 @@ const getVideoTour = cache((slug: string) =>
           location: true,
           price: true,
           currency: true,
+          consultantId: true,
           image: true,
         },
       },
@@ -242,7 +243,9 @@ export default async function ReelPage({ params }: ReelPageProps) {
     notFound();
   }
 
-  const consultant = getConsultantByAgent(reel.agent);
+  const consultant =
+    getConsultantById(reel.property.consultantId) ??
+    getConsultantByAgent(reel.agent);
   const poster = reel.thumbnailUrl ?? reel.property.image ?? FALLBACK_PROPERTY_IMAGE;
   const isProcessing = reel.status === "PROCESSING" || reel.status === "DRAFT";
   const isPublished = reel.status === "PUBLISHED";
@@ -346,6 +349,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
           agent: {
             id: reel.agent.id,
             name: reel.agent.name,
+            displayName: consultant?.name,
             image: consultant?.image,
             phone: consultant?.phone,
             whatsapp: consultant?.whatsapp,

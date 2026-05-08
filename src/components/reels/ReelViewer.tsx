@@ -40,6 +40,7 @@ export type ReelViewerData = {
   agent: {
     id: string;
     name: string;
+    displayName?: string;
     image?: string;
     phone?: string;
     whatsapp?: string;
@@ -161,6 +162,7 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
     text: `Hi, I'm interested in ${reel.property.title} in ${reel.property.location}.`,
     whatsapp: reel.agent.whatsapp ?? reel.agent.phone,
   });
+  const consultantName = reel.agent.displayName ?? reel.agent.name;
 
   return (
     <div className="fixed inset-0 z-40 overflow-hidden bg-black text-white">
@@ -199,17 +201,46 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
           >
             <ChevronLeft className="size-5" />
           </Link>
-          <div className="pointer-events-auto max-w-[260px] rounded-2xl bg-black/35 px-3 py-2 text-right backdrop-blur-md">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
-              {reel.property.price}
-            </p>
-            <p className="mt-0.5 line-clamp-1 text-sm font-semibold">
-              {reel.property.title}
-            </p>
-            <p className="mt-0.5 line-clamp-1 text-xs text-white/70">
-              <MapPin aria-hidden className="-mt-0.5 mr-1 inline size-3" />
-              {reel.property.location}
-            </p>
+          <div className="pointer-events-auto flex max-w-[260px] flex-col items-end gap-2">
+            <div className="rounded-2xl bg-black/35 px-3 py-2 text-right backdrop-blur-md">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
+                {reel.property.price}
+              </p>
+              <p className="mt-0.5 line-clamp-1 text-sm font-semibold">
+                {reel.property.title}
+              </p>
+              <p className="mt-0.5 line-clamp-1 text-xs text-white/70">
+                <MapPin aria-hidden className="-mt-0.5 mr-1 inline size-3" />
+                {reel.property.location}
+              </p>
+            </div>
+
+            <div className="flex max-w-full items-center gap-2 rounded-full bg-black/35 py-1 pl-1 pr-3 backdrop-blur-md">
+              <div className="size-9 shrink-0 overflow-hidden rounded-full border border-[#d6b15f]/70 bg-black/50">
+                {reel.agent.image ? (
+                  <span
+                    aria-label={consultantName}
+                    className="block h-full w-full bg-cover bg-center"
+                    role="img"
+                    style={{ backgroundImage: `url('${reel.agent.image}')` }}
+                  />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center bg-[#d6b15f]/20 text-xs font-bold text-[#d6b15f]">
+                    {consultantName.charAt(0)}
+                  </span>
+                )}
+              </div>
+              <span className="min-w-0 text-right">
+                <span className="block truncate text-xs font-semibold text-white">
+                  {consultantName}
+                </span>
+                {reel.agent.specialty ? (
+                  <span className="block max-w-40 truncate text-[0.65rem] text-white/58">
+                    {reel.agent.specialty}
+                  </span>
+                ) : null}
+              </span>
+            </div>
           </div>
         </header>
 

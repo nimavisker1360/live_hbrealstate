@@ -202,3 +202,11 @@ export function getConsultantByAgent(agent?: {
     null
   );
 }
+
+export function getConsultantById(id?: string | null) {
+  if (!id) return null;
+
+  return (
+    HB_CONSULTANTS.find((consultant) => consultant.id === id.trim()) ?? null
+  );
+}

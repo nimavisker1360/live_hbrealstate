@@ -49,6 +49,7 @@ export type PropertyMinAggregateOutputType = {
   currency: string | null
   image: string | null
   imagePathname: string | null
+  consultantId: string | null
   description: string | null
   bedrooms: number | null
   bathrooms: number | null
@@ -66,6 +67,7 @@ export type PropertyMaxAggregateOutputType = {
   currency: string | null
   image: string | null
   imagePathname: string | null
+  consultantId: string | null
   description: string | null
   bedrooms: number | null
   bathrooms: number | null
@@ -83,6 +85,7 @@ export type PropertyCountAggregateOutputType = {
   currency: number
   image: number
   imagePathname: number
+  consultantId: number
   description: number
   bedrooms: number
   bathrooms: number
@@ -116,6 +119,7 @@ export type PropertyMinAggregateInputType = {
   currency?: true
   image?: true
   imagePathname?: true
+  consultantId?: true
   description?: true
   bedrooms?: true
   bathrooms?: true
@@ -133,6 +137,7 @@ export type PropertyMaxAggregateInputType = {
   currency?: true
   image?: true
   imagePathname?: true
+  consultantId?: true
   description?: true
   bedrooms?: true
   bathrooms?: true
@@ -150,6 +155,7 @@ export type PropertyCountAggregateInputType = {
   currency?: true
   image?: true
   imagePathname?: true
+  consultantId?: true
   description?: true
   bedrooms?: true
   bathrooms?: true
@@ -254,6 +260,7 @@ export type PropertyGroupByOutputType = {
   currency: string
   image: string | null
   imagePathname: string | null
+  consultantId: string | null
   description: string | null
   bedrooms: number | null
   bathrooms: number | null
@@ -294,6 +301,7 @@ export type PropertyWhereInput = {
   currency?: Prisma.StringFilter<"Property"> | string
   image?: Prisma.StringNullableFilter<"Property"> | string | null
   imagePathname?: Prisma.StringNullableFilter<"Property"> | string | null
+  consultantId?: Prisma.StringNullableFilter<"Property"> | string | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   bedrooms?: Prisma.IntNullableFilter<"Property"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Property"> | number | null
@@ -318,6 +326,7 @@ export type PropertyOrderByWithRelationInput = {
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   imagePathname?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultantId?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -345,6 +354,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   currency?: Prisma.StringFilter<"Property"> | string
   image?: Prisma.StringNullableFilter<"Property"> | string | null
   imagePathname?: Prisma.StringNullableFilter<"Property"> | string | null
+  consultantId?: Prisma.StringNullableFilter<"Property"> | string | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   bedrooms?: Prisma.IntNullableFilter<"Property"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Property"> | number | null
@@ -369,6 +379,7 @@ export type PropertyOrderByWithAggregationInput = {
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   imagePathname?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultantId?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -394,6 +405,7 @@ export type PropertyScalarWhereWithAggregatesInput = {
   currency?: Prisma.StringWithAggregatesFilter<"Property"> | string
   image?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   imagePathname?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  consultantId?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   bedrooms?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   bathrooms?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
@@ -410,6 +422,7 @@ export type PropertyCreateInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -434,6 +447,7 @@ export type PropertyUncheckedCreateInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -456,6 +470,7 @@ export type PropertyUpdateInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -480,6 +495,7 @@ export type PropertyUncheckedUpdateInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -503,6 +519,7 @@ export type PropertyCreateManyInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -519,6 +536,7 @@ export type PropertyUpdateManyMutationInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -536,6 +554,7 @@ export type PropertyUncheckedUpdateManyInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -563,6 +582,7 @@ export type PropertyCountOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrder
   imagePathname?: Prisma.SortOrder
+  consultantId?: Prisma.SortOrder
   description?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
@@ -587,6 +607,7 @@ export type PropertyMaxOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrder
   imagePathname?: Prisma.SortOrder
+  consultantId?: Prisma.SortOrder
   description?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
@@ -604,6 +625,7 @@ export type PropertyMinOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   image?: Prisma.SortOrder
   imagePathname?: Prisma.SortOrder
+  consultantId?: Prisma.SortOrder
   description?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
@@ -781,6 +803,7 @@ export type PropertyCreateWithoutAgentInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -803,6 +826,7 @@ export type PropertyUncheckedCreateWithoutAgentInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -855,6 +879,7 @@ export type PropertyScalarWhereInput = {
   currency?: Prisma.StringFilter<"Property"> | string
   image?: Prisma.StringNullableFilter<"Property"> | string | null
   imagePathname?: Prisma.StringNullableFilter<"Property"> | string | null
+  consultantId?: Prisma.StringNullableFilter<"Property"> | string | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   bedrooms?: Prisma.IntNullableFilter<"Property"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Property"> | number | null
@@ -871,6 +896,7 @@ export type PropertyCreateWithoutLiveSessionsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -894,6 +920,7 @@ export type PropertyUncheckedCreateWithoutLiveSessionsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -931,6 +958,7 @@ export type PropertyUpdateWithoutLiveSessionsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -954,6 +982,7 @@ export type PropertyUncheckedUpdateWithoutLiveSessionsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -975,6 +1004,7 @@ export type PropertyCreateWithoutLiveRecordingsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -998,6 +1028,7 @@ export type PropertyUncheckedCreateWithoutLiveRecordingsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1035,6 +1066,7 @@ export type PropertyUpdateWithoutLiveRecordingsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1058,6 +1090,7 @@ export type PropertyUncheckedUpdateWithoutLiveRecordingsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1079,6 +1112,7 @@ export type PropertyCreateWithoutLeadsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1102,6 +1136,7 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1139,6 +1174,7 @@ export type PropertyUpdateWithoutLeadsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1162,6 +1198,7 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1183,6 +1220,7 @@ export type PropertyCreateWithoutOffersInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1206,6 +1244,7 @@ export type PropertyUncheckedCreateWithoutOffersInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1243,6 +1282,7 @@ export type PropertyUpdateWithoutOffersInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1266,6 +1306,7 @@ export type PropertyUncheckedUpdateWithoutOffersInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1287,6 +1328,7 @@ export type PropertyCreateWithoutCommentsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1310,6 +1352,7 @@ export type PropertyUncheckedCreateWithoutCommentsInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1347,6 +1390,7 @@ export type PropertyUpdateWithoutCommentsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1370,6 +1414,7 @@ export type PropertyUncheckedUpdateWithoutCommentsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1391,6 +1436,7 @@ export type PropertyCreateWithoutVideoToursInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1414,6 +1460,7 @@ export type PropertyUncheckedCreateWithoutVideoToursInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1451,6 +1498,7 @@ export type PropertyUpdateWithoutVideoToursInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1474,6 +1522,7 @@ export type PropertyUncheckedUpdateWithoutVideoToursInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1495,6 +1544,7 @@ export type PropertyCreateManyAgentInput = {
   currency?: string
   image?: string | null
   imagePathname?: string | null
+  consultantId?: string | null
   description?: string | null
   bedrooms?: number | null
   bathrooms?: number | null
@@ -1511,6 +1561,7 @@ export type PropertyUpdateWithoutAgentInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1533,6 +1584,7 @@ export type PropertyUncheckedUpdateWithoutAgentInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1555,6 +1607,7 @@ export type PropertyUncheckedUpdateManyWithoutAgentInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imagePathname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1648,6 +1701,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   currency?: boolean
   image?: boolean
   imagePathname?: boolean
+  consultantId?: boolean
   description?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
@@ -1673,6 +1727,7 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   currency?: boolean
   image?: boolean
   imagePathname?: boolean
+  consultantId?: boolean
   description?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
@@ -1691,6 +1746,7 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   currency?: boolean
   image?: boolean
   imagePathname?: boolean
+  consultantId?: boolean
   description?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
@@ -1709,6 +1765,7 @@ export type PropertySelectScalar = {
   currency?: boolean
   image?: boolean
   imagePathname?: boolean
+  consultantId?: boolean
   description?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
@@ -1717,7 +1774,7 @@ export type PropertySelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agentId" | "title" | "location" | "price" | "currency" | "image" | "imagePathname" | "description" | "bedrooms" | "bathrooms" | "areaSquareMeters" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agentId" | "title" | "location" | "price" | "currency" | "image" | "imagePathname" | "consultantId" | "description" | "bedrooms" | "bathrooms" | "areaSquareMeters" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent?: boolean | Prisma.AgentDefaultArgs<ExtArgs>
   liveSessions?: boolean | Prisma.Property$liveSessionsArgs<ExtArgs>
@@ -1755,6 +1812,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     currency: string
     image: string | null
     imagePathname: string | null
+    consultantId: string | null
     description: string | null
     bedrooms: number | null
     bathrooms: number | null
@@ -2199,6 +2257,7 @@ export interface PropertyFieldRefs {
   readonly currency: Prisma.FieldRef<"Property", 'String'>
   readonly image: Prisma.FieldRef<"Property", 'String'>
   readonly imagePathname: Prisma.FieldRef<"Property", 'String'>
+  readonly consultantId: Prisma.FieldRef<"Property", 'String'>
   readonly description: Prisma.FieldRef<"Property", 'String'>
   readonly bedrooms: Prisma.FieldRef<"Property", 'Int'>
   readonly bathrooms: Prisma.FieldRef<"Property", 'Int'>

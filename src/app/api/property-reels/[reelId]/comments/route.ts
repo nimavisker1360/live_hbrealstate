@@ -1,5 +1,11 @@
 import { handleApiError, jsonError } from "@/lib/api";
 import { getCurrentSession } from "@/lib/auth";
+import {
+  PUSHER_EVENTS,
+  getReelCommentsChannel,
+  type RealtimeReelCommentEvent,
+} from "@/lib/pusher-channels";
+import { triggerRealtimeEvent } from "@/lib/pusher-server";
 import { prisma } from "@/lib/prisma";
 import {
   checkCommentCooldown,
@@ -147,11 +153,24 @@ export async function POST(
 
     markCommentPosted(cooldown.key, cooldown.now);
 
+    const comment = serializeVideoTourComment(created.comment);
+
+    await triggerRealtimeEvent(
+      getReelCommentsChannel(reel.id),
+      PUSHER_EVENTS.COMMENT_CREATED,
+      {
+        reelId: reel.id,
+        comment,
+        commentCount: created.commentCount,
+        clientEventId: body.clientEventId,
+      } satisfies RealtimeReelCommentEvent,
+    );
+
     return withVisitorCookie(
       Response.json(
         {
           data: {
-            comment: serializeVideoTourComment(created.comment),
+            comment,
             commentCount: created.commentCount,
           },
         },

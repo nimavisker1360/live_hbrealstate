@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { del, put } from "@vercel/blob";
 import { z, ZodError } from "zod";
 import { handleApiError, jsonError } from "@/lib/api";
+import { getConsultantById } from "@/lib/hb-consultants";
 import { prisma } from "@/lib/prisma";
 import {
   PropertyReelUploadError,
@@ -36,6 +37,7 @@ const propertyFieldsSchema = z.object({
     .trim()
     .regex(/^[A-Z]{3}$/, "Currency must be a 3-letter code.")
     .optional(),
+  consultantId: z.string().trim().min(1).optional(),
   bedrooms: z
     .string()
     .trim()
@@ -100,12 +102,17 @@ export async function POST(request: Request) {
       description: emptyToUndefined(getString(formData, "description")),
       price: emptyToUndefined(getString(formData, "price")),
       currency: emptyToUndefined(getString(formData, "currency")),
+      consultantId: emptyToUndefined(getString(formData, "consultantId")),
       bedrooms: emptyToUndefined(getString(formData, "bedrooms")),
       bathrooms: emptyToUndefined(getString(formData, "bathrooms")),
       areaSquareMeters: emptyToUndefined(
         getString(formData, "areaSquareMeters"),
       ),
     });
+
+    if (fields.consultantId && !getConsultantById(fields.consultantId)) {
+      return jsonError("Choose a valid HB consultant.", 400);
+    }
 
     const cover = formData.get("coverImage");
 
@@ -156,6 +163,7 @@ export async function POST(request: Request) {
           description: fields.description ?? null,
           price: fields.price ?? null,
           currency: fields.currency ?? "USD",
+          consultantId: fields.consultantId ?? null,
           image: blob.url,
           imagePathname: blob.pathname,
           bedrooms: fields.bedrooms ? Number(fields.bedrooms) : null,

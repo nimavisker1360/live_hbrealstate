@@ -19,6 +19,13 @@ type PropertyOption = {
   location: string;
 };
 
+type ConsultantOption = {
+  id: string;
+  image: string;
+  name: string;
+  specialty: string;
+};
+
 type UploadResponse = {
   data?: {
     id: string;
@@ -37,8 +44,10 @@ const fieldClassName =
 const ACCEPT = "video/mp4,video/quicktime,video/webm";
 
 export function UploadPropertyReelPanel({
+  consultants,
   properties,
 }: {
+  consultants: ConsultantOption[];
   properties: PropertyOption[];
 }) {
   const [activeTab, setActiveTab] = useState<Tab>(
@@ -93,7 +102,7 @@ export function UploadPropertyReelPanel({
       </div>
 
       {isPropertyActive ? (
-        <AddPropertyForm />
+        <AddPropertyForm consultants={consultants} />
       ) : (
         <UploadReelForm properties={properties} />
       )}

@@ -12,6 +12,7 @@ type DetailsSheetProps = {
   property: { title: string; location: string; price: string };
   agent: {
     name: string;
+    displayName?: string;
     image?: string;
     phone?: string;
     specialty?: string;
@@ -26,6 +27,8 @@ export function DetailsSheet({
   property,
   agent,
 }: DetailsSheetProps) {
+  const agentName = agent.displayName ?? agent.name;
+
   return (
     <BottomSheet open={open} onClose={onClose} title="Details" heightClass="h-[75vh]">
       <div className="flex-1 overflow-y-auto px-5 py-4">
@@ -62,18 +65,18 @@ export function DetailsSheet({
             <div className="size-12 overflow-hidden rounded-full border-2 border-[#d6b15f]/60 bg-black/40">
               {agent.image ? (
                 <img
-                  alt={agent.name}
+                  alt={agentName}
                   src={agent.image}
                   className="h-full w-full object-cover"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-[#d6b15f]/20 text-sm font-bold text-[#d6b15f]">
-                  {agent.name.charAt(0)}
+                  {agentName.charAt(0)}
                 </div>
               )}
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">{agent.name}</p>
+              <p className="text-sm font-semibold text-white">{agentName}</p>
               {agent.specialty ? (
                 <p className="text-xs text-white/55">{agent.specialty}</p>
               ) : null}

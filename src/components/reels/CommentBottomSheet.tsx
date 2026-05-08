@@ -15,12 +15,19 @@ import {
   Send,
   X,
 } from "lucide-react";
+import {
+  PUSHER_EVENTS,
+  getReelCommentsChannel,
+  type RealtimeReelCommentEvent,
+} from "@/lib/pusher-channels";
+import { createPusherClient } from "@/lib/pusher-client";
 import { cn } from "@/lib/utils";
 
 const MIN_LENGTH = 1;
 const MAX_LENGTH = 500;
 const SWIPE_DISMISS_THRESHOLD_PX = 120;
 const SWIPE_DISMISS_VELOCITY = 0.6;
+const REALTIME_FALLBACK_POLL_MS = 1000;
 
 type ApiComment = {
   id: string;
@@ -135,6 +142,49 @@ function removeComment(comments: SheetComment[], id: string) {
     }));
 }
 
+function hasComment(comments: SheetComment[], id: string) {
+  return comments.some(
+    (comment) =>
+      comment.id === id || comment.replies?.some((reply) => reply.id === id),
+  );
+}
+
+function mergeIncomingComment(
+  comments: SheetComment[],
+  incoming: ApiComment,
+  sort: SortMode,
+) {
+  if (hasComment(comments, incoming.id)) {
+    return { comments, inserted: false, parentId: incoming.parentId };
+  }
+
+  if (incoming.parentId) {
+    let inserted = false;
+    const next = comments.map((comment) => {
+      if (comment.id !== incoming.parentId) return comment;
+
+      inserted = true;
+      return {
+        ...comment,
+        replies: [...(comment.replies ?? []), incoming],
+      };
+    });
+
+    return {
+      comments: inserted ? next : comments,
+      inserted,
+      parentId: incoming.parentId,
+    };
+  }
+
+  return {
+    comments:
+      sort === "newest" ? [incoming, ...comments] : [...comments, incoming],
+    inserted: true,
+    parentId: null,
+  };
+}
+
 export function CommentBottomSheet({
   open,
   onClose,
@@ -159,6 +209,8 @@ export function CommentBottomSheet({
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clientEventIdRef = useRef(0);
+  const pendingClientEventIdsRef = useRef<Set<string>>(new Set());
   const dragStateRef = useRef<{
     startY: number;
     startTime: number;
@@ -251,7 +303,7 @@ export function CommentBottomSheet({
       try {
         const res = await fetch(
           `/api/property-reels/${reelId}/comments?take=100&sort=${sort}`,
-          { credentials: "include" },
+          { cache: "no-store", credentials: "include" },
         );
         if (!res.ok) throw new Error(`Failed: ${res.status}`);
         const json = (await res.json()) as CommentsResponse;
@@ -276,6 +328,95 @@ export function CommentBottomSheet({
       cancelled = true;
     };
   }, [open, reelId, sort]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const pusher = createPusherClient();
+    if (!pusher) return;
+
+    const channel = pusher.subscribe(getReelCommentsChannel(reelId));
+    const onCommentCreated = (payload: RealtimeReelCommentEvent) => {
+      if (payload.reelId !== reelId) return;
+      if (
+        payload.clientEventId &&
+        pendingClientEventIdsRef.current.has(payload.clientEventId)
+      ) {
+        return;
+      }
+
+      setComments((prev) => {
+        const merged = mergeIncomingComment(prev, payload.comment, sort);
+        if (!merged.inserted) return prev;
+
+        persistCache(merged.comments, payload.commentCount);
+        return merged.comments;
+      });
+
+      const parentId = payload.comment.parentId;
+      if (parentId) {
+        setCollapsed((prev) => {
+          const next = new Set(prev);
+          next.delete(parentId);
+          return next;
+        });
+      }
+
+      onCommentAdded(payload.commentCount);
+    };
+
+    channel.bind(PUSHER_EVENTS.COMMENT_CREATED, onCommentCreated);
+
+    return () => {
+      channel.unbind(PUSHER_EVENTS.COMMENT_CREATED, onCommentCreated);
+      pusher.unsubscribe(getReelCommentsChannel(reelId));
+      pusher.disconnect();
+    };
+  }, [onCommentAdded, open, persistCache, reelId, sort]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    let cancelled = false;
+
+    const refresh = async () => {
+      if (posting) return;
+
+      try {
+        const res = await fetch(
+          `/api/property-reels/${reelId}/comments?take=100&sort=${sort}`,
+          { cache: "no-store", credentials: "include" },
+        );
+        if (!res.ok) return;
+
+        const json = (await res.json()) as CommentsResponse;
+        if (cancelled || !json.data) return;
+
+        cacheStore.set(cacheKey(reelId, sort), {
+          comments: json.data.comments,
+          commentCount: json.data.commentCount,
+          fetchedAt: Date.now(),
+        });
+        setComments(json.data.comments);
+        onCommentAdded(json.data.commentCount);
+      } catch {
+        // Pusher is primary when configured; polling failures should not block use.
+      }
+    };
+
+    void refresh();
+
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        void refresh();
+      }
+    }, REALTIME_FALLBACK_POLL_MS);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [onCommentAdded, open, posting, reelId, sort]);
 
   useLayoutEffect(() => {
     if (!open || !replyTo) return;
@@ -380,6 +521,7 @@ export function CommentBottomSheet({
       if (!message || message.length > MAX_LENGTH || posting) return;
 
       const tempId = `temp-${Date.now()}`;
+      const clientEventId = `comment-sheet-${Date.now()}-${++clientEventIdRef.current}`;
       const optimistic: SheetComment = {
         id: tempId,
         parentId: replyTo?.id ?? null,
@@ -397,11 +539,21 @@ export function CommentBottomSheet({
 
       const parentId = replyTo?.id ?? null;
       setComments((prev) =>
-        parentId ? appendReply(prev, parentId, optimistic) : [optimistic, ...prev],
+        parentId
+          ? appendReply(prev, parentId, optimistic)
+          : [optimistic, ...prev],
       );
+      if (parentId) {
+        setCollapsed((prev) => {
+          const next = new Set(prev);
+          next.delete(parentId);
+          return next;
+        });
+      }
       setDraft("");
       setError(null);
       setPosting(true);
+      pendingClientEventIdsRef.current.add(clientEventId);
 
       try {
         const endpoint = parentId
@@ -411,7 +563,7 @@ export function CommentBottomSheet({
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message, parentId }),
+          body: JSON.stringify({ clientEventId, message, parentId }),
         });
         const json = (await res.json().catch(() => ({}))) as PostResponse;
 
@@ -439,6 +591,7 @@ export function CommentBottomSheet({
         setDraft(message);
         setError("Network error. Please try again.");
       } finally {
+        pendingClientEventIdsRef.current.delete(clientEventId);
         setPosting(false);
       }
     },
@@ -483,14 +636,14 @@ export function CommentBottomSheet({
         )}
         style={{ transform: `translate3d(0, ${translate}, 0)` }}
       >
-        <div
-          className="flex select-none items-center justify-between border-b border-white/8 px-5 py-2 touch-none"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-        >
-          <div className="flex flex-1 flex-col items-center">
+        <div className="flex select-none items-center justify-between border-b border-white/8 px-5 py-2">
+          <div
+            className="flex flex-1 flex-col items-center touch-none"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+          >
             <span className="mb-2 h-1 w-10 rounded-full bg-white/25" />
             <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-white/85">
               Comments
@@ -498,7 +651,11 @@ export function CommentBottomSheet({
           </div>
           <button
             type="button"
-            onClick={triggerClose}
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              triggerClose();
+            }}
             aria-label="Close comments"
             className="ml-2 inline-flex size-9 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
           >

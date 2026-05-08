@@ -23,6 +23,17 @@ body {
   color: #050505;
 }
 
+select option,
+select optgroup {
+  background-color: #050505;
+  color: #ffffff;
+}
+
+select option:checked {
+  background-color: #1f1a10;
+  color: #f0cf79;
+}
+
 html {
   background: #050505;
   scroll-behavior: smooth;

@@ -20,6 +20,7 @@ export const videoTourCommentBodySchema = z.object({
     .max(VIDEO_TOUR_COMMENT_MAX_LENGTH),
   author: z.string().trim().min(1).max(80).optional(),
   parentId: z.string().trim().min(1).nullable().optional(),
+  clientEventId: z.string().trim().min(1).max(120).optional(),
 });
 
 export type VideoTourCommentSort = "newest" | "mostLiked";

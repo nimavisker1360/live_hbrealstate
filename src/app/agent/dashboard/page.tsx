@@ -10,8 +10,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
+import { ClearEngagementButton } from "@/components/property-reels/ClearEngagementButton";
+import { PropertyDeleteButton } from "@/components/property-reels/PropertyDeleteButton";
 import { ReelRowActions } from "@/components/property-reels/ReelRowActions";
 import { UploadPropertyReelPanel } from "@/components/property-reels/UploadPropertyReelPanel";
+import { HB_CONSULTANTS, getConsultantById } from "@/lib/hb-consultants";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
@@ -462,7 +465,15 @@ export default async function AgentDashboardPage() {
           </div>
         </div>
 
-        <UploadPropertyReelPanel properties={propertyOptions} />
+        <UploadPropertyReelPanel
+          consultants={HB_CONSULTANTS.map((consultant) => ({
+            id: consultant.id,
+            image: consultant.image,
+            name: consultant.name,
+            specialty: consultant.specialty,
+          }))}
+          properties={propertyOptions}
+        />
 
         <section
           aria-label="Property reels analytics"
@@ -490,7 +501,7 @@ export default async function AgentDashboardPage() {
           })}
         </section>
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
+        <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.52fr)]">
           <Card className="p-5">
             <SectionHeader
               eyebrow="Property reels"
@@ -585,10 +596,21 @@ export default async function AgentDashboardPage() {
           </Card>
 
           <Card className="p-5">
-            <SectionHeader eyebrow="Properties" title="Active inventory" />
+            <div className="mb-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
+                Properties
+              </p>
+              <h2 className="mt-2 text-xl font-semibold text-white">
+                Active inventory
+              </h2>
+              <p className="mt-2 text-sm text-white/46">
+                Delete removes the property, linked reels, and stored media.
+              </p>
+            </div>
             <div className="space-y-3">
               {databaseProperties.map((property) => {
                 const latestReel = property.videoTours[0];
+                const consultant = getConsultantById(property.consultantId);
                 const activity = latestReel
                   ? `Latest reel · ${latestReel.status.toLowerCase()} · ${formatDate(latestReel.updatedAt)}`
                   : `${property._count.videoTours} reels`;
@@ -606,36 +628,57 @@ export default async function AgentDashboardPage() {
 
                 return (
                   <div
-                    className="overflow-hidden rounded-md border border-white/10 bg-black/20"
+                    className="overflow-hidden rounded-md border border-white/10 bg-black/25"
                     key={property.id}
                   >
-                    {property.image ? (
+                    <div className="grid gap-3 p-3 sm:grid-cols-[104px_minmax(0,1fr)] xl:grid-cols-1 2xl:grid-cols-[104px_minmax(0,1fr)]">
                       <div
                         aria-hidden
-                        className="aspect-[16/9] w-full bg-cover bg-center"
-                        style={{ backgroundImage: `url('${property.image}')` }}
+                        className="aspect-[16/10] rounded-md border border-white/10 bg-black/40 bg-cover bg-center sm:aspect-square xl:aspect-[16/10] 2xl:aspect-square"
+                        style={{
+                          backgroundImage: property.image
+                            ? `url('${property.image}')`
+                            : undefined,
+                        }}
                       />
-                    ) : null}
-                    <div className="p-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="font-medium text-white">
-                            {property.title}
-                          </p>
-                          <p className="mt-1 text-sm text-white/52">
-                            {property.location}
-                          </p>
+                      <div className="min-w-0">
+                        <div className="flex min-w-0 items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="break-words text-sm font-semibold leading-5 text-white">
+                              {property.title}
+                            </p>
+                            <p className="mt-1 break-words text-sm text-white/52">
+                              {property.location}
+                            </p>
+                          </div>
+                          <span className="shrink-0 rounded-md border border-[#d6b15f]/25 bg-[#d6b15f]/10 px-2 py-1 text-xs font-semibold text-[#f0cf79]">
+                            {property._count.videoTours}
+                          </span>
                         </div>
-                        <p className="shrink-0 text-sm font-semibold text-[#d6b15f]">
+                        <p className="mt-3 break-words text-sm font-semibold text-[#d6b15f]">
                           {formatPrice(property.price, property.currency)}
                         </p>
-                      </div>
-                      {specs.length > 0 ? (
-                        <p className="mt-2 text-xs text-white/52">
-                          {specs.join(" · ")}
+                        {specs.length > 0 ? (
+                          <p className="mt-2 text-xs text-white/52">
+                            {specs.join(" · ")}
+                          </p>
+                        ) : null}
+                        <p className="mt-2 text-sm text-white/56">
+                          {activity}
                         </p>
-                      ) : null}
-                      <p className="mt-3 text-sm text-white/56">{activity}</p>
+                        {consultant ? (
+                          <p className="mt-2 truncate text-xs text-[#f0cf79]">
+                            Consultant: {consultant.name}
+                          </p>
+                        ) : null}
+                        <div className="mt-3">
+                          <PropertyDeleteButton
+                            propertyId={property.id}
+                            propertyTitle={property.title}
+                            reelCount={property._count.videoTours}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
@@ -650,10 +693,17 @@ export default async function AgentDashboardPage() {
         </div>
 
         <Card className="mt-6 p-5">
-          <SectionHeader
-            eyebrow="Engagement"
-            title={`Likes & comments (${engagementSummary.length})`}
-          />
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
+                Engagement
+              </p>
+              <h2 className="mt-2 text-xl font-semibold text-white">
+                Likes & comments ({engagementSummary.length})
+              </h2>
+            </div>
+            <ClearEngagementButton />
+          </div>
           <div className="max-h-[560px] space-y-3 overflow-y-auto pr-1">
             {engagementSummary.length > 0 ? (
               engagementSummary.map((row) => (

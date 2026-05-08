@@ -16,6 +16,27 @@ export type RealtimeCommentEvent = {
   clientEventId?: string;
 };
 
+export type RealtimeReelComment = {
+  id: string;
+  parentId: string | null;
+  author: string;
+  message: string;
+  createdAt: string;
+  isMember: boolean;
+  isAgent: boolean;
+  agentBadge: "Official Agent" | "HB Agent" | null;
+  isPinned: boolean;
+  likeCount: number;
+  replies: RealtimeReelComment[];
+};
+
+export type RealtimeReelCommentEvent = {
+  reelId: string;
+  comment: RealtimeReelComment;
+  commentCount: number;
+  clientEventId?: string;
+};
+
 export type RealtimeLikeEvent = {
   liveSessionId: string;
   count: number;
@@ -26,4 +47,8 @@ export type RealtimeLikeEvent = {
 
 export function getLivePresenceChannel(liveSessionId: string) {
   return `presence-live-${liveSessionId}`;
+}
+
+export function getReelCommentsChannel(reelId: string) {
+  return `reel-comments-${reelId}`;
 }

@@ -15,6 +15,7 @@ type ReelActionBarProps = {
   onOffer: () => void;
   agent: {
     name: string;
+    displayName?: string;
     image?: string;
   };
 };
@@ -35,19 +36,21 @@ export function ReelActionBar({
   onOffer,
   agent,
 }: ReelActionBarProps) {
+  const agentName = agent.displayName ?? agent.name;
+
   return (
     <div className="pointer-events-none absolute bottom-32 right-3 z-30 flex flex-col items-center gap-5">
       <div className="pointer-events-auto flex flex-col items-center">
         <div className="size-12 overflow-hidden rounded-full border-2 border-[#d6b15f] bg-black/50">
           {agent.image ? (
             <img
-              alt={agent.name}
+              alt={agentName}
               src={agent.image}
               className="h-full w-full object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[#d6b15f]/20 text-sm font-bold text-[#d6b15f]">
-              {agent.name.charAt(0)}
+              {agentName.charAt(0)}
             </div>
           )}
         </div>
