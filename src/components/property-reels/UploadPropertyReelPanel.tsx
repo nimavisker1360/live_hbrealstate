@@ -1,5 +1,6 @@
 "use client";
 
+import { upload } from "@vercel/blob/client";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
@@ -42,6 +43,7 @@ const fieldClassName =
   "h-11 w-full rounded-md border border-white/10 bg-black/28 px-3 text-sm text-white outline-none transition placeholder:text-white/32 focus:border-[#d6b15f]/70 focus:ring-2 focus:ring-[#d6b15f]/18";
 
 const ACCEPT = "video/mp4,video/quicktime,video/webm";
+const LARGE_UPLOAD_THRESHOLD_BYTES = 10 * 1024 * 1024;
 
 export function UploadPropertyReelPanel({
   consultants,
@@ -160,9 +162,22 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
     const form = event.currentTarget;
     const formData = new FormData(form);
     const video = formData.get("video");
+    const propertyId = formData.get("propertyId");
+    const title = formData.get("title");
+    const description = formData.get("description");
 
     if (!(video instanceof File) || video.size === 0) {
       setError("Choose a video file to upload.");
+      return;
+    }
+
+    if (typeof propertyId !== "string" || !propertyId.trim()) {
+      setError("Choose a property for this reel.");
+      return;
+    }
+
+    if (typeof title !== "string" || title.trim().length < 2) {
+      setError("Enter a reel title.");
       return;
     }
 
@@ -170,7 +185,15 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
     setProgress(0);
 
     try {
-      const result = await uploadWithProgress(formData, setProgress);
+      const result = await uploadReelWithProgress(
+        {
+          description: typeof description === "string" ? description : "",
+          propertyId,
+          title,
+          video,
+        },
+        setProgress,
+      );
 
       if (!result.ok) {
         setError(result.message);
@@ -311,52 +334,87 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
   );
 }
 
-function uploadWithProgress(
-  formData: FormData,
+function sanitizePathSegment(value: string) {
+  return (
+    value
+      .replace(/\\/g, "/")
+      .split("/")
+      .pop()
+      ?.trim()
+      .replace(/[^a-zA-Z0-9._-]/g, "-")
+      .slice(0, 180) || "reel.mp4"
+  );
+}
+
+async function uploadReelWithProgress(
+  input: {
+    description: string;
+    propertyId: string;
+    title: string;
+    video: File;
+  },
   onProgress: (percent: number) => void,
 ): Promise<
   | { ok: true; data: NonNullable<UploadResponse["data"]> }
   | { ok: false; message: string }
 > {
-  return new Promise((resolve) => {
-    const xhr = new XMLHttpRequest();
+  const pathname = [
+    "property-reels",
+    input.propertyId,
+    `${crypto.randomUUID()}-${sanitizePathSegment(input.video.name)}`,
+  ].join("/");
 
-    xhr.open("POST", "/api/property-reels/upload");
-
-    xhr.upload.addEventListener("progress", (event) => {
-      if (event.lengthComputable) {
-        onProgress(Math.round((event.loaded / event.total) * 100));
-      }
+  try {
+    const blob = await upload(pathname, input.video, {
+      access: "public",
+      clientPayload: JSON.stringify({ propertyId: input.propertyId }),
+      contentType: input.video.type,
+      handleUploadUrl: "/api/property-reels/client-upload",
+      multipart: input.video.size > LARGE_UPLOAD_THRESHOLD_BYTES,
+      onUploadProgress: (event) => {
+        onProgress(Math.min(95, Math.round(event.percentage)));
+      },
     });
 
-    xhr.addEventListener("error", () => {
-      resolve({ ok: false, message: "Network error during upload." });
+    onProgress(98);
+
+    const response = await fetch("/api/property-reels/complete", {
+      body: JSON.stringify({
+        blob: {
+          pathname: blob.pathname,
+          url: blob.url,
+        },
+        description: input.description.trim() || undefined,
+        fileSize: input.video.size,
+        mimeType: input.video.type,
+        propertyId: input.propertyId,
+        title: input.title.trim(),
+      }),
+      headers: { "content-type": "application/json" },
+      method: "POST",
     });
+    const parsed = (await response.json().catch(() => null)) as
+      | UploadResponse
+      | null;
 
-    xhr.addEventListener("abort", () => {
-      resolve({ ok: false, message: "Upload was cancelled." });
-    });
+    if (response.ok && parsed?.data) {
+      onProgress(100);
+      return { ok: true, data: parsed.data };
+    }
 
-    xhr.addEventListener("load", () => {
-      let parsed: UploadResponse | null = null;
-
-      try {
-        parsed = JSON.parse(xhr.responseText) as UploadResponse;
-      } catch {
-        parsed = null;
-      }
-
-      if (xhr.status >= 200 && xhr.status < 300 && parsed?.data) {
-        resolve({ ok: true, data: parsed.data });
-        return;
-      }
-
-      const message =
+    return {
+      ok: false,
+      message:
         parsed?.error?.message ??
-        `Upload failed (status ${xhr.status || "unknown"}).`;
-      resolve({ ok: false, message });
-    });
-
-    xhr.send(formData);
-  });
+        `Upload saved, but registration failed (status ${response.status || "unknown"}).`,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Could not upload property reel.",
+    };
+  }
 }
