@@ -43,6 +43,7 @@ export function getReelBlobAccess(): "public" | "private" {
 }
 
 const WRITABLE_ROLES: ReadonlySet<AuthRole> = new Set(["AGENT", "OWNER"]);
+const DEFAULT_AGENT_COMPANY = "HB Real Estate";
 
 export async function requireAgentOrAdmin() {
   const session = await getCurrentSession().catch(() => null);
@@ -67,14 +68,58 @@ export async function resolveAgentForUser(userId: string) {
     select: { id: true, name: true },
   });
 
-  if (!agent) {
-    throw new PropertyReelUploadError(
-      "No agent profile is linked to this account.",
-      403,
-    );
+  if (agent) {
+    return agent;
   }
 
-  return agent;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      auth0Id: true,
+      email: true,
+      id: true,
+      name: true,
+    },
+  });
+
+  if (!user) {
+    throw new PropertyReelUploadError("Authenticated user not found.", 403);
+  }
+
+  if (user.auth0Id) {
+    const legacyAgent = await prisma.agent.findUnique({
+      where: { id: user.auth0Id },
+      select: { id: true, name: true, userId: true },
+    });
+
+    if (legacyAgent && !legacyAgent.userId) {
+      return prisma.agent.update({
+        where: { id: legacyAgent.id },
+        data: { userId: user.id },
+        select: { id: true, name: true },
+      });
+    }
+
+    if (legacyAgent?.userId === user.id) {
+      return {
+        id: legacyAgent.id,
+        name: legacyAgent.name,
+      };
+    }
+  }
+
+  return prisma.agent.upsert({
+    where: { userId: user.id },
+    update: {},
+    create: {
+      userId: user.id,
+      name: user.name || user.email || "HB Real Estate Agent",
+      company: DEFAULT_AGENT_COMPANY,
+      status: "ACTIVE",
+      subscriptionPlan: "PRO",
+    },
+    select: { id: true, name: true },
+  });
 }
 
 export async function ensurePropertyOwnedByAgent(
