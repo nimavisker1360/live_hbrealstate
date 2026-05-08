@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { AuthSession } from "@/lib/auth";
 import { getSessionBackedByDatabase } from "@/lib/auth-users";
+import { getConsultantById } from "@/lib/hb-consultants";
 import { appendVisitorCookie, ensureVisitorId } from "@/lib/reel-visitor";
 import { prisma } from "@/lib/prisma";
 
@@ -191,20 +192,28 @@ export async function resolveCommentIdentity({
   session: AuthSession | null;
 }) {
   const dbSession = session ? await getSessionBackedByDatabase(session) : null;
+  const linkedAgent = dbSession
+    ? (await prisma.agent.findUnique({
+        where: { userId: dbSession.sub },
+        select: { id: true, name: true },
+      })) ?? null
+    : null;
+  const isReelOwner = Boolean(linkedAgent && linkedAgent.id === reelAgentId);
   const visitor = dbSession ? null : await ensureVisitorId();
-
-  void consultantId;
-  void reelAgentId;
+  const consultant = isReelOwner ? getConsultantById(consultantId) : null;
 
   return {
     userId: dbSession?.sub ?? null,
-    agentId: null as string | null,
+    agentId: isReelOwner ? linkedAgent!.id : null,
     visitor,
     author:
+      (isReelOwner
+        ? consultant?.name?.trim() || linkedAgent?.name?.trim()
+        : null) ||
       dbSession?.name?.trim() ||
       author?.trim() ||
       "Guest",
-    isAgent: false,
+    isAgent: isReelOwner,
     identity: dbSession?.sub ?? visitor?.visitorId ?? null,
   };
 }
