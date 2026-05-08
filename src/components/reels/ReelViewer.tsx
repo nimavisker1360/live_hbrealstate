@@ -28,6 +28,7 @@ export type ReelViewerData = {
   isProcessing: boolean;
   isAuthenticated: boolean;
   isAgent: boolean;
+  viewerName?: string;
   likeCount: number;
   commentCount: number;
   viewCount: number;
@@ -163,6 +164,9 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
     whatsapp: reel.agent.whatsapp ?? reel.agent.phone,
   });
   const consultantName = reel.agent.displayName ?? reel.agent.name;
+  const commentAuthorName = reel.isAgent
+    ? consultantName
+    : reel.viewerName ?? "You";
 
   return (
     <div className="fixed inset-0 z-40 overflow-hidden bg-black text-white">
@@ -260,7 +264,7 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
           reelId={reel.id}
           isAuthenticated={reel.isAuthenticated}
           isAgent={reel.isAgent}
-          commentAuthorName={consultantName}
+          commentAuthorName={commentAuthorName}
           onCommentCountChange={handleCommentAdded}
         />
 
@@ -298,7 +302,7 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
         reelId={reel.id}
         isAuthenticated={reel.isAuthenticated}
         isAgent={reel.isAgent}
-        commentAuthorName={consultantName}
+        commentAuthorName={commentAuthorName}
         onCommentAdded={handleCommentAdded}
       />
     </div>

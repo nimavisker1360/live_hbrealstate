@@ -527,7 +527,7 @@ export function CommentBottomSheet({
       const optimistic: SheetComment = {
         id: tempId,
         parentId: replyTo?.id ?? null,
-        author: isAgent ? commentAuthorName : isAuthenticated ? "You" : "Guest",
+        author: isAuthenticated ? commentAuthorName : "Guest",
         message,
         createdAt: new Date().toISOString(),
         pending: true,

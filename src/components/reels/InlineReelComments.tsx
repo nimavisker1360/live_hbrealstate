@@ -181,7 +181,7 @@ export const InlineReelComments = forwardRef<
 
     const optimistic: CommentToast = {
       id: `temp-${Date.now()}`,
-      author: isAgent ? commentAuthorName : isAuthenticated ? "You" : "Guest",
+      author: isAuthenticated ? commentAuthorName : "Guest",
       message,
       createdAt: new Date().toISOString(),
       isMember: isAuthenticated,

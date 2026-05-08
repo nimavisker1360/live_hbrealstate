@@ -75,10 +75,7 @@ export function detectCommentSpam(message: string): string | null {
 export function serializeVideoTourComment(
   comment: SerializableVideoTourComment,
 ): SerializedVideoTourComment {
-  const isAgent =
-    Boolean(comment.agentId) ||
-    comment.user?.role === "AGENT" ||
-    comment.user?.role === "OWNER";
+  const isAgent = Boolean(comment.agentId);
 
   return {
     id: comment.id,
@@ -195,42 +192,52 @@ export async function resolveCommentIdentity({
   session: AuthSession | null;
 }) {
   const dbSession = session ? await getSessionBackedByDatabase(session) : null;
-  const isAgent =
+  const hasAgentRole =
     dbSession?.role === "AGENT" || dbSession?.role === "OWNER";
   const visitor = dbSession ? null : await ensureVisitorId();
+  const consultant = getConsultantById(consultantId);
   let agentId: string | null = null;
   let agentName: string | null = null;
+  let linkedAgent: { id: string; name: string } | null = null;
 
-  if (isAgent && dbSession) {
-    const linkedAgent =
+  if (hasAgentRole && dbSession) {
+    linkedAgent =
       (await prisma.agent.findUnique({
         where: { userId: dbSession.sub },
         select: { id: true, name: true },
       })) ??
       (await prisma.agent.findUnique({
-        where: { id: reelAgentId },
+        where: { id: session?.sub ?? dbSession.sub },
         select: { id: true, name: true },
       }));
+  }
 
+  const isSelectedConsultantSession =
+    Boolean(consultant) &&
+    (consultant?.id === dbSession?.sub ||
+      consultant?.id === session?.sub ||
+      consultant?.id === linkedAgent?.id);
+  const shouldPostAsFallbackAgent =
+    !consultant && linkedAgent?.id === reelAgentId;
+  const shouldPostAsAgent =
+    Boolean(hasAgentRole) &&
+    (isSelectedConsultantSession || shouldPostAsFallbackAgent);
+
+  if (shouldPostAsAgent) {
     agentId = linkedAgent?.id ?? reelAgentId;
     agentName = linkedAgent?.name ?? null;
   }
-
-  const consultantName = isAgent
-    ? getConsultantById(consultantId)?.name
-    : null;
 
   return {
     userId: dbSession?.sub ?? null,
     agentId,
     visitor,
     author:
-      consultantName?.trim() ||
-      (isAgent ? agentName?.trim() : null) ||
+      (shouldPostAsAgent ? consultant?.name?.trim() || agentName?.trim() : null) ||
       dbSession?.name?.trim() ||
       author?.trim() ||
       "Guest",
-    isAgent,
+    isAgent: shouldPostAsAgent,
     identity: dbSession?.sub ?? visitor?.visitorId ?? null,
   };
 }

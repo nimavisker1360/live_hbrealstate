@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { ReelViewer } from "@/components/reels/ReelViewer";
 import { getCurrentSession } from "@/lib/auth";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { getConsultantByAgent, getConsultantById } from "@/lib/hb-consultants";
 import { FALLBACK_PROPERTY_IMAGE, isInlineImageSrc } from "@/lib/live-media";
 import { prisma } from "@/lib/prisma";
@@ -71,7 +72,7 @@ const getVideoTour = cache((slug: string) =>
       publishedAt: true,
       createdAt: true,
       updatedAt: true,
-      agent: { select: { id: true, name: true } },
+      agent: { select: { id: true, name: true, userId: true } },
       property: {
         select: {
           id: true,
@@ -246,6 +247,21 @@ export default async function ReelPage({ params }: ReelPageProps) {
   const consultant =
     getConsultantById(reel.property.consultantId) ??
     getConsultantByAgent(reel.agent);
+  const persistedSession = session
+    ? await getSessionBackedByDatabase(session).catch(() => null)
+    : null;
+  const hasAgentRole =
+    persistedSession?.role === "AGENT" || persistedSession?.role === "OWNER";
+  const matchesSelectedConsultant =
+    Boolean(reel.property.consultantId) &&
+    (reel.property.consultantId === session?.sub ||
+      reel.property.consultantId === persistedSession?.sub);
+  const matchesFallbackAgent =
+    !reel.property.consultantId &&
+    Boolean(reel.agent.userId) &&
+    reel.agent.userId === persistedSession?.sub;
+  const isCommentingAsAgent =
+    hasAgentRole && (matchesSelectedConsultant || matchesFallbackAgent);
   const poster = reel.thumbnailUrl ?? reel.property.image ?? FALLBACK_PROPERTY_IMAGE;
   const isProcessing = reel.status === "PROCESSING" || reel.status === "DRAFT";
   const isPublished = reel.status === "PUBLISHED";
@@ -336,7 +352,8 @@ export default async function ReelPage({ params }: ReelPageProps) {
           poster,
           isProcessing,
           isAuthenticated: Boolean(session?.sub),
-          isAgent: session?.role === "AGENT" || session?.role === "OWNER",
+          isAgent: isCommentingAsAgent,
+          viewerName: persistedSession?.name ?? session?.name,
           likeCount: reel.likeCount,
           commentCount: reel.commentCount,
           viewCount: reel.viewCount,
