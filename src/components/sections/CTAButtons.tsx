@@ -1,7 +1,5 @@
 import { Clapperboard } from "lucide-react";
-import { AgentUploadsButton } from "@/components/sections/AgentUploadsButton";
 import { Button } from "@/components/ui/Button";
-import { getAgentDashboardEmails } from "@/lib/agent-dashboard-access";
 
 export function CTAButtons() {
   return (
@@ -10,7 +8,6 @@ export function CTAButtons() {
         <Clapperboard aria-hidden className="size-5" />
         View property reels
       </Button>
-      <AgentUploadsButton allowedEmails={getAgentDashboardEmails()} />
     </div>
   );
 }
