@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AGENT_DASHBOARD_EMAIL } from "@/lib/agent-dashboard-access";
@@ -8,6 +8,14 @@ import {
   LIVE_USER_UPDATED_EVENT,
   readStoredLiveUser,
 } from "@/lib/live-auth-client";
+
+type AuthMeResponse = {
+  data?: {
+    session?: {
+      email?: string | null;
+    } | null;
+  };
+};
 
 function readViewerEmail() {
   return readStoredLiveUser()?.email?.trim().toLowerCase() ?? null;
@@ -31,8 +39,44 @@ export function AgentUploadsButton() {
     readViewerEmail,
     readServerViewerEmail,
   );
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
+  const effectiveEmail = viewerEmail ?? sessionEmail;
 
-  if (viewerEmail !== AGENT_DASHBOARD_EMAIL) {
+  useEffect(() => {
+    if (viewerEmail) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+
+        if (!res.ok) return;
+
+        const json = (await res.json()) as AuthMeResponse;
+        const email = json.data?.session?.email?.trim().toLowerCase() ?? null;
+
+        if (!cancelled) {
+          setSessionEmail(email);
+        }
+      } catch {
+        if (!cancelled) {
+          setSessionEmail(null);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [viewerEmail]);
+
+  if (effectiveEmail !== AGENT_DASHBOARD_EMAIL) {
     return null;
   }
 
