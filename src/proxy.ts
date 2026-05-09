@@ -39,6 +39,15 @@ function findAccessRule(pathname: string, method: string) {
   return PAGE_ACCESS.find((rule) => pathname.startsWith(rule.prefix));
 }
 
+function freshDashboardAuthRedirect(request: NextRequest) {
+  const startUrl = new URL("/api/auth/start", request.url);
+
+  startUrl.searchParams.set("force", "true");
+  startUrl.searchParams.set("next", "/agent/dashboard?authChecked=1");
+
+  return NextResponse.redirect(startUrl);
+}
+
 function loginRedirect(request: NextRequest) {
   const loginUrl = new URL(
     process.env.HB_MAIN_LOGIN_URL ?? "https://hbrealstate.com/login",
@@ -80,6 +89,13 @@ function unauthenticatedResponse(request: NextRequest) {
 }
 
 export async function proxy(request: NextRequest) {
+  if (
+    request.nextUrl.pathname === "/agent/dashboard" &&
+    request.nextUrl.searchParams.get("authChecked") !== "1"
+  ) {
+    return freshDashboardAuthRedirect(request);
+  }
+
   const rule = findAccessRule(request.nextUrl.pathname, request.method);
 
   if (!rule) {

@@ -9,7 +9,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { ClearEngagementButton } from "@/components/property-reels/ClearEngagementButton";
 import { PropertyDeleteButton } from "@/components/property-reels/PropertyDeleteButton";
@@ -59,6 +59,12 @@ type EngagementInput = {
   kind: "like" | "comment";
   comment?: string | null;
   at: Date;
+};
+
+type AgentDashboardPageProps = {
+  searchParams?: Promise<{
+    authChecked?: string | string[];
+  }>;
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -228,7 +234,20 @@ function mergeEngagement(
   }
 }
 
-export default async function AgentDashboardPage() {
+export default async function AgentDashboardPage({
+  searchParams,
+}: AgentDashboardPageProps) {
+  const query = searchParams ? await searchParams : {};
+  const authChecked = Array.isArray(query.authChecked)
+    ? query.authChecked[0]
+    : query.authChecked;
+
+  if (authChecked !== "1") {
+    redirect(
+      "/api/auth/start?force=true&next=/agent/dashboard%3FauthChecked%3D1",
+    );
+  }
+
   const session = await getCurrentSession().catch(() => null);
 
   if (!canAccessAgentDashboard(session)) {
