@@ -1,4 +1,5 @@
 import { Clapperboard } from "lucide-react";
+import { AgentUploadsButton } from "@/components/sections/AgentUploadsButton";
 import { Button } from "@/components/ui/Button";
 
 export function CTAButtons() {
@@ -8,6 +9,7 @@ export function CTAButtons() {
         <Clapperboard aria-hidden className="size-5" />
         View property reels
       </Button>
+      <AgentUploadsButton />
     </div>
   );
 }
