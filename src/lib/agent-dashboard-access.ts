@@ -1,18 +1,9 @@
 import type { AuthSession } from "@/lib/auth";
 
-const DEFAULT_DASHBOARD_EMAIL = "f4rz4mkaram@gmail.com";
-
-function readEmailList(value?: string) {
-  return String(value || "")
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
-}
+export const AGENT_DASHBOARD_EMAIL = "f4rz4mkaram@gmail.com";
 
 export function getAgentDashboardEmails() {
-  const configured = readEmailList(process.env.HB_AGENT_DASHBOARD_EMAILS);
-
-  return configured.length > 0 ? configured : [DEFAULT_DASHBOARD_EMAIL];
+  return [AGENT_DASHBOARD_EMAIL];
 }
 
 export function canAccessAgentDashboard(
@@ -20,5 +11,5 @@ export function canAccessAgentDashboard(
 ) {
   const email = session?.email?.trim().toLowerCase();
 
-  return Boolean(email && getAgentDashboardEmails().includes(email));
+  return email === AGENT_DASHBOARD_EMAIL;
 }

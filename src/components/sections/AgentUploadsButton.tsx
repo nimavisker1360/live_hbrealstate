@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+  LIVE_USER_UPDATED_EVENT,
+  readStoredLiveUser,
+  type SyncedLiveUser,
+} from "@/lib/live-auth-client";
 
 type AuthMeResponse = {
   data?: {
@@ -17,15 +22,24 @@ export function AgentUploadsButton({
 }: {
   allowedEmails: string[];
 }) {
-  const [viewerEmail, setViewerEmail] = useState<string | null>(null);
-  const allowed = useMemo(
-    () => new Set(allowedEmails.map((email) => email.toLowerCase())),
-    [allowedEmails],
-  );
-  const canSeeButton = viewerEmail ? allowed.has(viewerEmail) : false;
+  const [viewerEmail, setViewerEmail] = useState<string | null>(() => {
+    const storedUser = readStoredLiveUser();
+
+    return storedUser?.email?.trim().toLowerCase() ?? null;
+  });
+  const allowedEmail = allowedEmails[0]?.toLowerCase() ?? "";
+  const canSeeButton = viewerEmail === allowedEmail;
 
   useEffect(() => {
     let cancelled = false;
+    const syncStoredUser = (user: SyncedLiveUser | null | undefined) => {
+      setViewerEmail(user?.email?.trim().toLowerCase() ?? null);
+    };
+    const onStoredUserUpdated = (event: Event) => {
+      syncStoredUser(
+        (event as CustomEvent<SyncedLiveUser | null>).detail ?? null,
+      );
+    };
 
     void (async () => {
       try {
@@ -37,7 +51,12 @@ export function AgentUploadsButton({
         if (!res.ok) return;
 
         const json = (await res.json()) as AuthMeResponse;
-        const email = json.data?.session?.email?.trim().toLowerCase() ?? null;
+        const storedEmail =
+          readStoredLiveUser()?.email?.trim().toLowerCase() ?? null;
+        const email =
+          storedEmail ??
+          json.data?.session?.email?.trim().toLowerCase() ??
+          null;
 
         if (!cancelled) {
           setViewerEmail(email);
@@ -49,8 +68,11 @@ export function AgentUploadsButton({
       }
     })();
 
+    window.addEventListener(LIVE_USER_UPDATED_EVENT, onStoredUserUpdated);
+
     return () => {
       cancelled = true;
+      window.removeEventListener(LIVE_USER_UPDATED_EVENT, onStoredUserUpdated);
     };
   }, []);
 
