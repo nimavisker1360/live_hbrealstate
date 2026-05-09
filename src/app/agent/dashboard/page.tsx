@@ -9,11 +9,14 @@ import {
   UploadCloud,
 } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { ClearEngagementButton } from "@/components/property-reels/ClearEngagementButton";
 import { PropertyDeleteButton } from "@/components/property-reels/PropertyDeleteButton";
 import { ReelRowActions } from "@/components/property-reels/ReelRowActions";
 import { UploadPropertyReelPanel } from "@/components/property-reels/UploadPropertyReelPanel";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
+import { getCurrentSession } from "@/lib/auth";
 import { HB_CONSULTANTS, getConsultantById } from "@/lib/hb-consultants";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
@@ -226,6 +229,12 @@ function mergeEngagement(
 }
 
 export default async function AgentDashboardPage() {
+  const session = await getCurrentSession().catch(() => null);
+
+  if (!canAccessAgentDashboard(session)) {
+    notFound();
+  }
+
   const [
     databaseProperties,
     videoTours,

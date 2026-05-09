@@ -250,8 +250,15 @@ export default async function ReelPage({ params }: ReelPageProps) {
   const persistedSession = session
     ? await getSessionBackedByDatabase(session).catch(() => null)
     : null;
-  const hasAgentRole =
-    persistedSession?.role === "AGENT" || persistedSession?.role === "OWNER";
+  const linkedAgent = persistedSession
+    ? await prisma.agent
+        .findUnique({
+          where: { userId: persistedSession.sub },
+          select: { id: true },
+        })
+        .catch(() => null)
+    : null;
+  const isReelAgent = linkedAgent?.id === reel.agent.id;
   const poster = reel.thumbnailUrl ?? reel.property.image ?? FALLBACK_PROPERTY_IMAGE;
   const isProcessing = reel.status === "PROCESSING" || reel.status === "DRAFT";
   const isPublished = reel.status === "PUBLISHED";
@@ -342,7 +349,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
           poster,
           isProcessing,
           isAuthenticated: Boolean(session?.sub),
-          isAgent: hasAgentRole,
+          isAgent: isReelAgent,
           viewerName: persistedSession?.name ?? session?.name,
           likeCount: reel.likeCount,
           commentCount: reel.commentCount,

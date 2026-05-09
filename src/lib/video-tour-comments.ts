@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { AuthSession } from "@/lib/auth";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { getConsultantById } from "@/lib/hb-consultants";
 import { appendVisitorCookie, ensureVisitorId } from "@/lib/reel-visitor";
@@ -198,7 +199,12 @@ export async function resolveCommentIdentity({
         select: { id: true, name: true },
       })) ?? null
     : null;
-  const isReelOwner = Boolean(linkedAgent && linkedAgent.id === reelAgentId);
+  const isReelOwner = Boolean(
+    dbSession &&
+      canAccessAgentDashboard(dbSession) &&
+      linkedAgent &&
+      linkedAgent.id === reelAgentId,
+  );
   const visitor = dbSession ? null : await ensureVisitorId();
   const consultant = isReelOwner ? getConsultantById(consultantId) : null;
 

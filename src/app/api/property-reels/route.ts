@@ -1,10 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { put } from "@vercel/blob";
 import { handleApiError, jsonError } from "@/lib/api";
-import { getCurrentSession } from "@/lib/auth";
-import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { ensureMockContext } from "@/lib/db-defaults";
 import { prisma } from "@/lib/prisma";
+import {
+  PropertyReelUploadError,
+  requireAgentOrAdmin,
+  resolveAgentForUser,
+} from "@/lib/property-reel-upload";
 import { z } from "zod";
 
 export const runtime = "nodejs";
@@ -62,48 +65,15 @@ function isFile(value: FormDataEntryValue | null): value is File {
 }
 
 async function getWritableUser(agentId?: string, agentName?: string) {
-  const session = await getCurrentSession().catch(() => null);
-
-  if (session?.role === "BUYER") {
-    return { response: jsonError("Unauthorized.", 403) };
-  }
-
-  if (session) {
-    return { user: await getSessionBackedByDatabase(session) };
-  }
-
-  if (process.env.NODE_ENV === "production") {
-    return { response: jsonError("Authentication required.", 401) };
-  }
-
-  const fallbackUser = await prisma.user.upsert({
-    where: { id: agentId ?? "hb-property-reels-agent" },
-    update: {
-      name: agentName ?? "HB Real Estate Agent",
-      role: "AGENT",
-    },
-    create: {
-      id: agentId ?? "hb-property-reels-agent",
-      name: agentName ?? "HB Real Estate Agent",
-      role: "AGENT",
-    },
-    select: {
-      email: true,
-      id: true,
-      name: true,
-      phone: true,
-      role: true,
-    },
-  });
+  const user = await requireAgentOrAdmin();
+  const agent = await resolveAgentForUser(user.sub);
 
   return {
-    user: {
-      sub: fallbackUser.id,
-      name: fallbackUser.name,
-      email: fallbackUser.email ?? undefined,
-      phone: fallbackUser.phone ?? undefined,
-      role: fallbackUser.role,
+    agent: {
+      id: agentId ?? agent.id,
+      name: agentName ?? agent.name,
     },
+    user,
   };
 }
 
@@ -132,10 +102,6 @@ export async function POST(request: Request) {
     });
     const writable = await getWritableUser(fields.agentId, fields.agentName);
 
-    if (writable.response) {
-      return writable.response;
-    }
-
     const video = formData.get("video");
 
     if (!isFile(video)) {
@@ -161,8 +127,8 @@ export async function POST(request: Request) {
       .replace(/-/g, "")
       .slice(0, 8)}`;
     const { liveSession } = await ensureMockContext({
-      agentId: fields.agentId ?? writable.user?.sub,
-      agentName: fields.agentName ?? writable.user?.name ?? "HB Real Estate Agent",
+      agentId: writable.agent?.id,
+      agentName: writable.agent?.name ?? "HB Real Estate Agent",
       propertyId,
       propertyTitle: fields.propertyTitle,
       propertyLocation: fields.propertyLocation,
@@ -223,6 +189,10 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
+    if (error instanceof PropertyReelUploadError) {
+      return jsonError(error.message, error.status, error.details);
+    }
+
     return handleApiError(error);
   }
 }

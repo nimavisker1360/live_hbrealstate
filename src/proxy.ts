@@ -4,14 +4,16 @@ import {
   type AuthRole,
   verifySessionToken,
 } from "@/lib/auth";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 
 const PAGE_ACCESS: Array<{
+  agentDashboardOnly?: boolean;
   prefix: string;
   roles: AuthRole[];
 }> = [
   { prefix: "/admin", roles: ["OWNER"] },
-  { prefix: "/agent", roles: ["OWNER", "AGENT"] },
-  { prefix: "/dashboard", roles: ["OWNER", "AGENT"] },
+  { agentDashboardOnly: true, prefix: "/agent", roles: ["OWNER", "AGENT"] },
+  { agentDashboardOnly: true, prefix: "/dashboard", roles: ["OWNER", "AGENT"] },
 ];
 
 const API_ACCESS: Array<{
@@ -92,6 +94,14 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!rule.roles.includes(session.role)) {
+    return unauthorizedResponse(request);
+  }
+
+  if (
+    "agentDashboardOnly" in rule &&
+    rule.agentDashboardOnly &&
+    !canAccessAgentDashboard(session)
+  ) {
     return unauthorizedResponse(request);
   }
 

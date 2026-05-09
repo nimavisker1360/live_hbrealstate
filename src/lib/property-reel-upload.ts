@@ -1,5 +1,6 @@
-import { getCurrentSession, type AuthRole } from "@/lib/auth";
+import { getCurrentSession } from "@/lib/auth";
 import { getSessionBackedByDatabase } from "@/lib/auth-users";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 import { prisma } from "@/lib/prisma";
 
 export const ALLOWED_REEL_MIME_TYPES = new Set([
@@ -42,7 +43,6 @@ export function getReelBlobAccess(): "public" | "private" {
     : "public";
 }
 
-const WRITABLE_ROLES: ReadonlySet<AuthRole> = new Set(["AGENT", "OWNER"]);
 const DEFAULT_AGENT_COMPANY = "HB Real Estate";
 
 export async function requireAgentOrAdmin() {
@@ -52,9 +52,9 @@ export async function requireAgentOrAdmin() {
     throw new PropertyReelUploadError("Authentication required.", 401);
   }
 
-  if (!WRITABLE_ROLES.has(session.role)) {
+  if (!canAccessAgentDashboard(session)) {
     throw new PropertyReelUploadError(
-      "Only agents or admins can upload property reels.",
+      "Only the authorized agent dashboard account can upload property reels.",
       403,
     );
   }

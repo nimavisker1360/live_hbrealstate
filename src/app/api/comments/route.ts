@@ -11,23 +11,24 @@ import { triggerRealtimeEvent } from "@/lib/pusher-server";
 import { commentPayloadSchema } from "@/lib/schemas";
 import { getCurrentSession } from "@/lib/auth";
 import { getSessionBackedByDatabase } from "@/lib/auth-users";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 import { getConsultantById } from "@/lib/hb-consultants";
 
 export const runtime = "nodejs";
 
 function resolveLiveCommentAuthor({
   agentName,
+  isAgent,
   fallbackAuthor,
   session,
   consultantId,
 }: {
   agentName?: string | null;
+  isAgent: boolean;
   fallbackAuthor: string;
   session: Awaited<ReturnType<typeof getSessionBackedByDatabase>> | null;
   consultantId?: string | null;
 }) {
-  const isAgent = session?.role === "AGENT" || session?.role === "OWNER";
-
   if (isAgent) {
     return (
       getConsultantById(consultantId)?.name?.trim() ||
@@ -110,6 +111,19 @@ export async function POST(request: Request) {
       return jsonError("A property reel is required for comments.", 400);
     }
 
+    const linkedAgent = session
+      ? await prisma.agent.findUnique({
+          where: { userId: session.sub },
+          select: { id: true },
+        })
+      : null;
+    const isAgentComment = Boolean(
+      session &&
+        canAccessAgentDashboard(session) &&
+        linkedAgent &&
+        linkedAgent.id === agent?.id,
+    );
+
     const comment = await prisma.comment.create({
       data: {
         agentId: agent?.id,
@@ -120,6 +134,7 @@ export async function POST(request: Request) {
           agentName: agent?.name,
           consultantId: property.consultantId,
           fallbackAuthor: payload.author,
+          isAgent: isAgentComment,
           session,
         }),
         message: payload.message,
