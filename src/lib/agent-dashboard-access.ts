@@ -6,10 +6,16 @@ export function getAgentDashboardEmails() {
   return [AGENT_DASHBOARD_EMAIL];
 }
 
+export function isAgentDashboardEmail(email: string | null | undefined) {
+  const normalizedEmail = email?.trim().toLowerCase();
+
+  return normalizedEmail
+    ? getAgentDashboardEmails().includes(normalizedEmail)
+    : false;
+}
+
 export function canAccessAgentDashboard(
   session: Pick<AuthSession, "email"> | null | undefined,
 ) {
-  const email = session?.email?.trim().toLowerCase();
-
-  return email === AGENT_DASHBOARD_EMAIL;
+  return isAgentDashboardEmail(session?.email);
 }

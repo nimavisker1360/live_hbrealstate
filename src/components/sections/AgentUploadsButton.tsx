@@ -4,7 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useTranslation } from "@/lib/i18n/client";
-import { AGENT_DASHBOARD_EMAIL } from "@/lib/agent-dashboard-access";
+import { isAgentDashboardEmail } from "@/lib/agent-dashboard-access";
 import {
   LIVE_USER_UPDATED_EVENT,
   readStoredLiveUser,
@@ -42,13 +42,9 @@ export function AgentUploadsButton() {
     readServerViewerEmail,
   );
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
-  const effectiveEmail = viewerEmail ?? sessionEmail;
+  const effectiveEmail = sessionEmail ?? viewerEmail;
 
   useEffect(() => {
-    if (viewerEmail) {
-      return;
-    }
-
     let cancelled = false;
 
     void (async () => {
@@ -76,9 +72,9 @@ export function AgentUploadsButton() {
     return () => {
       cancelled = true;
     };
-  }, [viewerEmail]);
+  }, []);
 
-  if (effectiveEmail !== AGENT_DASHBOARD_EMAIL) {
+  if (!isAgentDashboardEmail(effectiveEmail)) {
     return null;
   }
 

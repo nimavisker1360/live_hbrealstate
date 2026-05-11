@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { getAgentDashboardEmails } from "@/lib/agent-dashboard-access";
 
 export const AUTH_COOKIE_NAME = "hb_live_session";
 
@@ -150,7 +151,10 @@ export function normalizeRole(role?: string): AuthRole {
 function resolveLiveSessionRole(email?: string): AuthRole {
   const normalizedEmail = email?.trim().toLowerCase();
   const ownerEmails = readEmailList(process.env.HB_LIVE_OWNER_EMAILS);
-  const agentEmails = readEmailList(process.env.HB_LIVE_AGENT_EMAILS);
+  const agentEmails = [
+    ...getAgentDashboardEmails(),
+    ...readEmailList(process.env.HB_LIVE_AGENT_EMAILS),
+  ];
 
   if (normalizedEmail && ownerEmails.includes(normalizedEmail)) {
     return "OWNER";
