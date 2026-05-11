@@ -34,14 +34,28 @@ function readServerViewerEmail() {
   return null;
 }
 
-export function AgentUploadsButton() {
+type AgentUploadsButtonProps = {
+  initialEmail?: string | null;
+  label?: string;
+};
+
+function normalizeEmail(email: string | null | undefined) {
+  return email?.trim().toLowerCase() ?? null;
+}
+
+export function AgentUploadsButton({
+  initialEmail,
+  label,
+}: AgentUploadsButtonProps) {
   const t = useTranslation();
   const viewerEmail = useSyncExternalStore(
     subscribeToLiveUser,
     readViewerEmail,
     readServerViewerEmail,
   );
-  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(
+    normalizeEmail(initialEmail),
+  );
   const effectiveEmail = sessionEmail ?? viewerEmail;
 
   useEffect(() => {
@@ -81,7 +95,7 @@ export function AgentUploadsButton() {
   return (
     <Button href="/agent/dashboard" size="lg" variant="secondary">
       <UploadCloud aria-hidden className="size-5" />
-      {t.common.agentUploads}
+      {label ?? t.common.agentUploads}
     </Button>
   );
 }

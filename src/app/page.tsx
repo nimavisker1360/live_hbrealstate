@@ -4,6 +4,7 @@ import { PropertyCard } from "@/components/property/PropertyCard";
 import { CTAButtons } from "@/components/sections/CTAButtons";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { getCurrentSession } from "@/lib/auth";
 import { getServerDictionary } from "@/lib/i18n/server";
 import { prisma } from "@/lib/prisma";
 import type { LiveTour } from "@/types/platform";
@@ -40,7 +41,8 @@ export default async function Home() {
   const { locale, t } = await getServerDictionary();
   const intlLocale = locale === "tr" ? "tr-TR" : "en-US";
 
-  const [propertyReels, allProperties] = await Promise.all([
+  const [session, propertyReels, allProperties] = await Promise.all([
+    getCurrentSession().catch(() => null),
     prisma.liveSession.findMany({
       select: {
         agent: { select: { name: true } },
@@ -130,7 +132,11 @@ export default async function Home() {
               {t.home.subtitle}
             </p>
             <div className="mt-8">
-              <CTAButtons />
+              <CTAButtons
+                agentUploadsLabel={t.common.agentUploads}
+                viewerEmail={session?.email}
+                viewReelsLabel={t.home.viewReels}
+              />
             </div>
           </div>
         </div>
@@ -233,7 +239,11 @@ export default async function Home() {
             </h2>
             <p className="mt-3 max-w-2xl text-white/62">{t.home.launchText}</p>
           </div>
-          <CTAButtons />
+          <CTAButtons
+            agentUploadsLabel={t.common.agentUploads}
+            viewerEmail={session?.email}
+            viewReelsLabel={t.home.viewReels}
+          />
         </Card>
       </section>
     </>
