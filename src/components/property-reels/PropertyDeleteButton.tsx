@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useTranslation } from "@/lib/i18n/client";
 
 type ApiResult = {
   error?: { message?: string };
@@ -18,6 +19,7 @@ export function PropertyDeleteButton({
   propertyTitle: string;
   reelCount: number;
 }) {
+  const t = useTranslation();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -36,7 +38,7 @@ export function PropertyDeleteButton({
 
       if (!response.ok) {
         throw new Error(
-          json?.error?.message ?? `Delete failed (${response.status}).`,
+          json?.error?.message ?? t.components.deleteFailed(response.status),
         );
       }
 
@@ -46,7 +48,7 @@ export function PropertyDeleteButton({
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Could not delete property.",
+          : t.components.couldNotDeleteProperty,
       );
     } finally {
       setIsDeleting(false);
@@ -56,14 +58,14 @@ export function PropertyDeleteButton({
   return (
     <>
       <button
-        aria-label={`Delete ${propertyTitle}`}
+        aria-label={t.components.deleteAria(propertyTitle)}
         className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-red-400/30 bg-red-500/10 px-3 text-xs font-semibold text-red-100 transition hover:bg-red-500/16 disabled:cursor-not-allowed disabled:opacity-60"
         disabled={isDeleting}
         onClick={() => setIsOpen(true)}
         type="button"
       >
         <Trash2 aria-hidden className="size-4" />
-        Delete
+        {t.components.deleteAction}
       </button>
 
       {error ? (
@@ -71,13 +73,8 @@ export function PropertyDeleteButton({
       ) : null}
 
       <ConfirmDialog
-        cancelText="Cancel"
-        confirmText="Delete"
-        description={`This permanently removes "${propertyTitle}" from the website and database${
-          reelCount > 0
-            ? `, including ${reelCount} linked reel${reelCount === 1 ? "" : "s"}`
-            : ""
-        }. This action cannot be undone.`}
+        confirmText={t.components.deleteAction}
+        description={t.components.deletePropertyDesc(propertyTitle, reelCount)}
         isDangerous
         isLoading={isDeleting}
         isOpen={isOpen}
@@ -87,7 +84,7 @@ export function PropertyDeleteButton({
           }
         }}
         onConfirm={deleteProperty}
-        title="Delete property"
+        title={t.components.deletePropertyTitle}
       />
     </>
   );

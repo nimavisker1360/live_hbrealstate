@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { CheckCircle2, ChevronDown, Home, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useLanguage } from "@/lib/i18n/client";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 type ConsultantOption = {
   id: string;
@@ -36,6 +38,8 @@ export function AddPropertyForm({
 }: {
   consultants?: ConsultantOption[];
 }) {
+  const { t } = useLanguage();
+  const tf = t.addPropertyForm;
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -63,7 +67,7 @@ export function AddPropertyForm({
     const cover = formData.get("coverImage");
 
     if (!(cover instanceof File) || cover.size === 0) {
-      setError("Choose a cover image for the property.");
+      setError(tf.chooseCoverImage);
       return;
     }
 
@@ -71,7 +75,7 @@ export function AddPropertyForm({
     setProgress(0);
 
     try {
-      const result = await uploadWithProgress(formData, setProgress);
+      const result = await uploadWithProgress(formData, setProgress, t);
 
       if (!result.ok) {
         setError(result.message);
@@ -86,9 +90,7 @@ export function AddPropertyForm({
       router.refresh();
     } catch (uploadError) {
       setError(
-        uploadError instanceof Error
-          ? uploadError.message
-          : "Could not save property.",
+        uploadError instanceof Error ? uploadError.message : tf.couldNotSave,
       );
     } finally {
       setIsSaving(false);
@@ -118,14 +120,14 @@ export function AddPropertyForm({
     >
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Project name
+          {tf.projectName}
         </span>
         <input
           className={fieldClassName}
           maxLength={160}
           minLength={2}
           name="title"
-          placeholder="e.g. Bosphorus Sky Residence"
+          placeholder={tf.projectNamePlaceholder}
           required
           type="text"
         />
@@ -133,14 +135,14 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Location
+          {tf.location}
         </span>
         <input
           className={fieldClassName}
           maxLength={160}
           minLength={2}
           name="location"
-          placeholder="Istanbul, Beşiktaş"
+          placeholder={tf.locationPlaceholder}
           required
           type="text"
         />
@@ -148,12 +150,12 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Price
+          {tf.price}
         </span>
         <input
           className={fieldClassName}
           name="price"
-          placeholder="1250000"
+          placeholder={tf.pricePlaceholder}
           inputMode="decimal"
           pattern="\d+(\.\d{1,2})?"
           type="text"
@@ -162,7 +164,7 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Currency
+          {tf.currency}
         </span>
         <select className={fieldClassName} defaultValue="USD" name="currency">
           {CURRENCIES.map((currency) => (
@@ -175,7 +177,7 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Bedrooms
+          {tf.bedrooms}
         </span>
         <input
           className={fieldClassName}
@@ -189,7 +191,7 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Bathrooms
+          {tf.bathrooms}
         </span>
         <input
           className={fieldClassName}
@@ -203,7 +205,7 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Area (m²)
+          {tf.areaSqm}
         </span>
         <input
           className={fieldClassName}
@@ -217,7 +219,7 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Consultant
+          {tf.consultant}
         </span>
         <input name="consultantId" type="hidden" value={selectedConsultantId} />
         <div className="relative">
@@ -245,7 +247,7 @@ export function AddPropertyForm({
                 </span>
               </span>
             ) : (
-              <span className="text-white">Use account consultant</span>
+              <span className="text-white">{tf.useAccountConsultant}</span>
             )}
             <ChevronDown
               aria-hidden
@@ -268,7 +270,9 @@ export function AddPropertyForm({
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold text-[#f0cf79]">
                   HB
                 </span>
-                <span className="font-semibold">Use account consultant</span>
+                <span className="font-semibold">
+                  {tf.useAccountConsultant}
+                </span>
               </button>
               {consultants.map((consultant) => (
                 <button
@@ -299,15 +303,12 @@ export function AddPropertyForm({
             </div>
           ) : null}
         </div>
-        <span className="text-xs text-white/42">
-          Selected consultant appears on the main property reel and contact
-          actions.
-        </span>
+        <span className="text-xs text-white/42">{tf.consultantHint}</span>
       </label>
 
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Cover image
+          {tf.coverImage}
         </span>
         <input
           accept={ACCEPT_IMAGE}
@@ -317,10 +318,7 @@ export function AddPropertyForm({
           required
           type="file"
         />
-        <span className="text-xs text-white/42">
-          Used as the thumbnail on the Property reel card. JPEG, PNG, WebP, or
-          AVIF, up to 10 MB.
-        </span>
+        <span className="text-xs text-white/42">{tf.coverImageHint}</span>
       </label>
 
       {previewUrl ? (
@@ -328,7 +326,7 @@ export function AddPropertyForm({
           <div className="relative aspect-[16/10] w-full max-w-sm overflow-hidden rounded-md border border-white/10 bg-black/40">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              alt="Cover preview"
+              alt={tf.coverPreviewAlt}
               className="h-full w-full object-cover"
               src={previewUrl}
             />
@@ -338,24 +336,24 @@ export function AddPropertyForm({
 
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Description
+          {tf.description}
         </span>
         <textarea
           className="min-h-[112px] w-full rounded-md border border-white/10 bg-black/28 px-3 py-2 text-sm text-white outline-none transition placeholder:text-white/32 focus:border-[#d6b15f]/70 focus:ring-2 focus:ring-[#d6b15f]/18"
           maxLength={2000}
           name="description"
-          placeholder="Highlight the project, neighborhood, finishes, or amenities buyers should know about."
+          placeholder={tf.descriptionPlaceholder}
         />
       </label>
 
       <div className="flex flex-wrap items-center gap-3 md:col-span-2">
         <Button disabled={isSaving} type="submit">
           <Home aria-hidden className="size-4" />
-          {isSaving ? `Saving… ${progress}%` : "Save property"}
+          {isSaving ? tf.saving(progress) : tf.submit}
         </Button>
         <p className="text-xs text-white/52">
           <ImagePlus aria-hidden className="mr-1 inline-block size-3.5" />
-          Cover image is uploaded to Vercel Blob and used as the reel thumbnail.
+          {tf.coverNote}
         </p>
       </div>
 
@@ -383,10 +381,9 @@ export function AddPropertyForm({
           <div className="flex items-start gap-3 rounded-md border border-emerald-400/30 bg-emerald-500/10 p-3 text-sm text-emerald-100">
             <CheckCircle2 aria-hidden className="mt-0.5 size-4 shrink-0" />
             <div>
-              <p className="font-semibold">Property saved — “{success.title}”</p>
+              <p className="font-semibold">{tf.propertySaved(success.title)}</p>
               <p className="mt-1 text-emerald-100/80">
-                {success.location}. You can now upload reels for this property
-                from the “Upload reel” tab.
+                {tf.propertySavedNote(success.location)}
               </p>
             </div>
           </div>
@@ -399,6 +396,7 @@ export function AddPropertyForm({
 function uploadWithProgress(
   formData: FormData,
   onProgress: (percent: number) => void,
+  t: Dictionary,
 ): Promise<
   | { ok: true; data: CreatedProperty }
   | { ok: false; message: string }
@@ -415,11 +413,11 @@ function uploadWithProgress(
     });
 
     xhr.addEventListener("error", () => {
-      resolve({ ok: false, message: "Network error while saving property." });
+      resolve({ ok: false, message: t.addPropertyForm.networkErrorSaving });
     });
 
     xhr.addEventListener("abort", () => {
-      resolve({ ok: false, message: "Save was cancelled." });
+      resolve({ ok: false, message: t.addPropertyForm.saveCancelled });
     });
 
     xhr.addEventListener("load", () => {
@@ -438,7 +436,7 @@ function uploadWithProgress(
 
       const message =
         parsed?.error?.message ??
-        `Save failed (status ${xhr.status || "unknown"}).`;
+        t.addPropertyForm.saveFailed(xhr.status || "unknown");
       resolve({ ok: false, message });
     });
 

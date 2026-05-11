@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CalendarDays, CheckCircle2, Clock } from "lucide-react";
 import { BottomSheet } from "./BottomSheet";
+import { useLanguage } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";
 
 type BookingSheetProps = {
@@ -20,7 +21,8 @@ export function BookingSheet({
   property,
   agent,
 }: BookingSheetProps) {
-  const days = useMemo(() => buildCalendarDays(), []);
+  const { locale, t } = useLanguage();
+  const days = useMemo(() => buildCalendarDays(locale), [locale]);
   const [selectedDay, setSelectedDay] = useState(days[0]?.key ?? "");
   const [selectedTime, setSelectedTime] = useState(TIME_SLOTS[0]);
   const [name, setName] = useState("");
@@ -70,7 +72,7 @@ export function BookingSheet({
         const json = (await response.json().catch(() => null)) as
           | { error?: { message?: string } }
           | null;
-        throw new Error(json?.error?.message ?? "Could not book viewing.");
+        throw new Error(json?.error?.message ?? t.bookingSheet.couldNotBook);
       }
 
       setSuccess(true);
@@ -79,7 +81,7 @@ export function BookingSheet({
       setBudget("");
       setMessage("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not book viewing.");
+      setError(err instanceof Error ? err.message : t.bookingSheet.couldNotBook);
     } finally {
       setSubmitting(false);
     }
@@ -92,7 +94,7 @@ export function BookingSheet({
         onClose();
         setTimeout(() => setSuccess(false), 300);
       }}
-      title="Book viewing"
+      title={t.bookingSheet.title}
       heightClass="h-[86vh]"
     >
       <div className="flex-1 overflow-y-auto px-5 py-4">
@@ -110,10 +112,10 @@ export function BookingSheet({
           <div className="rounded-2xl border border-emerald-300/35 bg-emerald-400/10 p-5 text-center">
             <CheckCircle2 className="mx-auto size-8 text-emerald-200" />
             <p className="mt-3 text-sm font-semibold text-emerald-100">
-              Viewing request sent
+              {t.bookingSheet.requestSent}
             </p>
             <p className="mt-1 text-xs text-white/70">
-              The consultant will confirm the appointment shortly.
+              {t.bookingSheet.requestSentSub}
             </p>
           </div>
         ) : (
@@ -121,7 +123,7 @@ export function BookingSheet({
             <section>
               <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/65">
                 <CalendarDays className="size-4 text-[#d6b15f]" />
-                Select date
+                {t.bookingSheet.selectDate}
               </div>
               <div className="grid grid-cols-7 gap-1.5">
                 {days.map((day) => (
@@ -148,7 +150,7 @@ export function BookingSheet({
             <section>
               <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/65">
                 <Clock className="size-4 text-[#d6b15f]" />
-                Select time
+                {t.bookingSheet.selectTime}
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {TIME_SLOTS.map((slot) => (
@@ -169,7 +171,7 @@ export function BookingSheet({
               </div>
             </section>
 
-            <Field label="Full name">
+            <Field label={t.bookingSheet.fullName}>
               <input
                 type="text"
                 required
@@ -180,7 +182,7 @@ export function BookingSheet({
                 className="reel-input"
               />
             </Field>
-            <Field label="Phone">
+            <Field label={t.bookingSheet.phone}>
               <input
                 type="tel"
                 required
@@ -191,7 +193,7 @@ export function BookingSheet({
                 className="reel-input"
               />
             </Field>
-            <Field label="Budget">
+            <Field label={t.bookingSheet.budget}>
               <input
                 type="text"
                 required
@@ -199,11 +201,11 @@ export function BookingSheet({
                 maxLength={120}
                 value={budget}
                 onChange={(event) => setBudget(event.target.value)}
-                placeholder="Example: 450,000 USD"
+                placeholder={t.bookingSheet.budgetPlaceholder}
                 className="reel-input"
               />
             </Field>
-            <Field label="Message (optional)">
+            <Field label={t.bookingSheet.messageOptional}>
               <textarea
                 rows={3}
                 maxLength={1000}
@@ -224,7 +226,7 @@ export function BookingSheet({
               disabled={!canSubmit}
               className="h-12 w-full rounded-full bg-[#d6b15f] text-sm font-semibold text-black shadow-lg shadow-[#d6b15f]/25 transition hover:bg-[#f0cf79] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {submitting ? "Sending..." : "Book viewing"}
+              {submitting ? t.bookingSheet.sending : t.bookingSheet.submit}
             </button>
           </form>
         )}
@@ -250,8 +252,11 @@ function Field({
   );
 }
 
-function buildCalendarDays() {
-  const formatter = new Intl.DateTimeFormat("en-US", { weekday: "short" });
+function buildCalendarDays(locale: string) {
+  const formatter = new Intl.DateTimeFormat(
+    locale === "tr" ? "tr-TR" : "en-US",
+    { weekday: "short" },
+  );
 
   return Array.from({ length: 14 }, (_, index) => {
     const date = new Date();

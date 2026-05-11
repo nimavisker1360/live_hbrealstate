@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { MapPin, Phone } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
 import { BottomSheet } from "./BottomSheet";
 
 type DetailsSheetProps = {
@@ -27,10 +28,16 @@ export function DetailsSheet({
   property,
   agent,
 }: DetailsSheetProps) {
+  const t = useTranslation();
   const agentName = agent.displayName ?? agent.name;
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Details" heightClass="h-[75vh]">
+    <BottomSheet
+      open={open}
+      onClose={onClose}
+      title={t.reelViewer.detailsTitle}
+      heightClass="h-[75vh]"
+    >
       <div className="flex-1 overflow-y-auto px-5 py-4">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
           {property.price}
@@ -53,13 +60,13 @@ export function DetailsSheet({
           </div>
         ) : (
           <p className="mt-5 text-sm text-white/55">
-            Reach out to your consultant for the full property dossier.
+            {t.reelViewer.dossierFallback}
           </p>
         )}
 
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <p className="text-xs uppercase tracking-[0.18em] text-white/55">
-            Your consultant
+            {t.reelViewer.yourConsultant}
           </p>
           <div className="mt-3 flex items-center gap-3">
             <div className="size-12 overflow-hidden rounded-full border-2 border-[#d6b15f]/60 bg-black/40">

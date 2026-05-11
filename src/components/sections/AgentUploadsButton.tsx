@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useTranslation } from "@/lib/i18n/client";
 import { AGENT_DASHBOARD_EMAIL } from "@/lib/agent-dashboard-access";
 import {
   LIVE_USER_UPDATED_EVENT,
@@ -34,6 +35,7 @@ function readServerViewerEmail() {
 }
 
 export function AgentUploadsButton() {
+  const t = useTranslation();
   const viewerEmail = useSyncExternalStore(
     subscribeToLiveUser,
     readViewerEmail,
@@ -83,7 +85,7 @@ export function AgentUploadsButton() {
   return (
     <Button href="/agent/dashboard" size="lg" variant="secondary">
       <UploadCloud aria-hidden className="size-5" />
-      Agent uploads
+      {t.common.agentUploads}
     </Button>
   );
 }

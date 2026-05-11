@@ -1,12 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
+
 import Image from "next/image";
 import { CalendarDays, Eye, MapPin, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { useTranslation } from "@/lib/i18n/client";
 import { isInlineImageSrc } from "@/lib/live-media";
 import type { LiveTour } from "@/types/platform";
 
 export function LiveCard({ tour }: { tour: LiveTour }) {
+  const t = useTranslation();
+
   return (
     <Card className="overflow-hidden">
       <div className="relative aspect-[4/3] min-h-64">
@@ -28,7 +33,7 @@ export function LiveCard({ tour }: { tour: LiveTour }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
         <div className="absolute left-4 top-4 flex items-center gap-2">
           <span className="rounded-full bg-black/75 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white backdrop-blur">
-            Property reel
+            {t.common.propertyReelBadge}
           </span>
         </div>
         <div className="absolute bottom-4 left-4 right-4">
@@ -47,7 +52,7 @@ export function LiveCard({ tour }: { tour: LiveTour }) {
           <div className="flex flex-wrap gap-4">
             <span className="flex items-center gap-2">
               <Eye aria-hidden className="size-4 text-[#d6b15f]" />
-              {tour.viewers} views
+              {t.common.viewsLabel(tour.viewers)}
             </span>
             <span className="flex items-center gap-2">
               <CalendarDays aria-hidden className="size-4 text-[#d6b15f]" />
@@ -56,10 +61,12 @@ export function LiveCard({ tour }: { tour: LiveTour }) {
           </div>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-white/52">Presented by {tour.agent}</p>
+          <p className="text-sm text-white/52">
+            {t.common.presentedBy(tour.agent)}
+          </p>
           <Button href={`/reels/${tour.roomId}`} size="sm">
             <PlayCircle aria-hidden className="size-4" />
-            Watch reel
+            {t.common.watchReel}
           </Button>
         </div>
       </div>

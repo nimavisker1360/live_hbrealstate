@@ -21,6 +21,8 @@ import {
   type RealtimeReelCommentEvent,
 } from "@/lib/pusher-channels";
 import { createPusherClient } from "@/lib/pusher-client";
+import { useTranslation } from "@/lib/i18n/client";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { cn } from "@/lib/utils";
 
 const MIN_LENGTH = 1;
@@ -195,6 +197,7 @@ export function CommentBottomSheet({
   commentAuthorName,
   onCommentAdded,
 }: CommentBottomSheetProps) {
+  const t = useTranslation();
   const [sort, setSort] = useState<SortMode>("newest");
   const cached = cacheStore.get(cacheKey(reelId, sort));
   const [comments, setComments] = useState<SheetComment[]>(
@@ -319,7 +322,7 @@ export function CommentBottomSheet({
         setComments(json.data.comments);
       } catch {
         if (!cancelled && !cachedComments) {
-          setError("Could not load comments.");
+          setError(t.reelViewer.couldNotLoadComments);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -329,7 +332,7 @@ export function CommentBottomSheet({
     return () => {
       cancelled = true;
     };
-  }, [open, reelId, sort]);
+  }, [open, reelId, sort, t]);
 
   useEffect(() => {
     if (!open) return;
@@ -527,7 +530,7 @@ export function CommentBottomSheet({
       const optimistic: SheetComment = {
         id: tempId,
         parentId: replyTo?.id ?? null,
-        author: isAuthenticated ? commentAuthorName : "Guest",
+        author: isAuthenticated ? commentAuthorName : t.reelViewer.guest,
         message,
         createdAt: new Date().toISOString(),
         pending: true,
@@ -571,7 +574,7 @@ export function CommentBottomSheet({
 
         if (!res.ok || !json.data) {
           setError(
-            json.error?.message ?? "Could not post comment. Please try again.",
+            json.error?.message ?? t.reelViewer.couldNotPostComment,
           );
           setComments((prev) => removeComment(prev, tempId));
           setDraft(message);
@@ -591,7 +594,7 @@ export function CommentBottomSheet({
       } catch {
         setComments((prev) => removeComment(prev, tempId));
         setDraft(message);
-        setError("Network error. Please try again.");
+        setError(t.reelViewer.networkErrorRetry);
       } finally {
         pendingClientEventIdsRef.current.delete(clientEventId);
         setPosting(false);
@@ -607,6 +610,7 @@ export function CommentBottomSheet({
       posting,
       reelId,
       replyTo,
+      t,
     ],
   );
 
@@ -631,7 +635,7 @@ export function CommentBottomSheet({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Comments"
+        aria-label={t.reelViewer.comments}
         className={cn(
           "absolute inset-x-0 bottom-0 mx-auto flex h-[78vh] max-h-[78vh] max-w-[480px] flex-col rounded-t-3xl border-t border-[#d6b15f]/20 bg-[#080706]/98 text-white shadow-[0_-22px_60px_rgba(0,0,0,0.75)] will-change-transform pointer-events-auto",
           dragOffset === 0 &&
@@ -649,7 +653,7 @@ export function CommentBottomSheet({
           >
             <span className="mb-2 h-1 w-10 rounded-full bg-white/25" />
             <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-white/85">
-              Comments
+              {t.reelViewer.comments}
             </h2>
           </div>
           <button
@@ -659,7 +663,7 @@ export function CommentBottomSheet({
               event.stopPropagation();
               triggerClose();
             }}
-            aria-label="Close comments"
+            aria-label={t.reelViewer.closeComments}
             className="ml-2 inline-flex size-9 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
           >
             <X className="size-5" />
@@ -671,13 +675,13 @@ export function CommentBottomSheet({
             active={sort === "newest"}
             onClick={() => setSort("newest")}
           >
-            Newest
+            {t.reelViewer.newest}
           </SortButton>
           <SortButton
             active={sort === "mostLiked"}
             onClick={() => setSort("mostLiked")}
           >
-            Most liked
+            {t.reelViewer.mostLiked}
           </SortButton>
         </div>
 
@@ -689,7 +693,7 @@ export function CommentBottomSheet({
             <CommentsSkeleton />
           ) : comments.length === 0 ? (
             <p className="py-12 text-center text-sm text-white/55">
-              Be the first to comment on this property reel.
+              {t.reelViewer.beFirstOnReel}
             </p>
           ) : (
             <ul className="space-y-5">
@@ -720,13 +724,15 @@ export function CommentBottomSheet({
         >
           {replyTo ? (
             <div className="mb-2 flex items-center justify-between rounded-md border border-[#d6b15f]/20 bg-[#d6b15f]/10 px-3 py-2 text-xs text-[#f0cf79]">
-              <span className="truncate">Replying to {replyTo.author}</span>
+              <span className="truncate">
+                {t.reelViewer.replyTo(replyTo.author)}
+              </span>
               <button
                 type="button"
                 onClick={() => setReplyTo(null)}
                 className="ml-3 text-white/60 transition hover:text-white"
               >
-                Cancel
+                {t.common.cancel}
               </button>
             </div>
           ) : null}
@@ -734,18 +740,30 @@ export function CommentBottomSheet({
             <input
               ref={inputRef}
               type="text"
-              placeholder={replyTo ? "Add a reply..." : "Add a comment..."}
+              placeholder={
+                replyTo
+                  ? t.reelViewer.addReplyPlaceholder
+                  : t.reelViewer.addCommentPlaceholder
+              }
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               maxLength={MAX_LENGTH}
               autoComplete="off"
               className="h-11 flex-1 rounded-full border border-white/10 bg-white/5 px-4 text-sm text-white placeholder-white/40 focus:border-[#d6b15f]/60 focus:outline-none"
-              aria-label={replyTo ? "Write a reply" : "Write a comment"}
+              aria-label={
+                replyTo
+                  ? t.reelViewer.writeReplyAria
+                  : t.reelViewer.writeCommentAria
+              }
             />
             <button
               type="submit"
               disabled={!canSend}
-              aria-label={replyTo ? "Post reply" : "Post comment"}
+              aria-label={
+                replyTo
+                  ? t.reelViewer.postReplyAria
+                  : t.reelViewer.postCommentAria
+              }
               className={cn(
                 "inline-flex size-11 flex-none items-center justify-center rounded-full transition",
                 canSend
@@ -803,6 +821,7 @@ function CommentThread({
   onReply: (comment: ApiComment, parentId: string) => void;
   onToggleReplies: (commentId: string) => void;
 }) {
+  const t = useTranslation();
   const replies = comment.replies ?? [];
 
   return (
@@ -826,8 +845,8 @@ function CommentThread({
               )}
             />
             {collapsed
-              ? `View ${replies.length} ${replies.length === 1 ? "reply" : "replies"}`
-              : "Hide replies"}
+              ? t.reelViewer.repliesPlural(replies.length)
+              : t.reelViewer.hideReplies}
           </button>
           <div
             className={cn(
@@ -859,6 +878,8 @@ function CommentRow({
   compact?: boolean;
   onReply: () => void;
 }) {
+  const t = useTranslation();
+
   return (
     <div
       className={cn(
@@ -893,7 +914,7 @@ function CommentRow({
           {comment.isPinned ? (
             <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#d6b15f]">
               <Pin className="size-3" />
-              Pinned
+              {t.reelViewer.pinned}
             </span>
           ) : null}
         </div>
@@ -901,16 +922,22 @@ function CommentRow({
           {comment.message}
         </p>
         <div className="mt-1.5 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-wider text-white/40">
-          <span>{comment.pending ? "Sending..." : formatRelative(comment.createdAt)}</span>
+          <span>
+            {comment.pending
+              ? t.reelViewer.sendingComment
+              : formatRelative(comment.createdAt, t)}
+          </span>
           <button
             type="button"
             onClick={onReply}
             className="inline-flex items-center gap-1 text-white/45 transition hover:text-[#f0cf79]"
           >
             <Reply className="size-3" />
-            Reply
+            {t.reelViewer.replyAction}
           </button>
-          {comment.likeCount ? <span>{comment.likeCount} likes</span> : null}
+          {comment.likeCount ? (
+            <span>{t.reelViewer.likesCount(comment.likeCount)}</span>
+          ) : null}
         </div>
       </div>
     </div>
@@ -934,15 +961,15 @@ function CommentsSkeleton() {
   );
 }
 
-function formatRelative(iso: string) {
+function formatRelative(iso: string, t: Dictionary) {
   const date = new Date(iso);
   const diff = Date.now() - date.getTime();
   const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 1) return t.reelViewer.justNow;
+  if (minutes < 60) return t.reelViewer.minutesAgo(minutes);
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
+  if (hours < 24) return t.reelViewer.hoursAgo(hours);
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d`;
+  if (days < 7) return t.reelViewer.daysAgo(days);
   return date.toLocaleDateString();
 }

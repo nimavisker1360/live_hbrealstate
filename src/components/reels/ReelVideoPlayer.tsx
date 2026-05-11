@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { Loader2, Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
 
 export type ReelVideoPlayerHandle = {
   play: () => void;
@@ -32,6 +33,7 @@ export const ReelVideoPlayer = forwardRef<
   { videoUrl, mimeType, poster, isProcessing, onDoubleTap },
   ref,
 ) {
+  const t = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const lastTapRef = useRef<number>(0);
   const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -156,7 +158,7 @@ export const ReelVideoPlayer = forwardRef<
           setIsMuted(next);
         }}
         className="absolute bottom-32 left-4 z-20 inline-flex size-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition hover:bg-black/70"
-        aria-label={isMuted ? "Unmute video" : "Mute video"}
+        aria-label={isMuted ? t.reelViewer.unmuteVideo : t.reelViewer.muteVideo}
       >
         {isMuted ? (
           <VolumeX className="size-5" />
@@ -168,16 +170,14 @@ export const ReelVideoPlayer = forwardRef<
       {isProcessing ? (
         <CenteredOverlay>
           <Loader2 className="size-10 animate-spin text-[#d6b15f]" />
-          <p className="mt-3 text-sm font-medium">Processing reel…</p>
-          <p className="mt-1 text-xs text-white/60">
-            This usually takes a moment.
+          <p className="mt-3 text-sm font-medium">
+            {t.reelViewer.processingReel}
           </p>
         </CenteredOverlay>
       ) : hasError ? (
         <CenteredOverlay>
-          <p className="text-base font-semibold">Could not load video</p>
-          <p className="mt-1 text-xs text-white/60">
-            Please check your connection and try again.
+          <p className="text-base font-semibold">
+            {t.reelViewer.couldNotLoadVideo}
           </p>
         </CenteredOverlay>
       ) : isLoading ? (

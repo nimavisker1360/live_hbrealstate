@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BottomSheet } from "./BottomSheet";
+import { useTranslation } from "@/lib/i18n/client";
 
 type OfferSheetProps = {
   open: boolean;
@@ -12,6 +13,7 @@ type OfferSheetProps = {
 };
 
 export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
+  const t = useTranslation();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
@@ -40,7 +42,7 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
         const json = (await res.json().catch(() => null)) as
           | { error?: { message?: string } }
           | null;
-        throw new Error(json?.error?.message ?? "Could not submit offer.");
+        throw new Error(json?.error?.message ?? t.offerSheet.couldNotSubmit);
       }
       setSuccess(true);
       setName("");
@@ -48,7 +50,7 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
       setAmount("");
       setMessage("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not submit offer.");
+      setError(err instanceof Error ? err.message : t.offerSheet.couldNotSubmit);
     } finally {
       setSubmitting(false);
     }
@@ -61,7 +63,7 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
         onClose();
         setTimeout(() => setSuccess(false), 300);
       }}
-      title="Make an offer"
+      title={t.offerSheet.title}
       heightClass="h-[80vh]"
     >
       <div className="flex-1 overflow-y-auto px-5 py-4">
@@ -77,14 +79,16 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
 
         {success ? (
           <div className="rounded-2xl border border-[#d6b15f]/40 bg-[#d6b15f]/10 p-5 text-center">
-            <p className="text-sm font-semibold text-[#d6b15f]">Offer received</p>
+            <p className="text-sm font-semibold text-[#d6b15f]">
+              {t.offerSheet.offerSent}
+            </p>
             <p className="mt-1 text-xs text-white/70">
-              Our team will contact you shortly to discuss next steps.
+              {t.offerSheet.offerSentSub}
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
-            <Field label="Full name">
+            <Field label={t.offerSheet.fullName}>
               <input
                 type="text"
                 required
@@ -95,7 +99,7 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
                 className="reel-input"
               />
             </Field>
-            <Field label="Phone">
+            <Field label={t.offerSheet.phone}>
               <input
                 type="tel"
                 required
@@ -106,7 +110,7 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
                 className="reel-input"
               />
             </Field>
-            <Field label="Offer amount (USD)">
+            <Field label={t.offerSheet.yourOffer}>
               <input
                 type="number"
                 inputMode="decimal"
@@ -114,10 +118,11 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
                 min={1}
                 value={amount}
                 onChange={(event) => setAmount(event.target.value)}
+                placeholder={t.offerSheet.offerAmountPlaceholder}
                 className="reel-input"
               />
             </Field>
-            <Field label="Message (optional)">
+            <Field label={t.offerSheet.messageOptional}>
               <textarea
                 rows={3}
                 maxLength={1000}
@@ -138,7 +143,7 @@ export function OfferSheet({ open, onClose, slug, property }: OfferSheetProps) {
               disabled={submitting}
               className="h-12 w-full rounded-full bg-[#d6b15f] text-sm font-semibold text-black shadow-lg shadow-[#d6b15f]/25 transition hover:bg-[#f0cf79] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {submitting ? "Submitting…" : "Submit offer"}
+              {submitting ? t.offerSheet.sending : t.offerSheet.submit}
             </button>
           </form>
         )}

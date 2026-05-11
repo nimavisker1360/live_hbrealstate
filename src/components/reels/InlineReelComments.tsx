@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { Send } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";
 
 const MAX_LENGTH = 500;
@@ -78,6 +79,7 @@ export const InlineReelComments = forwardRef<
   },
   ref,
 ) {
+  const t = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const seenCommentIdsRef = useRef<Set<string>>(new Set());
   const removeTimersRef = useRef<Map<string, number>>(new Map());
@@ -181,7 +183,7 @@ export const InlineReelComments = forwardRef<
 
     const optimistic: CommentToast = {
       id: `temp-${Date.now()}`,
-      author: isAuthenticated ? commentAuthorName : "Guest",
+      author: isAuthenticated ? commentAuthorName : t.reelViewer.guest,
       message,
       createdAt: new Date().toISOString(),
       isMember: isAuthenticated,
@@ -211,7 +213,7 @@ export const InlineReelComments = forwardRef<
           prev.filter((comment) => comment.id !== optimistic.id),
         );
         setError(
-          json.error?.message ?? "Could not post comment. Please try again.",
+          json.error?.message ?? t.reelViewer.couldNotPostComment,
         );
         return;
       }
@@ -230,7 +232,7 @@ export const InlineReelComments = forwardRef<
       setToasts((prev) =>
         prev.filter((comment) => comment.id !== optimistic.id),
       );
-      setError("Network error. Please try again.");
+      setError(t.reelViewer.networkErrorRetry);
     } finally {
       setPosting(false);
     }
@@ -271,14 +273,14 @@ export const InlineReelComments = forwardRef<
             }}
             maxLength={MAX_LENGTH}
             autoComplete="off"
-            aria-label="Write a comment"
-            placeholder="Add a comment..."
+            aria-label={t.reelViewer.writeCommentAria}
+            placeholder={t.reelViewer.addCommentPlaceholder}
             className="h-9 min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-white/45"
           />
           <button
             type="submit"
             disabled={!canSend}
-            aria-label="Post comment"
+            aria-label={t.reelViewer.postCommentAria}
             className={cn(
               "inline-flex size-9 flex-none items-center justify-center rounded-full transition",
               canSend

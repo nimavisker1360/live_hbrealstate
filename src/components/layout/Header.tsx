@@ -1,14 +1,20 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Clapperboard } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-
-const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/reels", label: "Property reels" },
-];
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { useTranslation } from "@/lib/i18n/client";
 
 export function Header() {
+  const t = useTranslation();
+
+  const navItems = [
+    { href: "/", label: t.nav.home },
+    { href: "/reels", label: t.nav.propertyReels },
+  ];
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/88 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
@@ -37,13 +43,10 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <Button
-            className="w-full sm:w-auto"
-            href="/reels"
-            size="sm"
-          >
+          <LanguageSwitcher />
+          <Button className="w-full sm:w-auto" href="/reels" size="sm">
             <Clapperboard aria-hidden className="size-4" />
-            Watch reels
+            {t.common.watchReels}
           </Button>
         </div>
       </div>

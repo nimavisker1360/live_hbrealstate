@@ -2,12 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import { AlertCircle, X } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
 
 export function ConfirmDialog({
   title,
   description,
-  confirmText = "Delete",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   isOpen,
   isLoading = false,
   onConfirm,
@@ -24,7 +25,10 @@ export function ConfirmDialog({
   onCancel: () => void;
   isDangerous?: boolean;
 }) {
+  const t = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
+  const resolvedConfirmText = confirmText ?? t.components.deleteAction;
+  const resolvedCancelText = cancelText ?? t.common.cancel;
 
   useEffect(() => {
     if (isOpen) {
@@ -59,7 +63,7 @@ export function ConfirmDialog({
           onClick={onCancel}
           disabled={isLoading}
           className="absolute right-4 top-4 text-white/40 transition hover:text-white disabled:cursor-not-allowed"
-          aria-label="Close dialog"
+          aria-label={t.components.closeDialog}
         >
           <X className="size-5" />
         </button>
@@ -86,7 +90,7 @@ export function ConfirmDialog({
             disabled={isLoading}
             className="flex-1 rounded-md border border-white/15 bg-white/5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {cancelText}
+            {resolvedCancelText}
           </button>
           <button
             onClick={onConfirm}
@@ -97,7 +101,7 @@ export function ConfirmDialog({
                 : "border border-[#d6b15f]/35 bg-[#d6b15f]/10 text-[#f0cf79] hover:bg-[#d6b15f]/16"
             }`}
           >
-            {isLoading ? "Processing..." : confirmText}
+            {isLoading ? t.components.processing : resolvedConfirmText}
           </button>
         </div>
       </div>

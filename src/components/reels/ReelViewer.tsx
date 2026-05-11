@@ -16,6 +16,7 @@ import { BookingSheet } from "./BookingSheet";
 import { DetailsSheet } from "./DetailsSheet";
 import { buildWhatsAppUrl } from "@/lib/hb-consultants";
 import { useReelLike } from "@/hooks/useReelLike";
+import { useTranslation } from "@/lib/i18n/client";
 
 export type ReelViewerData = {
   id: string;
@@ -52,6 +53,7 @@ export type ReelViewerData = {
 type Sheet = "offer" | "booking" | "details" | null;
 
 export function ReelViewer({ reel }: { reel: ReelViewerData }) {
+  const t = useTranslation();
   const playerRef = useRef<ReelVideoPlayerHandle | null>(null);
   const commentsRef = useRef<InlineReelCommentsHandle | null>(null);
   const [openSheet, setOpenSheet] = useState<Sheet>(null);
@@ -160,13 +162,16 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
   }, [reel.property.location, reel.property.title, reel.slug]);
 
   const whatsappUrl = buildWhatsAppUrl({
-    text: `Hi, I'm interested in ${reel.property.title} in ${reel.property.location}.`,
+    text: t.reelViewer.interestedWhatsapp(
+      reel.property.title,
+      reel.property.location,
+    ),
     whatsapp: reel.agent.whatsapp ?? reel.agent.phone,
   });
   const consultantName = reel.agent.displayName ?? reel.agent.name;
   const commentAuthorName = reel.isAgent
     ? consultantName
-    : reel.viewerName ?? "You";
+    : reel.viewerName ?? t.reelViewer.youAuthor;
 
   return (
     <div className="fixed inset-0 z-40 overflow-hidden bg-black text-white">
@@ -201,7 +206,7 @@ export function ReelViewer({ reel }: { reel: ReelViewerData }) {
           <Link
             href="/reels"
             className="pointer-events-auto inline-flex size-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition hover:bg-black/60"
-            aria-label="Back to reels"
+            aria-label={t.reelViewer.backToReels}
           >
             <ChevronLeft className="size-5" />
           </Link>

@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef, useState } from "react";
 import { Heart, MessageCircle, Send, Tag } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";
 
 type ReelActionBarProps = {
@@ -36,6 +37,7 @@ export function ReelActionBar({
   onOffer,
   agent,
 }: ReelActionBarProps) {
+  const t = useTranslation();
   const agentName = agent.displayName ?? agent.name;
 
   return (
@@ -64,19 +66,23 @@ export function ReelActionBar({
 
       <ActionButton
         label={formatCount(commentCount)}
-        ariaLabel="Open comments"
+        ariaLabel={t.reelViewer.openComments}
         onClick={onComment}
       >
         <MessageCircle className="size-7 text-white" />
       </ActionButton>
 
-      <ActionButton label="Share" ariaLabel="Share reel" onClick={onShare}>
+      <ActionButton
+        label={t.reelViewer.share}
+        ariaLabel={t.reelViewer.shareReel}
+        onClick={onShare}
+      >
         <Send className="size-7 text-white" />
       </ActionButton>
 
       <ActionButton
-        label="Offer"
-        ariaLabel="Make an offer"
+        label={t.reelViewer.offer}
+        ariaLabel={t.reelViewer.makeOfferLabel}
         onClick={onOffer}
         accent
       >
@@ -95,6 +101,7 @@ function LikeButton({
   likeCount: number;
   onLike: () => void;
 }) {
+  const t = useTranslation();
   const [popKey, setPopKey] = useState(0);
   const firstRenderRef = useRef(true);
 
@@ -110,7 +117,7 @@ function LikeButton({
     <button
       type="button"
       onClick={onLike}
-      aria-label={hasLiked ? "Unlike video" : "Like video"}
+      aria-label={hasLiked ? t.reelViewer.unlikeVideo : t.reelViewer.likeVideo}
       aria-pressed={hasLiked}
       className="pointer-events-auto flex flex-col items-center gap-1 active:scale-95 transition"
     >

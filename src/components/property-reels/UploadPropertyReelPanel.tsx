@@ -12,6 +12,7 @@ import {
 import { AddPropertyForm } from "@/components/property-reels/AddPropertyForm";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { useLanguage, useTranslation } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";
 
 type PropertyOption = {
@@ -52,6 +53,7 @@ export function UploadPropertyReelPanel({
   consultants: ConsultantOption[];
   properties: PropertyOption[];
 }) {
+  const t = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>(
     properties.length === 0 ? "property" : "reel",
   );
@@ -63,17 +65,19 @@ export function UploadPropertyReelPanel({
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
-            {isPropertyActive ? "Add property" : "Upload reel"}
+            {isPropertyActive
+              ? t.uploadPanel.addPropertyEyebrow
+              : t.uploadPanel.uploadReelEyebrow}
           </p>
           <h2 className="mt-2 text-xl font-semibold text-white">
             {isPropertyActive
-              ? "Create a new property listing"
-              : "Upload property reel"}
+              ? t.uploadPanel.addPropertyTitle
+              : t.uploadPanel.uploadReelTitle}
           </h2>
           <p className="mt-2 text-sm text-white/60">
             {isPropertyActive
-              ? "Set the project name, location, price, and a cover photo. The cover is used as the thumbnail on Property reel cards."
-              : "Add a new vertical video to a property listing. MP4, MOV, or WebM."}
+              ? t.uploadPanel.addPropertyDesc
+              : t.uploadPanel.uploadReelDesc}
           </p>
         </div>
         <span className="hidden size-11 shrink-0 items-center justify-center rounded-md border border-[#d6b15f]/25 bg-[#d6b15f]/10 text-[#d6b15f] sm:flex">
@@ -92,13 +96,13 @@ export function UploadPropertyReelPanel({
         <TabButton
           active={isPropertyActive}
           icon={<Home aria-hidden className="size-4" />}
-          label="Add property"
+          label={t.uploadPanel.tabAddProperty}
           onClick={() => setActiveTab("property")}
         />
         <TabButton
           active={!isPropertyActive}
           icon={<UploadCloud aria-hidden className="size-4" />}
-          label="Upload reel"
+          label={t.uploadPanel.tabUploadReel}
           onClick={() => setActiveTab("reel")}
         />
       </div>
@@ -143,6 +147,7 @@ function TabButton({
 }
 
 function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
+  const { t } = useLanguage();
   const router = useRouter();
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -167,17 +172,17 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
     const description = formData.get("description");
 
     if (!(video instanceof File) || video.size === 0) {
-      setError("Choose a video file to upload.");
+      setError(t.uploadPanel.chooseVideoFile);
       return;
     }
 
     if (typeof propertyId !== "string" || !propertyId.trim()) {
-      setError("Choose a property for this reel.");
+      setError(t.uploadPanel.choosePropertyForReel);
       return;
     }
 
     if (typeof title !== "string" || title.trim().length < 2) {
-      setError("Enter a reel title.");
+      setError(t.uploadPanel.enterReelTitle);
       return;
     }
 
@@ -193,6 +198,7 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
           video,
         },
         setProgress,
+        t,
       );
 
       if (!result.ok) {
@@ -207,7 +213,7 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
       setError(
         uploadError instanceof Error
           ? uploadError.message
-          : "Could not upload property reel.",
+          : t.uploadPanel.couldNotUpload,
       );
     } finally {
       setIsUploading(false);
@@ -222,7 +228,7 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
     >
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Property
+          {t.uploadPanel.propertyField}
         </span>
         <select
           className={fieldClassName}
@@ -232,8 +238,8 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
         >
           <option disabled value="">
             {properties.length > 0
-              ? "Select a property"
-              : "No properties available — create one in the Add property tab"}
+              ? t.uploadPanel.selectProperty
+              : t.uploadPanel.noPropertiesOption}
           </option>
           {properties.map((property) => (
             <option key={property.id} value={property.id}>
@@ -245,14 +251,14 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Reel title
+          {t.uploadPanel.reelTitleField}
         </span>
         <input
           className={fieldClassName}
           maxLength={160}
           minLength={2}
           name="title"
-          placeholder="Sunset penthouse — 30s tour"
+          placeholder={t.uploadPanel.reelTitlePlaceholder}
           required
           type="text"
         />
@@ -260,7 +266,7 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Video file
+          {t.uploadPanel.videoFileField}
         </span>
         <input
           accept={ACCEPT}
@@ -273,24 +279,26 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
 
       <label className="flex flex-col gap-1.5 md:col-span-2">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-          Description (optional)
+          {t.uploadPanel.descriptionOptional}
         </span>
         <textarea
           className="min-h-[88px] w-full rounded-md border border-white/10 bg-black/28 px-3 py-2 text-sm text-white outline-none transition placeholder:text-white/32 focus:border-[#d6b15f]/70 focus:ring-2 focus:ring-[#d6b15f]/18"
           maxLength={2000}
           name="description"
-          placeholder="Highlight features, neighborhood notes, or callouts buyers should see."
+          placeholder={t.uploadPanel.descriptionPlaceholder}
         />
       </label>
 
       <div className="flex flex-wrap items-center gap-3 md:col-span-2">
         <Button disabled={isUploading || properties.length === 0} type="submit">
           <FileVideo aria-hidden className="size-4" />
-          {isUploading ? `Uploading… ${progress}%` : "Upload reel"}
+          {isUploading
+            ? t.uploadPanel.uploadingPercent(progress)
+            : t.uploadPanel.uploadReelButton}
         </Button>
         {properties.length === 0 ? (
           <p className="text-xs text-white/52">
-            Add a property first to enable reel uploads.
+            {t.uploadPanel.addPropertyFirstHint}
           </p>
         ) : null}
       </div>
@@ -320,10 +328,10 @@ function UploadReelForm({ properties }: { properties: PropertyOption[] }) {
             <CheckCircle2 aria-hidden className="mt-0.5 size-4 shrink-0" />
             <div>
               <p className="font-semibold">
-                Reel uploaded — “{success.title}”
+                {t.uploadPanel.reelUploaded(success.title)}
               </p>
               <p className="mt-1 text-emerald-100/80">
-                Published to Property reels. It is now visible to buyers.
+                {t.uploadPanel.reelPublishedNote}
               </p>
             </div>
           </div>
@@ -353,6 +361,7 @@ async function uploadReelWithProgress(
     video: File;
   },
   onProgress: (percent: number) => void,
+  t: import("@/lib/i18n/dictionaries").Dictionary,
 ): Promise<
   | { ok: true; data: NonNullable<UploadResponse["data"]> }
   | { ok: false; message: string }
@@ -405,15 +414,13 @@ async function uploadReelWithProgress(
       ok: false,
       message:
         parsed?.error?.message ??
-        `Upload saved, but registration failed (status ${response.status || "unknown"}).`,
+        t.uploadPanel.uploadSavedRegFailed(response.status || "unknown"),
     };
   } catch (error) {
     return {
       ok: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Could not upload property reel.",
+        error instanceof Error ? error.message : t.uploadPanel.couldNotUpload,
     };
   }
 }

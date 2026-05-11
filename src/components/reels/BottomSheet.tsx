@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { X } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";
 
 type BottomSheetProps = {
@@ -19,6 +20,8 @@ export function BottomSheet({
   children,
   heightClass = "h-[70vh]",
 }: BottomSheetProps) {
+  const t = useTranslation();
+
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
@@ -66,7 +69,7 @@ export function BottomSheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t.reelViewer.closeLabel}
             className="ml-2 inline-flex size-9 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
           >
             <X className="size-5" />

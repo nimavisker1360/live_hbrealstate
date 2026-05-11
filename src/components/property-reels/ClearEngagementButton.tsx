@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useTranslation } from "@/lib/i18n/client";
 
 type ApiResult = {
   data?: {
@@ -14,6 +15,7 @@ type ApiResult = {
 };
 
 export function ClearEngagementButton() {
+  const t = useTranslation();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -29,7 +31,7 @@ export function ClearEngagementButton() {
 
       if (!response.ok) {
         throw new Error(
-          json?.error?.message ?? `Delete failed (${response.status}).`,
+          json?.error?.message ?? t.components.deleteFailed(response.status),
         );
       }
 
@@ -39,7 +41,7 @@ export function ClearEngagementButton() {
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Could not delete likes and comments.",
+          : t.components.couldNotDeleteEngagement,
       );
     } finally {
       setIsDeleting(false);
@@ -55,17 +57,14 @@ export function ClearEngagementButton() {
         type="button"
       >
         <Trash2 aria-hidden className="size-4" />
-        Delete all
+        {t.components.deleteAll}
       </button>
 
-      {error ? (
-        <p className="mt-2 text-xs text-red-200">{error}</p>
-      ) : null}
+      {error ? <p className="mt-2 text-xs text-red-200">{error}</p> : null}
 
       <ConfirmDialog
-        cancelText="Cancel"
-        confirmText="Delete all"
-        description="This permanently deletes every reel and live like/comment from the database and resets reel like/comment counters to zero."
+        confirmText={t.components.deleteAll}
+        description={t.components.deleteAllDesc}
         isDangerous
         isLoading={isDeleting}
         isOpen={isOpen}
@@ -75,7 +74,7 @@ export function ClearEngagementButton() {
           }
         }}
         onConfirm={clearEngagement}
-        title="Delete all likes and comments"
+        title={t.components.deleteAllTitle}
       />
     </>
   );

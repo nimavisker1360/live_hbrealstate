@@ -10,6 +10,8 @@ import {
   Undo2,
 } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useTranslation } from "@/lib/i18n/client";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 type Status = "DRAFT" | "PROCESSING" | "PUBLISHED" | "ARCHIVED";
 
@@ -30,6 +32,7 @@ const baseAction =
   "inline-flex h-8 items-center gap-1.5 rounded-md border px-2.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-55";
 
 export function ReelRowActions({ reel }: { reel: Reel }) {
+  const t = useTranslation();
   const router = useRouter();
   const [isWorking, setIsWorking] = useState<null | "publish" | "delete" | "edit">(
     null,
@@ -47,12 +50,13 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
     const result = await callJson(
       `/api/property-reels/${encodeURIComponent(reel.id)}/publish`,
       { method: "POST", body: JSON.stringify({ publish: !isPublished }) },
+      t,
     );
 
     setIsWorking(null);
 
     if (!result.ok) {
-      setError(result.message ?? "Could not update reel status.");
+      setError(result.message ?? t.components.couldNotUpdateStatus);
       return;
     }
 
@@ -66,12 +70,13 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
     const result = await callJson(
       `/api/property-reels/${encodeURIComponent(reel.id)}`,
       { method: "DELETE" },
+      t,
     );
 
     setIsWorking(null);
 
     if (!result.ok) {
-      setError(result.message ?? "Could not delete reel.");
+      setError(result.message ?? t.components.couldNotDeleteReel);
       return;
     }
 
@@ -88,7 +93,7 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
         target="_blank"
       >
         <Eye aria-hidden className="size-4" />
-        Watch
+        {t.components.watch}
       </a>
 
       <button
@@ -104,12 +109,16 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
         {isPublished ? (
           <>
             <Undo2 aria-hidden className="size-4" />
-            {isWorking === "publish" ? "Updating…" : "Unpublish"}
+            {isWorking === "publish"
+              ? t.components.updating
+              : t.components.unpublish}
           </>
         ) : (
           <>
             <Send aria-hidden className="size-4" />
-            {isWorking === "publish" ? "Updating…" : "Publish"}
+            {isWorking === "publish"
+              ? t.components.updating
+              : t.components.publish}
           </>
         )}
       </button>
@@ -121,7 +130,7 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
         type="button"
       >
         <PencilLine aria-hidden className="size-4" />
-        Edit
+        {t.components.edit}
       </button>
 
       <button
@@ -131,7 +140,7 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
         type="button"
       >
         <Trash2 aria-hidden className="size-4" />
-        Delete
+        {t.components.deleteAction}
       </button>
 
       {error ? (
@@ -139,9 +148,8 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
       ) : null}
 
       <ConfirmDialog
-        cancelText="Cancel"
-        confirmText="Delete"
-        description={`This will permanently remove "${reel.title}" and its video file. This action cannot be undone.`}
+        confirmText={t.components.deleteAction}
+        description={t.components.deleteReelDesc(reel.title)}
         isDangerous
         isLoading={isWorking === "delete"}
         isOpen={isConfirmDeleteOpen}
@@ -151,7 +159,7 @@ export function ReelRowActions({ reel }: { reel: Reel }) {
           }
         }}
         onConfirm={deleteReel}
-        title="Delete property reel"
+        title={t.components.deleteReelTitle}
       />
 
       <EditReelDialog
@@ -178,6 +186,7 @@ function EditReelDialog({
   onSaved: () => void;
   reel: Reel;
 }) {
+  const t = useTranslation();
   const [title, setTitle] = useState(reel.title);
   const [description, setDescription] = useState(reel.description ?? "");
   const [isSaving, setIsSaving] = useState(false);
@@ -200,12 +209,13 @@ function EditReelDialog({
           description: description.trim() ? description.trim() : null,
         }),
       },
+      t,
     );
 
     setIsSaving(false);
 
     if (!result.ok) {
-      setError(result.message ?? "Could not save reel.");
+      setError(result.message ?? t.components.couldNotSaveReel);
       return;
     }
 
@@ -215,15 +225,17 @@ function EditReelDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="relative w-full max-w-md rounded-lg border border-white/15 bg-[#0a0a0a] p-6 shadow-2xl">
-        <h2 className="text-lg font-semibold text-white">Edit reel</h2>
+        <h2 className="text-lg font-semibold text-white">
+          {t.components.editReelTitle}
+        </h2>
         <p className="mt-1 text-sm text-white/60">
-          Update the title or description shown to buyers.
+          {t.components.editReelSubtitle}
         </p>
 
         <div className="mt-4 space-y-3">
           <label className="block">
             <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-              Title
+              {t.components.titleField}
             </span>
             <input
               className="mt-1 h-11 w-full rounded-md border border-white/10 bg-black/28 px-3 text-sm text-white outline-none focus:border-[#d6b15f]/70 focus:ring-2 focus:ring-[#d6b15f]/18"
@@ -237,7 +249,7 @@ function EditReelDialog({
 
           <label className="block">
             <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-              Description
+              {t.components.descriptionField}
             </span>
             <textarea
               className="mt-1 min-h-[88px] w-full rounded-md border border-white/10 bg-black/28 px-3 py-2 text-sm text-white outline-none focus:border-[#d6b15f]/70 focus:ring-2 focus:ring-[#d6b15f]/18"
@@ -261,7 +273,7 @@ function EditReelDialog({
             onClick={onClose}
             type="button"
           >
-            Cancel
+            {t.common.cancel}
           </button>
           <button
             className="h-10 rounded-md bg-[#d6b15f] px-4 text-sm font-semibold text-black transition hover:bg-[#f0cf79] disabled:opacity-50"
@@ -269,7 +281,7 @@ function EditReelDialog({
             onClick={save}
             type="button"
           >
-            {isSaving ? "Saving…" : "Save changes"}
+            {isSaving ? t.components.saving : t.components.saveChanges}
           </button>
         </div>
       </div>
@@ -280,6 +292,7 @@ function EditReelDialog({
 async function callJson(
   url: string,
   init: { method: string; body?: string },
+  t: Dictionary,
 ): Promise<ApiResult> {
   try {
     const response = await fetch(url, {
@@ -294,7 +307,7 @@ async function callJson(
       return { ok: true };
     }
 
-    let message = `Request failed (${response.status}).`;
+    let message = t.components.requestFailed(response.status);
 
     try {
       const body = (await response.json()) as {
@@ -315,7 +328,7 @@ async function callJson(
       message:
         networkError instanceof Error
           ? networkError.message
-          : "Network error.",
+          : t.components.networkError,
     };
   }
 }

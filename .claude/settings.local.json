@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf .next)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"TSC EXIT: $?\")",
+      "Bash(npx eslint *)",
+      "Bash(echo \"ESLINT EXIT: $?\")"
+    ]
+  }
+}

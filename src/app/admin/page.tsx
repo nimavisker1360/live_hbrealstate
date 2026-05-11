@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/Card";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +22,7 @@ const statusStyles: Record<string, string> = {
   published: "border-emerald-300/30 bg-emerald-400/10 text-emerald-100",
 };
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, label }: { status: string; label: string }) {
   return (
     <span
       className={cn(
@@ -28,9 +30,13 @@ function StatusBadge({ status }: { status: string }) {
         statusStyles[status] ?? "border-white/15 bg-white/[0.06] text-white/70",
       )}
     >
-      {status}
+      {label}
     </span>
   );
+}
+
+function statusLabel(t: Dictionary, status: string) {
+  return t.admin.statusLabels[status] ?? status;
 }
 
 function formatReelStatus(recordingPlaybackId: string | null) {
@@ -62,6 +68,9 @@ function SectionHeader({
 }
 
 export default async function AdminPage() {
+  const { t } = await getServerDictionary();
+  const ta = t.admin;
+
   const [agents, liveSessions, totalLeads] = await Promise.all([
     prisma.agent.findMany({
       include: {
@@ -88,32 +97,35 @@ export default async function AdminPage() {
 
   const kpis = [
     {
-      label: "Total agents",
+      label: ta.totalAgents,
       value: agents.length.toString(),
-      detail: `${agents.filter((a) => a.status === "ACTIVE").length} active`,
+      detail: ta.activeCount(agents.filter((a) => a.status === "ACTIVE").length),
       icon: UsersRound,
     },
     {
-      label: "Total property reels",
+      label: ta.totalReels,
       value: liveSessions.length.toString(),
-      detail: `${liveSessions.filter((s) => s.recordingPlaybackId).length} published`,
+      detail: ta.publishedCount(
+        liveSessions.filter((s) => s.recordingPlaybackId).length,
+      ),
       icon: Clapperboard,
     },
     {
-      label: "Total leads",
+      label: ta.totalLeads,
       value: totalLeads.toString(),
-      detail: "From all reels",
+      detail: ta.fromAllReels,
       icon: BarChart3,
     },
     {
-      label: "Avg views per reel",
-      value: liveSessions.length > 0
-        ? Math.round(
-            liveSessions.reduce((sum, s) => sum + s.viewers, 0) /
-              liveSessions.length,
-          ).toString()
-        : "0",
-      detail: "Across all reels",
+      label: ta.avgViews,
+      value:
+        liveSessions.length > 0
+          ? Math.round(
+              liveSessions.reduce((sum, s) => sum + s.viewers, 0) /
+                liveSessions.length,
+            ).toString()
+          : "0",
+      detail: ta.acrossAllReels,
       icon: BadgeDollarSign,
     },
   ];
@@ -124,19 +136,18 @@ export default async function AdminPage() {
         <div className="mb-8">
           <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#d6b15f]">
             <ShieldCheck aria-hidden className="size-4" />
-            Admin dashboard
+            {ta.eyebrow}
           </p>
           <h1 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">
-            Platform owner overview
+            {ta.title}
           </h1>
           <p className="mt-4 max-w-2xl leading-7 text-white/62">
-            Monitor agents, property reels, lead flow, and performance with
-            data from your database.
+            {ta.subtitle}
           </p>
         </div>
 
         <section
-          aria-label="Platform KPIs"
+          aria-label={ta.kpisLabel}
           className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
         >
           {kpis.map((kpi) => {
@@ -164,20 +175,22 @@ export default async function AdminPage() {
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <Card className="p-5">
             <SectionHeader
-              eyebrow="Agents"
+              eyebrow={ta.agentsEyebrow}
               icon={Building2}
-              title="Agent accounts"
+              title={ta.agentAccounts}
             />
             <div className="overflow-x-auto">
               <table className="w-full min-w-180 text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
-                    <th className="pb-3 pr-4 font-semibold">Agent name</th>
-                    <th className="pb-3 pr-4 font-semibold">Company</th>
-                    <th className="pb-3 pr-4 font-semibold">Status</th>
-                    <th className="pb-3 pr-4 font-semibold">Plan</th>
+                    <th className="pb-3 pr-4 font-semibold">
+                      {ta.colAgentName}
+                    </th>
+                    <th className="pb-3 pr-4 font-semibold">{ta.colCompany}</th>
+                    <th className="pb-3 pr-4 font-semibold">{ta.colStatus}</th>
+                    <th className="pb-3 pr-4 font-semibold">{ta.colPlan}</th>
                     <th className="pb-3 text-right font-semibold">
-                      Total leads
+                      {ta.colTotalLeads}
                     </th>
                   </tr>
                 </thead>
@@ -191,7 +204,10 @@ export default async function AdminPage() {
                         {agent.company}
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge status={agent.status.toLowerCase()} />
+                        <StatusBadge
+                          status={agent.status.toLowerCase()}
+                          label={statusLabel(t, agent.status.toLowerCase())}
+                        />
                       </td>
                       <td className="py-4 pr-4 text-white/72">
                         {agent.subscriptionPlan}
@@ -205,7 +221,7 @@ export default async function AdminPage() {
               </table>
               {agents.length === 0 && (
                 <div className="py-8 text-center text-sm text-white/52">
-                  No agents yet.
+                  {ta.noAgents}
                 </div>
               )}
             </div>
@@ -213,9 +229,9 @@ export default async function AdminPage() {
 
           <Card className="p-5">
             <SectionHeader
-              eyebrow="Reels"
+              eyebrow={ta.reelsEyebrow}
               icon={Clapperboard}
-              title="Top performers"
+              title={ta.topPerformers}
             />
             <div className="space-y-3">
               {liveSessions.slice(0, 5).map((session) => (
@@ -226,17 +242,17 @@ export default async function AdminPage() {
                   <div className="flex items-start justify-between gap-4">
                     <p className="font-medium text-white">{session.title}</p>
                     <p className="shrink-0 font-semibold text-[#d6b15f]">
-                      {session.viewers} views
+                      {t.common.viewsLabel(session.viewers)}
                     </p>
                   </div>
                   <p className="mt-2 text-sm text-white/56">
-                    {session._count.leads} leads • {session.agent.name}
+                    {ta.leadsAndAgent(session._count.leads, session.agent.name)}
                   </p>
                 </div>
               ))}
               {liveSessions.length === 0 && (
                 <div className="py-8 text-center text-sm text-white/52">
-                  No property reels yet.
+                  {ta.noReels}
                 </div>
               )}
             </div>
@@ -246,21 +262,23 @@ export default async function AdminPage() {
         <div className="mt-6">
           <Card className="p-5">
             <SectionHeader
-              eyebrow="Property reels"
+              eyebrow={ta.propertyReelsEyebrow}
               icon={Clapperboard}
-              title="All reels"
+              title={ta.allReels}
             />
             <div className="overflow-x-auto">
               <table className="w-full min-w-170 text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
-                    <th className="pb-3 pr-4 font-semibold">Title</th>
-                    <th className="pb-3 pr-4 font-semibold">Agent</th>
-                    <th className="pb-3 pr-4 font-semibold">Status</th>
+                    <th className="pb-3 pr-4 font-semibold">{ta.colTitle}</th>
+                    <th className="pb-3 pr-4 font-semibold">{ta.colAgent}</th>
+                    <th className="pb-3 pr-4 font-semibold">{ta.colStatus}</th>
                     <th className="pb-3 pr-4 text-right font-semibold">
-                      Views
+                      {ta.colViews}
                     </th>
-                    <th className="pb-3 text-right font-semibold">Leads</th>
+                    <th className="pb-3 text-right font-semibold">
+                      {ta.colLeads}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -275,6 +293,10 @@ export default async function AdminPage() {
                       <td className="py-4 pr-4">
                         <StatusBadge
                           status={formatReelStatus(session.recordingPlaybackId)}
+                          label={statusLabel(
+                            t,
+                            formatReelStatus(session.recordingPlaybackId),
+                          )}
                         />
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
@@ -289,7 +311,7 @@ export default async function AdminPage() {
               </table>
               {liveSessions.length === 0 && (
                 <div className="py-8 text-center text-sm text-white/52">
-                  No property reels yet.
+                  {ta.noReels}
                 </div>
               )}
             </div>

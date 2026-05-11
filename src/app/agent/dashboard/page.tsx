@@ -18,6 +18,8 @@ import { UploadPropertyReelPanel } from "@/components/property-reels/UploadPrope
 import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 import { getCurrentSession } from "@/lib/auth";
 import { HB_CONSULTANTS, getConsultantById } from "@/lib/hb-consultants";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
@@ -67,7 +69,67 @@ type AgentDashboardPageProps = {
   }>;
 };
 
-function StatusBadge({ status }: { status: string }) {
+function makeFormatters(locale: string, t: Dictionary) {
+  const intlLocale = locale === "tr" ? "tr-TR" : "en-US";
+  const td = t.agentDashboard;
+
+  function statusLabel(status: string) {
+    return td.statusLabels[status] ?? status;
+  }
+
+  function formatDate(value: Date | null) {
+    if (!value) {
+      return "—";
+    }
+
+    return new Intl.DateTimeFormat(intlLocale, {
+      dateStyle: "medium",
+    }).format(value);
+  }
+
+  function formatDateTime(value: Date | null) {
+    if (!value) {
+      return td.noActivity;
+    }
+
+    return new Intl.DateTimeFormat(intlLocale, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(value);
+  }
+
+  function formatPrice(
+    price: { toString(): string } | null | undefined,
+    currency: string,
+  ) {
+    if (!price) {
+      return t.common.priceOnRequest;
+    }
+
+    const amount = Number(price.toString());
+
+    if (!Number.isFinite(amount)) {
+      return `${currency} ${price.toString()}`;
+    }
+
+    return new Intl.NumberFormat(intlLocale, {
+      currency,
+      maximumFractionDigits: 0,
+      style: "currency",
+    }).format(amount);
+  }
+
+  function formatCurrency(amount: number, currency: string) {
+    return new Intl.NumberFormat(intlLocale, {
+      currency,
+      style: "currency",
+    }).format(amount);
+  }
+
+  return { formatDate, formatDateTime, formatPrice, formatCurrency, statusLabel };
+}
+
+function StatusBadge({ status, label }: { status: string; label: string }) {
   return (
     <span
       className={cn(
@@ -75,7 +137,7 @@ function StatusBadge({ status }: { status: string }) {
         statusStyles[status] ?? "border-white/15 bg-white/[0.06] text-white/70",
       )}
     >
-      {status}
+      {label}
     </span>
   );
 }
@@ -95,48 +157,6 @@ function SectionHeader({
       <h2 className="mt-2 text-xl font-semibold text-white">{title}</h2>
     </div>
   );
-}
-
-function formatDate(value: Date | null) {
-  if (!value) {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-  }).format(value);
-}
-
-function formatDateTime(value: Date | null) {
-  if (!value) {
-    return "No activity";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(value);
-}
-
-function formatPrice(
-  price: { toString(): string } | null | undefined,
-  currency: string,
-) {
-  if (!price) {
-    return "Price on request";
-  }
-
-  const amount = Number(price.toString());
-
-  if (!Number.isFinite(amount)) {
-    return `${currency} ${price.toString()}`;
-  }
-
-  return new Intl.NumberFormat("en-US", {
-    currency,
-    maximumFractionDigits: 0,
-    style: "currency",
-  }).format(amount);
 }
 
 function formatBytes(value: bigint | null | undefined) {
@@ -237,6 +257,11 @@ function mergeEngagement(
 export default async function AgentDashboardPage({
   searchParams,
 }: AgentDashboardPageProps) {
+  const { locale, t } = await getServerDictionary();
+  const td = t.agentDashboard;
+  const { formatDate, formatDateTime, formatPrice, formatCurrency, statusLabel } =
+    makeFormatters(locale, t);
+
   const query = searchParams ? await searchParams : {};
   const authChecked = Array.isArray(query.authChecked)
     ? query.authChecked[0]
@@ -345,14 +370,8 @@ export default async function AgentDashboardPage({
   const draftReels = videoTours.filter(
     (reel) => reel.status === "DRAFT" || reel.status === "PROCESSING",
   ).length;
-  const totalViews = videoTours.reduce(
-    (sum, reel) => sum + reel.viewCount,
-    0,
-  );
-  const totalLikes = videoTours.reduce(
-    (sum, reel) => sum + reel.likeCount,
-    0,
-  );
+  const totalViews = videoTours.reduce((sum, reel) => sum + reel.viewCount, 0);
+  const totalLikes = videoTours.reduce((sum, reel) => sum + reel.likeCount, 0);
   const totalComments = videoTours.reduce(
     (sum, reel) => sum + reel.commentCount,
     0,
@@ -364,33 +383,33 @@ export default async function AgentDashboardPage({
 
   const overviewCards = [
     {
-      label: "Total reels",
+      label: td.totalReels,
       value: totalReels.toLocaleString(),
-      detail: `${publishedReels} published · ${draftReels} draft`,
+      detail: td.totalReelsDetail(publishedReels, draftReels),
       icon: Clapperboard,
     },
     {
-      label: "Reel views",
+      label: td.reelViews,
       value: totalViews.toLocaleString(),
-      detail: "Across all reels",
+      detail: td.reelViewsDetail,
       icon: Eye,
     },
     {
-      label: "Likes",
+      label: td.likes,
       value: totalLikes.toLocaleString(),
-      detail: "Buyer reactions",
+      detail: td.likesDetail,
       icon: Heart,
     },
     {
-      label: "Comments",
+      label: td.comments,
       value: totalComments.toLocaleString(),
-      detail: "Conversation volume",
+      detail: td.commentsDetail,
       icon: MessageCircle,
     },
     {
-      label: "Offers",
+      label: td.offers,
       value: totalOffers.toLocaleString(),
-      detail: totalOffers > 0 ? "Offers tracked" : "No offers yet",
+      detail: totalOffers > 0 ? td.offersTracked : td.noOffersYet,
       icon: BadgeDollarSign,
     },
   ];
@@ -449,7 +468,7 @@ export default async function AgentDashboardPage({
         : like.visitorId
           ? `visitor:${like.visitorId}`
           : `like:${like.id}`,
-      name: like.user?.name ?? like.user?.email ?? "Unknown viewer",
+      name: like.user?.name ?? like.user?.email ?? td.unknownViewer,
       email: like.user?.email,
       identified: Boolean(like.userId),
       reelTitle: like.videoTour.title,
@@ -477,19 +496,18 @@ export default async function AgentDashboardPage({
           <div>
             <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#d6b15f]">
               <Clapperboard aria-hidden className="size-4" />
-              Agent dashboard
+              {td.eyebrow}
             </p>
             <h1 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">
-              Property reels command center
+              {td.title}
             </h1>
             <p className="mt-4 max-w-2xl leading-7 text-white/62">
-              Upload property videos, publish reels to buyers, and track likes,
-              comments, and offers from a single workspace.
+              {td.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-md border border-[#d6b15f]/25 bg-[#d6b15f]/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#f0cf79]">
             <UploadCloud aria-hidden className="size-4" />
-            {totalReels} reels in library
+            {td.reelsInLibrary(totalReels)}
           </div>
         </div>
 
@@ -504,7 +522,7 @@ export default async function AgentDashboardPage({
         />
 
         <section
-          aria-label="Property reels analytics"
+          aria-label={td.overviewLabel}
           className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
         >
           {overviewCards.map((card) => {
@@ -532,30 +550,30 @@ export default async function AgentDashboardPage({
         <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.52fr)]">
           <Card className="p-5">
             <SectionHeader
-              eyebrow="Property reels"
-              title="Reel performance"
+              eyebrow={td.propertyReelsEyebrow}
+              title={td.reelPerformance}
             />
             <div className="overflow-x-auto">
               <table className="w-full min-w-[1080px] text-left text-sm">
                 <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                   <tr>
-                    <th className="pb-3 pr-4 font-semibold">Reel</th>
-                    <th className="pb-3 pr-4 font-semibold">Status</th>
+                    <th className="pb-3 pr-4 font-semibold">{td.colReel}</th>
+                    <th className="pb-3 pr-4 font-semibold">{td.colStatus}</th>
                     <th className="pb-3 pr-4 text-right font-semibold">
-                      Views
+                      {td.colViews}
                     </th>
                     <th className="pb-3 pr-4 text-right font-semibold">
-                      Likes
+                      {td.colLikes}
                     </th>
                     <th className="pb-3 pr-4 text-right font-semibold">
-                      Comments
+                      {td.colComments}
                     </th>
                     <th className="pb-3 pr-4 text-right font-semibold">
-                      Offers
+                      {td.colOffers}
                     </th>
-                    <th className="pb-3 pr-4 font-semibold">Size</th>
-                    <th className="pb-3 pr-4 font-semibold">Uploaded</th>
-                    <th className="pb-3 font-semibold">Actions</th>
+                    <th className="pb-3 pr-4 font-semibold">{td.colSize}</th>
+                    <th className="pb-3 pr-4 font-semibold">{td.colUploaded}</th>
+                    <th className="pb-3 font-semibold">{td.colActions}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -578,7 +596,10 @@ export default async function AgentDashboardPage({
                         </a>
                       </td>
                       <td className="py-4 pr-4">
-                        <StatusBadge status={reel.status.toLowerCase()} />
+                        <StatusBadge
+                          status={reel.status.toLowerCase()}
+                          label={statusLabel(reel.status.toLowerCase())}
+                        />
                       </td>
                       <td className="py-4 pr-4 text-right text-white/72">
                         {reel.viewCount.toLocaleString()}
@@ -614,7 +635,7 @@ export default async function AgentDashboardPage({
                   {videoTours.length === 0 ? (
                     <tr>
                       <td className="py-6 text-sm text-white/52" colSpan={9}>
-                        No property reels yet — upload one above to get started.
+                        {td.noReelsRow}
                       </td>
                     </tr>
                   ) : null}
@@ -626,22 +647,23 @@ export default async function AgentDashboardPage({
           <Card className="p-5">
             <div className="mb-5">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
-                Properties
+                {td.propertiesEyebrow}
               </p>
               <h2 className="mt-2 text-xl font-semibold text-white">
-                Active inventory
+                {td.activeInventory}
               </h2>
-              <p className="mt-2 text-sm text-white/46">
-                Delete removes the property, linked reels, and stored media.
-              </p>
+              <p className="mt-2 text-sm text-white/46">{td.propertiesHint}</p>
             </div>
             <div className="space-y-3">
               {databaseProperties.map((property) => {
                 const latestReel = property.videoTours[0];
                 const consultant = getConsultantById(property.consultantId);
                 const activity = latestReel
-                  ? `Latest reel · ${latestReel.status.toLowerCase()} · ${formatDate(latestReel.updatedAt)}`
-                  : `${property._count.videoTours} reels`;
+                  ? td.latestReel(
+                      statusLabel(latestReel.status.toLowerCase()),
+                      formatDate(latestReel.updatedAt),
+                    )
+                  : td.reelsCount(property._count.videoTours);
 
                 const specs: string[] = [];
                 if (property.bedrooms) {
@@ -691,12 +713,10 @@ export default async function AgentDashboardPage({
                             {specs.join(" · ")}
                           </p>
                         ) : null}
-                        <p className="mt-2 text-sm text-white/56">
-                          {activity}
-                        </p>
+                        <p className="mt-2 text-sm text-white/56">{activity}</p>
                         {consultant ? (
                           <p className="mt-2 truncate text-xs text-[#f0cf79]">
-                            Consultant: {consultant.name}
+                            {td.consultantLabel(consultant.name)}
                           </p>
                         ) : null}
                         <div className="mt-3">
@@ -713,7 +733,7 @@ export default async function AgentDashboardPage({
               })}
               {databaseProperties.length === 0 ? (
                 <div className="rounded-md border border-white/10 bg-black/20 p-4 text-sm text-white/52">
-                  No properties in the database yet.
+                  {td.noPropertiesDb}
                 </div>
               ) : null}
             </div>
@@ -724,10 +744,10 @@ export default async function AgentDashboardPage({
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d6b15f]">
-                Engagement
+                {td.engagementEyebrow}
               </p>
               <h2 className="mt-2 text-xl font-semibold text-white">
-                Likes & comments ({engagementSummary.length})
+                {td.likesAndComments(engagementSummary.length)}
               </h2>
             </div>
             <ClearEngagementButton />
@@ -744,12 +764,12 @@ export default async function AgentDashboardPage({
                       <p className="font-medium text-white">{row.name}</p>
                       <p className="mt-1 text-xs text-white/48">
                         {row.email ??
-                          (row.identified ? "Signed-in buyer" : "Guest")}
+                          (row.identified ? td.signedInBuyer : td.guest)}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-[0.14em] text-white/36">
-                        Latest reel
+                        {td.latestReelLabel}
                       </p>
                       <p className="mt-1 truncate text-white/70">
                         {row.latestReelTitle}
@@ -757,10 +777,10 @@ export default async function AgentDashboardPage({
                     </div>
                     <div className="flex gap-2 sm:justify-end">
                       <span className="inline-flex h-7 items-center rounded-full border border-red-300/20 bg-red-400/10 px-2.5 text-xs font-semibold text-red-100">
-                        {row.likes} likes
+                        {td.likesBadge(row.likes)}
                       </span>
                       <span className="inline-flex h-7 items-center rounded-full border border-[#d6b15f]/25 bg-[#d6b15f]/10 px-2.5 text-xs font-semibold text-[#f0cf79]">
-                        {row.comments} comments
+                        {td.commentsBadge(row.comments)}
                       </span>
                     </div>
                     <p className="text-white/52 sm:text-right">
@@ -775,7 +795,7 @@ export default async function AgentDashboardPage({
                   <div className="grid gap-4 border-t border-white/10 px-4 py-4 md:grid-cols-2">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/38">
-                        Comments
+                        {td.comments}
                       </p>
                       <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-1">
                         {row.commentEvents.length > 0 ? (
@@ -795,7 +815,7 @@ export default async function AgentDashboardPage({
                           ))
                         ) : (
                           <p className="rounded-md border border-white/10 bg-white/[0.03] p-3 text-sm text-white/46">
-                            No comments yet.
+                            {td.noCommentsYet}
                           </p>
                         )}
                       </div>
@@ -803,7 +823,7 @@ export default async function AgentDashboardPage({
 
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/38">
-                        Likes
+                        {td.likes}
                       </p>
                       <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-1">
                         {row.likeEvents.length > 0 ? (
@@ -822,7 +842,7 @@ export default async function AgentDashboardPage({
                           ))
                         ) : (
                           <p className="rounded-md border border-white/10 bg-white/[0.03] p-3 text-sm text-white/46">
-                            No likes yet.
+                            {td.noLikesYet}
                           </p>
                         )}
                       </div>
@@ -832,24 +852,26 @@ export default async function AgentDashboardPage({
               ))
             ) : (
               <div className="rounded-md border border-white/10 bg-black/20 p-4 text-sm text-white/52">
-                No likes or comments yet.
+                {td.noEngagementYet}
               </div>
             )}
           </div>
         </Card>
 
         <Card className="mt-6 p-5">
-          <SectionHeader eyebrow="Offers" title="Offers from reels" />
+          <SectionHeader eyebrow={td.offersEyebrow} title={td.offersFromReels} />
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] text-left text-sm">
               <thead className="border-b border-white/10 text-xs uppercase tracking-[0.14em] text-white/40">
                 <tr>
-                  <th className="pb-3 pr-4 font-semibold">Reel</th>
-                  <th className="pb-3 pr-4 font-semibold">Property</th>
-                  <th className="pb-3 pr-4 font-semibold">Offer amount</th>
-                  <th className="pb-3 pr-4 font-semibold">Buyer</th>
-                  <th className="pb-3 pr-4 font-semibold">Phone</th>
-                  <th className="pb-3 font-semibold">Status</th>
+                  <th className="pb-3 pr-4 font-semibold">{td.colReel}</th>
+                  <th className="pb-3 pr-4 font-semibold">{td.colProperty}</th>
+                  <th className="pb-3 pr-4 font-semibold">
+                    {td.colOfferAmount}
+                  </th>
+                  <th className="pb-3 pr-4 font-semibold">{td.colBuyer}</th>
+                  <th className="pb-3 pr-4 font-semibold">{td.colPhone}</th>
+                  <th className="pb-3 font-semibold">{td.colStatus}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
@@ -863,20 +885,18 @@ export default async function AgentDashboardPage({
                         {offer.videoTour.property?.title ?? "—"}
                       </td>
                       <td className="py-4 pr-4 font-semibold text-[#d6b15f]">
-                        {new Intl.NumberFormat("en-US", {
-                          currency: offer.currency,
-                          style: "currency",
-                        }).format(Number(offer.amount))}
+                        {formatCurrency(Number(offer.amount), offer.currency)}
                       </td>
                       <td className="py-4 pr-4 text-white/72">
                         {offer.buyerName}
                       </td>
-                      <td className="py-4 pr-4 text-white/62">
-                        {offer.phone}
-                      </td>
+                      <td className="py-4 pr-4 text-white/62">{offer.phone}</td>
                       <td className="py-4">
                         <StatusBadge
                           status={offer.status.toLowerCase().replace("_", " ")}
+                          label={statusLabel(
+                            offer.status.toLowerCase().replace("_", " "),
+                          )}
                         />
                       </td>
                     </tr>
@@ -884,7 +904,7 @@ export default async function AgentDashboardPage({
                 ) : (
                   <tr>
                     <td className="py-6 text-sm text-white/52" colSpan={6}>
-                      No offers from property reels yet.
+                      {td.noOffersRow}
                     </td>
                   </tr>
                 )}
@@ -896,9 +916,9 @@ export default async function AgentDashboardPage({
               className="underline-offset-4 hover:text-[#f0cf79] hover:underline"
               href="/agent/dashboard"
             >
-              Refresh dashboard
-            </Link>{" "}
-            to pull the latest offer activity.
+              {td.refreshDashboard}
+            </Link>
+            {td.refreshHint}
           </p>
         </Card>
       </div>
