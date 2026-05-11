@@ -1,4 +1,5 @@
 import { ArrowRight, BadgeCheck, Building2, Clapperboard } from "lucide-react";
+import { AuthReturnFallback } from "@/components/auth/AuthReturnFallback";
 import { LiveCard } from "@/components/live/LiveCard";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { CTAButtons } from "@/components/sections/CTAButtons";
@@ -110,6 +111,7 @@ export default async function Home() {
 
   return (
     <>
+      <AuthReturnFallback hasSession={Boolean(session)} />
       <section className="relative min-h-[calc(100svh-73px)] overflow-hidden">
         <div
           aria-hidden
