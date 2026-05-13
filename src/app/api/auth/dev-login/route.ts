@@ -41,6 +41,11 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const role = normalizeRole(requestUrl.searchParams.get("role") ?? "AGENT");
   const userByRole: Record<AuthRole, { email: string; name: string; sub: string }> = {
+    ADMIN: {
+      email: "dev-admin@local.test",
+      name: "Dev Admin",
+      sub: "dev-admin",
+    },
     AGENT: {
       email: "dev-agent@local.test",
       name: "Dev Agent",
@@ -51,11 +56,6 @@ export async function GET(request: Request) {
       name: "Dev Buyer",
       sub: "dev-buyer",
     },
-    OWNER: {
-      email: "dev-owner@local.test",
-      name: "Dev Owner",
-      sub: "dev-owner",
-    },
   };
   const user = userByRole[role];
   const token = await createSessionToken({
@@ -63,6 +63,7 @@ export async function GET(request: Request) {
     name: user.name,
     email: user.email,
     role,
+    status: role === "BUYER" ? undefined : "ACTIVE",
   });
   const response = NextResponse.redirect(safeNextUrl(request));
 

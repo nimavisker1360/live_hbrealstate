@@ -1,6 +1,8 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -14,11 +16,17 @@ type RecordingRouteContext = {
 async function getWritableSession() {
   const session = await getCurrentSession().catch(() => null);
 
-  if (session?.role === "BUYER") {
+  if (!session) {
+    return { response: jsonError("Authentication required.", 401) };
+  }
+
+  const databaseUser = await getSessionBackedByDatabase(session);
+
+  if (!canAccessAgentDashboard(databaseUser)) {
     return { response: jsonError("Unauthorized.", 403) };
   }
 
-  return { session };
+  return { session: databaseUser };
 }
 
 export async function DELETE(

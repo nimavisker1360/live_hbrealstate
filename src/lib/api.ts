@@ -18,6 +18,14 @@ export function jsonError(
 }
 
 export function handleApiError(error: unknown): Response {
+  if (
+    error instanceof Error &&
+    "status" in error &&
+    typeof error.status === "number"
+  ) {
+    return jsonError(error.message, error.status);
+  }
+
   if (error instanceof ZodError) {
     return jsonError("Invalid request payload.", 400, error.flatten());
   }

@@ -15,7 +15,13 @@ export function isAgentDashboardEmail(email: string | null | undefined) {
 }
 
 export function canAccessAgentDashboard(
-  session: Pick<AuthSession, "email"> | null | undefined,
+  session:
+    | Pick<AuthSession, "role" | "status">
+    | null
+    | undefined,
 ) {
-  return isAgentDashboardEmail(session?.email);
+  return (
+    session?.status === "ACTIVE" &&
+    (session.role === "ADMIN" || session.role === "AGENT")
+  );
 }

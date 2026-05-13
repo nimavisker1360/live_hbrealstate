@@ -10,18 +10,28 @@
 */
 
 export const UserRole = {
-  OWNER: 'OWNER',
-  AGENT: 'AGENT',
-  BUYER: 'BUYER'
+  ADMIN: 'ADMIN',
+  AGENT: 'AGENT'
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const UserStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
 export const AgentStatus = {
   ACTIVE: 'ACTIVE',
   PENDING: 'PENDING',
-  PAUSED: 'PAUSED'
+  SUSPENDED: 'SUSPENDED',
+  REJECTED: 'REJECTED'
 } as const
 
 export type AgentStatus = (typeof AgentStatus)[keyof typeof AgentStatus]

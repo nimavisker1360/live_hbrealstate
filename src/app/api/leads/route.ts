@@ -3,6 +3,8 @@ import { handleApiError, getStringParam, jsonError } from "@/lib/api";
 import { createLeadAndSendEmail } from "@/lib/lead-service";
 import { prisma } from "@/lib/prisma";
 import { getCurrentSession } from "@/lib/auth";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 
 export async function GET(request: Request) {
   try {
@@ -12,7 +14,9 @@ export async function GET(request: Request) {
       return jsonError("Authentication required.", 401);
     }
 
-    if (session.role === "BUYER") {
+    const databaseUser = await getSessionBackedByDatabase(session);
+
+    if (!canAccessAgentDashboard(databaseUser)) {
       return jsonError("Unauthorized.", 403);
     }
 

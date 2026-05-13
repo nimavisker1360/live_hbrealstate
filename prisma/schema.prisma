@@ -8,15 +8,22 @@ datasource db {
 }
 
 enum UserRole {
-  OWNER
+  ADMIN
   AGENT
-  BUYER
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  REJECTED
 }
 
 enum AgentStatus {
   ACTIVE
   PENDING
-  PAUSED
+  SUSPENDED
+  REJECTED
 }
 
 enum SubscriptionPlan {
@@ -83,10 +90,13 @@ model User {
   id                String             @id @default(cuid())
   auth0Id           String?            @unique
   name              String
-  email             String?            @unique
+  email             String             @unique
   phone             String?
+  agencyName        String?
+  passwordHash      String             @default("")
   picture           String?
-  role              UserRole           @default(BUYER)
+  role              UserRole           @default(AGENT)
+  status            UserStatus         @default(PENDING)
   agent             Agent?
   comments          Comment[]
   likeEvents        LikeEvent[]
@@ -108,7 +118,7 @@ model Agent {
   user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   name              String
   company           String
-  status            AgentStatus        @default(ACTIVE)
+  status            AgentStatus        @default(PENDING)
   subscriptionPlan  SubscriptionPlan   @default(PRO)
   properties        Property[]
   liveSessions      LiveSession[]

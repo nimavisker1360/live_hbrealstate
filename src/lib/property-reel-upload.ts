@@ -43,8 +43,6 @@ export function getReelBlobAccess(): "public" | "private" {
     : "public";
 }
 
-const DEFAULT_AGENT_COMPANY = "HB Real Estate";
-
 export async function requireAgentOrAdmin() {
   const session = await getCurrentSession().catch(() => null);
 
@@ -52,23 +50,32 @@ export async function requireAgentOrAdmin() {
     throw new PropertyReelUploadError("Authentication required.", 401);
   }
 
-  if (!canAccessAgentDashboard(session)) {
+  const databaseUser = await getSessionBackedByDatabase(session);
+
+  if (!canAccessAgentDashboard(databaseUser)) {
     throw new PropertyReelUploadError(
-      "Only the authorized agent dashboard account can upload property reels.",
+      "Only active admin or agent accounts can upload property reels.",
       403,
     );
   }
 
-  return getSessionBackedByDatabase(session);
+  return databaseUser;
 }
 
 export async function resolveAgentForUser(userId: string) {
   const agent = await prisma.agent.findUnique({
     where: { userId },
-    select: { id: true, name: true },
+    select: { id: true, name: true, status: true },
   });
 
   if (agent) {
+    if (agent.status !== "ACTIVE") {
+      throw new PropertyReelUploadError(
+        "Agent profile is not active.",
+        403,
+      );
+    }
+
     return agent;
   }
 
@@ -93,14 +100,35 @@ export async function resolveAgentForUser(userId: string) {
     });
 
     if (legacyAgent && !legacyAgent.userId) {
-      return prisma.agent.update({
+      const linkedAgent = await prisma.agent.update({
         where: { id: legacyAgent.id },
         data: { userId: user.id },
-        select: { id: true, name: true },
+        select: { id: true, name: true, status: true },
       });
+
+      if (linkedAgent.status !== "ACTIVE") {
+        throw new PropertyReelUploadError(
+          "Agent profile is not active.",
+          403,
+        );
+      }
+
+      return linkedAgent;
     }
 
     if (legacyAgent?.userId === user.id) {
+      const linkedAgent = await prisma.agent.findUnique({
+        where: { id: legacyAgent.id },
+        select: { id: true, name: true, status: true },
+      });
+
+      if (linkedAgent?.status !== "ACTIVE") {
+        throw new PropertyReelUploadError(
+          "Agent profile is not active.",
+          403,
+        );
+      }
+
       return {
         id: legacyAgent.id,
         name: legacyAgent.name,
@@ -108,18 +136,10 @@ export async function resolveAgentForUser(userId: string) {
     }
   }
 
-  return prisma.agent.upsert({
-    where: { userId: user.id },
-    update: {},
-    create: {
-      userId: user.id,
-      name: user.name || user.email || "HB Real Estate Agent",
-      company: DEFAULT_AGENT_COMPANY,
-      status: "ACTIVE",
-      subscriptionPlan: "PRO",
-    },
-    select: { id: true, name: true },
-  });
+  throw new PropertyReelUploadError(
+    "No active agent profile is linked to this user.",
+    403,
+  );
 }
 
 export async function ensurePropertyOwnedByAgent(

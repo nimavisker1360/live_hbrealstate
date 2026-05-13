@@ -11,9 +11,9 @@ const PAGE_ACCESS: Array<{
   prefix: string;
   roles: AuthRole[];
 }> = [
-  { prefix: "/admin", roles: ["OWNER"] },
-  { agentDashboardOnly: true, prefix: "/agent", roles: ["OWNER", "AGENT"] },
-  { agentDashboardOnly: true, prefix: "/dashboard", roles: ["OWNER", "AGENT"] },
+  { prefix: "/admin", roles: ["ADMIN"] },
+  { agentDashboardOnly: true, prefix: "/agent", roles: ["ADMIN", "AGENT"] },
+  { agentDashboardOnly: true, prefix: "/dashboard", roles: ["ADMIN", "AGENT"] },
 ];
 
 const API_ACCESS: Array<{
@@ -21,8 +21,8 @@ const API_ACCESS: Array<{
   prefix: string;
   roles: AuthRole[];
 }> = [
-  { methods: ["GET"], prefix: "/api/leads", roles: ["OWNER", "AGENT"] },
-  { methods: ["GET"], prefix: "/api/offers", roles: ["OWNER", "AGENT"] },
+  { methods: ["GET"], prefix: "/api/leads", roles: ["ADMIN", "AGENT"] },
+  { methods: ["GET"], prefix: "/api/offers", roles: ["ADMIN", "AGENT"] },
 ];
 
 function findAccessRule(pathname: string, method: string) {
@@ -39,24 +39,11 @@ function findAccessRule(pathname: string, method: string) {
   return PAGE_ACCESS.find((rule) => pathname.startsWith(rule.prefix));
 }
 
-function freshDashboardAuthRedirect(request: NextRequest) {
-  const startUrl = new URL("/api/auth/start", request.url);
-
-  startUrl.searchParams.set("force", "true");
-  startUrl.searchParams.set("next", "/agent/dashboard?authChecked=1");
-
-  return NextResponse.redirect(startUrl);
-}
-
 function loginRedirect(request: NextRequest) {
-  const loginUrl = new URL(
-    process.env.HB_MAIN_LOGIN_URL ?? "https://hbrealstate.com/login",
-  );
-  const callbackUrl = new URL("/api/auth/sso", request.url);
+  const loginUrl = new URL("/login", request.url);
   const nextPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
 
-  callbackUrl.searchParams.set("next", nextPath);
-  loginUrl.searchParams.set("callbackUrl", callbackUrl.toString());
+  loginUrl.searchParams.set("next", nextPath);
 
   return NextResponse.redirect(loginUrl);
 }
@@ -89,13 +76,6 @@ function unauthenticatedResponse(request: NextRequest) {
 }
 
 export async function proxy(request: NextRequest) {
-  if (
-    request.nextUrl.pathname === "/agent/dashboard" &&
-    request.nextUrl.searchParams.get("authChecked") !== "1"
-  ) {
-    return freshDashboardAuthRedirect(request);
-  }
-
   const rule = findAccessRule(request.nextUrl.pathname, request.method);
 
   if (!rule) {
@@ -109,7 +89,7 @@ export async function proxy(request: NextRequest) {
     return unauthenticatedResponse(request);
   }
 
-  if (!rule.roles.includes(session.role)) {
+  if (session.status !== "ACTIVE" || !rule.roles.includes(session.role)) {
     return unauthorizedResponse(request);
   }
 

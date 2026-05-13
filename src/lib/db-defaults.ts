@@ -4,6 +4,16 @@ export const MOCK_AGENT_ID = "agent-hb-reels";
 export const MOCK_PROPERTY_ID = "property-hb-reels";
 export const MOCK_ROOM_ID = "hb-property-reel";
 
+export class MockContextError extends Error {
+  status: number;
+
+  constructor(message: string, status = 400) {
+    super(message);
+    this.name = "MockContextError";
+    this.status = status;
+  }
+}
+
 type EnsureContextInput = {
   agentId?: string;
   agentName?: string;
@@ -19,7 +29,6 @@ type EnsureContextInput = {
 
 export async function ensureMockContext({
   agentId = MOCK_AGENT_ID,
-  agentName = "HB Real Estate Agent",
   propertyId = MOCK_PROPERTY_ID,
   propertyTitle = "HB Property Reel",
   propertyLocation = "Istanbul, Turkey",
@@ -29,19 +38,14 @@ export async function ensureMockContext({
   sessionTitle,
   status = "ENDED",
 }: EnsureContextInput) {
-  const agent = await prisma.agent.upsert({
+  const agent = await prisma.agent.findUnique({
     where: { id: agentId },
-    update: {
-      name: agentName,
-    },
-    create: {
-      id: agentId,
-      name: agentName,
-      company: "HB Real Estate",
-      status: "ACTIVE",
-      subscriptionPlan: "PRO",
-    },
+    select: { id: true, name: true, company: true, status: true },
   });
+
+  if (!agent || agent.status !== "ACTIVE") {
+    throw new MockContextError("Active agent context not found.", 404);
+  }
 
   const property = await prisma.property.upsert({
     where: { id: propertyId },

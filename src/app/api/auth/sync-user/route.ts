@@ -6,7 +6,7 @@ import {
   sessionCookieOptions,
   verifyLiveAuthToken,
 } from "@/lib/auth";
-import { syncExternalAuthUser } from "@/lib/auth-users";
+import { isActivePrivilegedUser, syncExternalAuthUser } from "@/lib/auth-users";
 
 export const runtime = "nodejs";
 
@@ -31,11 +31,17 @@ export async function POST(request: Request) {
     }
 
     const user = await syncExternalAuthUser(authUser);
+
+    if (!isActivePrivilegedUser(user)) {
+      return jsonError("Agent access is pending admin approval.", 403);
+    }
+
     const sessionToken = await createSessionToken({
       sub: user.id,
       name: user.name,
-      email: user.email ?? undefined,
-      role: "BUYER",
+      email: user.email,
+      role: user.role,
+      status: user.status,
     });
     const response = NextResponse.json(user);
 

@@ -28,7 +28,7 @@ export const videoTourCommentBodySchema = z.object({
 export type VideoTourCommentSort = "newest" | "mostLiked";
 
 type CommentUser = {
-  role: "OWNER" | "AGENT" | "BUYER";
+  role: "ADMIN" | "AGENT";
 };
 
 type SerializableVideoTourComment = {
@@ -87,7 +87,7 @@ export function serializeVideoTourComment(
     isMember: Boolean(comment.userId),
     isAgent,
     agentBadge: isAgent
-      ? comment.user?.role === "OWNER"
+      ? comment.user?.role === "ADMIN"
         ? "HB Agent"
         : "Official Agent"
       : null,

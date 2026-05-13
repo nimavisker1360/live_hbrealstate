@@ -1,5 +1,7 @@
 import { getCurrentSession } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -11,11 +13,17 @@ async function getWritableSession() {
     return { response: jsonError("Authentication required.", 401) };
   }
 
-  if (session?.role === "BUYER") {
+  if (!session) {
+    return { session: null };
+  }
+
+  const databaseUser = await getSessionBackedByDatabase(session);
+
+  if (!canAccessAgentDashboard(databaseUser)) {
     return { response: jsonError("Unauthorized.", 403) };
   }
 
-  return { session };
+  return { session: databaseUser };
 }
 
 export async function GET() {
@@ -27,7 +35,10 @@ export async function GET() {
     }
 
     const propertyReels = await prisma.liveSession.findMany({
-      where: writable.session ? { agentId: writable.session.sub } : undefined,
+      where:
+        writable.session?.role === "AGENT"
+          ? { agent: { userId: writable.session.sub } }
+          : undefined,
       orderBy: { createdAt: "desc" },
       take: 25,
       select: {

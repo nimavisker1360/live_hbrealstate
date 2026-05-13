@@ -4,6 +4,8 @@ import { ensureMockContext } from "@/lib/db-defaults";
 import { prisma } from "@/lib/prisma";
 import { offerPayloadSchema } from "@/lib/schemas";
 import { getCurrentSession } from "@/lib/auth";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
+import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 
 function serializeOffer<T extends { amount: { toString(): string } }>(
   offer: T,
@@ -22,7 +24,9 @@ export async function GET(request: Request) {
       return jsonError("Authentication required.", 401);
     }
 
-    if (session.role === "BUYER") {
+    const databaseUser = await getSessionBackedByDatabase(session);
+
+    if (!canAccessAgentDashboard(databaseUser)) {
       return jsonError("Unauthorized.", 403);
     }
 

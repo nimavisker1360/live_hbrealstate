@@ -9,7 +9,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { ClearEngagementButton } from "@/components/property-reels/ClearEngagementButton";
 import { PropertyDeleteButton } from "@/components/property-reels/PropertyDeleteButton";
@@ -17,6 +17,7 @@ import { ReelRowActions } from "@/components/property-reels/ReelRowActions";
 import { UploadPropertyReelPanel } from "@/components/property-reels/UploadPropertyReelPanel";
 import { canAccessAgentDashboard } from "@/lib/agent-dashboard-access";
 import { getCurrentSession } from "@/lib/auth";
+import { getSessionBackedByDatabase } from "@/lib/auth-users";
 import { HB_CONSULTANTS, getConsultantById } from "@/lib/hb-consultants";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { getServerDictionary } from "@/lib/i18n/server";
@@ -61,12 +62,6 @@ type EngagementInput = {
   kind: "like" | "comment";
   comment?: string | null;
   at: Date;
-};
-
-type AgentDashboardPageProps = {
-  searchParams?: Promise<{
-    authChecked?: string | string[];
-  }>;
 };
 
 function makeFormatters(locale: string, t: Dictionary) {
@@ -254,30 +249,24 @@ function mergeEngagement(
   }
 }
 
-export default async function AgentDashboardPage({
-  searchParams,
-}: AgentDashboardPageProps) {
+export default async function AgentDashboardPage() {
   const { locale, t } = await getServerDictionary();
   const td = t.agentDashboard;
   const { formatDate, formatDateTime, formatPrice, formatCurrency, statusLabel } =
     makeFormatters(locale, t);
 
-  const query = searchParams ? await searchParams : {};
-  const authChecked = Array.isArray(query.authChecked)
-    ? query.authChecked[0]
-    : query.authChecked;
-
-  if (authChecked !== "1") {
-    redirect(
-      "/api/auth/start?force=true&next=/agent/dashboard%3FauthChecked%3D1",
-    );
-  }
-
   const session = await getCurrentSession().catch(() => null);
+  const databaseUser = session
+    ? await getSessionBackedByDatabase(session).catch(() => null)
+    : null;
 
-  if (!canAccessAgentDashboard(session)) {
+  if (!databaseUser || !canAccessAgentDashboard(databaseUser)) {
     notFound();
   }
+
+  const activeUser = databaseUser;
+  const agentScope =
+    activeUser.role === "AGENT" ? { agent: { userId: activeUser.sub } } : {};
 
   const [
     databaseProperties,
@@ -287,6 +276,7 @@ export default async function AgentDashboardPage({
     recentLikes,
   ] = await Promise.all([
     prisma.property.findMany({
+      where: agentScope,
       include: {
         _count: {
           select: { videoTours: true },
@@ -301,6 +291,7 @@ export default async function AgentDashboardPage({
       take: 12,
     }),
     prisma.videoTour.findMany({
+      where: agentScope,
       select: {
         id: true,
         slug: true,
@@ -326,6 +317,9 @@ export default async function AgentDashboardPage({
       take: 25,
     }),
     prisma.videoTourOffer.findMany({
+      where: activeUser.role === "AGENT"
+        ? { agent: { userId: activeUser.sub } }
+        : undefined,
       include: {
         videoTour: {
           select: {
@@ -338,6 +332,10 @@ export default async function AgentDashboardPage({
       take: 6,
     }),
     prisma.videoTourComment.findMany({
+      where:
+        activeUser.role === "AGENT"
+          ? { videoTour: { agent: { userId: activeUser.sub } } }
+          : undefined,
       include: {
         videoTour: {
           select: { id: true, title: true },
@@ -350,6 +348,10 @@ export default async function AgentDashboardPage({
       take: 100,
     }),
     prisma.videoTourLike.findMany({
+      where:
+        activeUser.role === "AGENT"
+          ? { videoTour: { agent: { userId: activeUser.sub } } }
+          : undefined,
       include: {
         videoTour: {
           select: { id: true, title: true },

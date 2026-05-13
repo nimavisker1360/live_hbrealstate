@@ -1,10 +1,10 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
-import { getAgentDashboardEmails } from "@/lib/agent-dashboard-access";
 
 export const AUTH_COOKIE_NAME = "hb_live_session";
 
-export type AuthRole = "OWNER" | "AGENT" | "BUYER";
+export type AuthRole = "ADMIN" | "AGENT" | "BUYER";
+export type AuthUserStatus = "PENDING" | "ACTIVE" | "SUSPENDED" | "REJECTED";
 
 export type AuthSession = {
   sub: string;
@@ -12,6 +12,7 @@ export type AuthSession = {
   email?: string;
   phone?: string;
   role: AuthRole;
+  status?: AuthUserStatus;
   iat: number;
   exp: number;
 };
@@ -24,6 +25,7 @@ type MainSiteTokenPayload = {
   email?: string;
   phone?: string;
   role?: string;
+  status?: string;
   exp?: number;
 };
 
@@ -129,16 +131,9 @@ function getStringClaim(value: unknown) {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
-function readEmailList(value?: string) {
-  return String(value || "")
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
-}
-
 export function normalizeRole(role?: string): AuthRole {
   if (role === "OWNER" || role === "ADMIN") {
-    return "OWNER";
+    return "ADMIN";
   }
 
   if (role === "AGENT") {
@@ -148,23 +143,17 @@ export function normalizeRole(role?: string): AuthRole {
   return "BUYER";
 }
 
-function resolveLiveSessionRole(email?: string): AuthRole {
-  const normalizedEmail = email?.trim().toLowerCase();
-  const ownerEmails = readEmailList(process.env.HB_LIVE_OWNER_EMAILS);
-  const agentEmails = [
-    ...getAgentDashboardEmails(),
-    ...readEmailList(process.env.HB_LIVE_AGENT_EMAILS),
-  ];
-
-  if (normalizedEmail && ownerEmails.includes(normalizedEmail)) {
-    return "OWNER";
+export function normalizeUserStatus(status?: string): AuthUserStatus {
+  if (
+    status === "PENDING" ||
+    status === "ACTIVE" ||
+    status === "SUSPENDED" ||
+    status === "REJECTED"
+  ) {
+    return status;
   }
 
-  if (normalizedEmail && agentEmails.includes(normalizedEmail)) {
-    return "AGENT";
-  }
-
-  return "BUYER";
+  return "PENDING";
 }
 
 export async function createSessionToken(
@@ -198,7 +187,8 @@ export async function verifySessionToken(token?: string) {
 
   return {
     ...session,
-    role: resolveLiveSessionRole(session.email),
+    role: normalizeRole(session.role),
+    status: session.status ? normalizeUserStatus(session.status) : undefined,
   };
 }
 
@@ -229,7 +219,8 @@ export async function verifyMainSiteToken(token: string) {
     name: payload.name,
     email: payload.email,
     phone: payload.phone,
-    role: resolveLiveSessionRole(payload.email),
+    role: normalizeRole(payload.role),
+    status: normalizeUserStatus(payload.status),
   };
 }
 

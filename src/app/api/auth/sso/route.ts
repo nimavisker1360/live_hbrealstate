@@ -5,7 +5,7 @@ import {
   sessionCookieOptions,
   verifyMainSiteToken,
 } from "@/lib/auth";
-import { syncAuthUser } from "@/lib/auth-users";
+import { isActivePrivilegedUser, syncAuthUser } from "@/lib/auth-users";
 
 export const runtime = "nodejs";
 
@@ -29,18 +29,15 @@ function safeNextUrl(request: Request, nextValue?: string | null) {
   }
 }
 
-async function syncBuyerUser(user: {
+async function syncSharedUser(user: {
   sub: string;
   name?: string;
   email?: string;
   phone?: string;
-  role: "OWNER" | "AGENT" | "BUYER";
+  role: "ADMIN" | "AGENT" | "BUYER";
+  status?: "PENDING" | "ACTIVE" | "SUSPENDED" | "REJECTED";
 }) {
-  try {
-    await syncAuthUser(user);
-  } catch (error) {
-    console.error("Could not sync SSO user.", error);
-  }
+  return syncAuthUser(user);
 }
 
 async function createSsoResponse(
@@ -64,9 +61,26 @@ async function createSsoResponse(
     );
   }
 
-  await syncBuyerUser(user);
+  const sharedUser = await syncSharedUser(user).catch((error) => {
+    console.error("Could not sync SSO user.", error);
+    return null;
+  });
 
-  const sessionToken = await createSessionToken(user);
+  if (!sharedUser || !isActivePrivilegedUser(sharedUser)) {
+    return NextResponse.json(
+      { error: { message: "Agent access is pending admin approval." } },
+      { status: 403 },
+    );
+  }
+
+  const sessionToken = await createSessionToken({
+    sub: sharedUser.id,
+    name: sharedUser.name,
+    email: sharedUser.email,
+    phone: sharedUser.phone ?? undefined,
+    role: sharedUser.role,
+    status: sharedUser.status,
+  });
   const response = NextResponse.redirect(safeNextUrl(request, nextValue));
 
   response.cookies.set(AUTH_COOKIE_NAME, sessionToken, sessionCookieOptions);

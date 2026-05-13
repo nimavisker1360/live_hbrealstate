@@ -67,11 +67,12 @@ function isFile(value: FormDataEntryValue | null): value is File {
 async function getWritableUser(agentId?: string, agentName?: string) {
   const user = await requireAgentOrAdmin();
   const agent = await resolveAgentForUser(user.sub);
+  const canOverrideAgent = user.role === "ADMIN";
 
   return {
     agent: {
-      id: agentId ?? agent.id,
-      name: agentName ?? agent.name,
+      id: canOverrideAgent ? agentId ?? agent.id : agent.id,
+      name: canOverrideAgent ? agentName ?? agent.name : agent.name,
     },
     user,
   };
